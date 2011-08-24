@@ -31,7 +31,7 @@ def splitbelow(fun):
 			vim.command("set splitbelow")
 		fun(*args)
 		if not splitbelow:
-			vim.command("set splitbelow")
+			vim.command("set nosplitbelow")
 	return new
 
 @splitbelow
@@ -85,7 +85,8 @@ def search_pad():
 			lines = []
 			for line in reversed(sorted(search_results)): # MRU-style ordering
 				timestamp, lineno, match = line.split(":")
-				lines.append(timestamp + " @" + get_natural_timestamp(timestamp) + " | " + lineno + ":" + match)
+				lines.append(timestamp + " @" + get_natural_timestamp(timestamp).ljust(16) + " | " 
+							+ lineno + ":" + match)
 			vim.current.buffer.append(lines)
 			vim.command("normal dd")
 			vim.command("setlocal nomodified")
