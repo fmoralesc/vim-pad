@@ -59,7 +59,7 @@ def get_natural_timestamp(timestamp):
 				return str(minutes) + "m ago"
 	else:
 		if hours >= 24:
-			return str(tmp_datetime)
+			return tmp_datetime.strftime("%Y-%m-%d %H:%M:%S")
 		else:
 			minutes_diff = minutes - (hours * 60)
 			if minutes_diff != 0:
@@ -85,7 +85,7 @@ def search_pad():
 			lines = []
 			for line in reversed(sorted(search_results)): # MRU-style ordering
 				timestamp, lineno, match = line.split(":")
-				lines.append(timestamp + " @" + get_natural_timestamp(timestamp).ljust(16) + " | " 
+				lines.append(timestamp + " @" + get_natural_timestamp(timestamp).ljust(20) + " | "
 							+ lineno + ":" + match)
 			vim.current.buffer.append(lines)
 			vim.command("normal dd")
