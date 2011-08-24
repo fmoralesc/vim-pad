@@ -80,20 +80,21 @@ def search_pad():
 			for line in grep_search:
 				timestamp, match = line.split(":")
 				#				print get_natural_timestamp(timestamp)
-				lines.append(timestamp + " @ " + get_natural_timestamp(timestamp) + " | " + match)
+				lines.append(timestamp + " @" + get_natural_timestamp(timestamp) + " | " + match)
 			vim.current.buffer.append(lines)
 			vim.command("normal dd")
-			vim.command("set nomodified")
-			vim.command("set cursorline")
-			vim.command("set conceallevel=3")
-			vim.command('set concealcursor="nc"')
+			vim.command("setlocal nomodified")
+			vim.command("setlocal cursorline")
+			vim.command("setlocal conceallevel=2")
+			vim.command('setlocal concealcursor="vi"')
 			# We italize the timestamp and the query
 			vim.command('syn match PadTimestamp /^.*|/ contains=PadName')
-			vim.command('syn match PadName /^.*@/he=e-1 contained conceal')
+			vim.command('syn match PadName /^.*@/ contained conceal cchar=@')
 			vim.command('syn match PadQuery /'+ query + '/')
-			vim.command('hi PadTimestamp guifg=grey')
-			vim.command('hi PadName guifg=#505050 gui=italic')
-			vim.command('hi PadQuery guifg=red gui=underline')
+			vim.command('hi! PadTimestamp guifg=grey')
+			vim.command('hi! PadName guifg=#505050 gui=italic')
+			vim.command('hi! PadQuery guifg=red gui=underline')
+			vim.command('hi! link Conceal PadTimestamp')
 			# We open the note when prssing <Enter> over a line
 			vim.command("map <enter> :py edit_pad()<cr>")
 			if len(grep_search) == 1:
@@ -102,7 +103,7 @@ def search_pad():
 			print "no matches found"
 
 def edit_pad():
-	path = save_dir + vim.current.line.split(" @ ")[0]
+	path = save_dir + vim.current.line.split(" @")[0]
 	vim.command("bd")
 	open_pad(path)
 EOF
