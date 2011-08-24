@@ -83,7 +83,7 @@ def search_pad():
 		if len(search_results) > 0:
 			vim.command("5split /tmp/pad-search")
 			lines = []
-			for line in grep_search:
+			for line in search_results:
 				timestamp, lineno, match = line.split(":")
 				lines.append(timestamp + " @" + get_natural_timestamp(timestamp) + " | " + lineno + ":" + match)
 			vim.current.buffer.append(lines)
