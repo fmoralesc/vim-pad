@@ -81,9 +81,9 @@ def search_pad():
 							split("\n")
 							if line != '']
 		if len(search_results) > 0:
-			vim.command("5split /tmp/pad-search")
+			vim.command("5new")
 			lines = []
-			for line in search_results:
+			for line in reversed(sorted(search_results)): # MRU-style ordering
 				timestamp, lineno, match = line.split(":")
 				lines.append(timestamp + " @" + get_natural_timestamp(timestamp) + " | " + lineno + ":" + match)
 			vim.current.buffer.append(lines)
@@ -102,7 +102,8 @@ def search_pad():
 			vim.command('hi! link Conceal PadTimestamp')
 			# We open the note when prssing <Enter> over a line
 			vim.command("map <enter> :py edit_pad()<cr>")
-			if len(grep_search) == 1:
+			vim.command("setlocal nomodifiable")
+			if len(search_results) == 1:
 				edit_pad()
 		else:
 			print "no matches found"
