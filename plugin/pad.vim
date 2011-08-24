@@ -5,6 +5,7 @@ endif
 let g:loaded_pad = 0
 let g:pad_dir = "~/notes/"
 let g:pad_format = "markdown"
+let g:pad_search_backend = "ack"
 
 command! OpenPad exec('py open_pad()')
 command! SearchPad exec('py search_pad()')
@@ -19,6 +20,7 @@ import datetime
 from os.path import expanduser
 from subprocess import Popen, PIPE
 
+search_backend = vim.eval("g:pad_search_backend")
 save_dir = vim.eval("g:pad_dir")
 filetype = vim.eval("g:pad_format")
 
@@ -69,7 +71,11 @@ def get_natural_timestamp(timestamp):
 def search_pad():
 	query = vim.eval('input("pad-search: ")')
 	if query:
-		grep_search = [line for line in Popen(["grep", "-r", query, expanduser(save_dir)], 
+		if search_backend == "grep":
+			command = ["grep", "-n",  "-r", query, expanduser(save_dir)]
+		elif search_backend == "ack":
+			command = ["/usr/bin/vendor_perl/ack", query, expanduser(save_dir), "--type=text"]
+		grep_search = [line for line in Popen(command, 
 							stdout=PIPE, stderr=PIPE).communicate()[0].\
 							replace(expanduser("~/notes/"), "").\
 							split("\n")
@@ -78,22 +84,23 @@ def search_pad():
 			vim.command("5split /tmp/pad-search")
 			lines = []
 			for line in grep_search:
-				timestamp, match = line.split(":")
-				#				print get_natural_timestamp(timestamp)
-				lines.append(timestamp + " @" + get_natural_timestamp(timestamp) + " | " + match)
+				timestamp, lineno, match = line.split(":")
+				lines.append(timestamp + " @" + get_natural_timestamp(timestamp) + " | " + lineno + ":" + match)
 			vim.current.buffer.append(lines)
 			vim.command("normal dd")
 			vim.command("setlocal nomodified")
-			vim.command("setlocal cursorline")
+			# vim.command("setlocal cursorline")
 			vim.command("setlocal conceallevel=2")
-			vim.command('setlocal concealcursor="vi"')
+			vim.command('setlocal concealcursor="nc"')
 			# We italize the timestamp and the query
 			vim.command('syn match PadTimestamp /^.*|/ contains=PadName')
 			vim.command('syn match PadName /^.*@/ contained conceal cchar=@')
+			vim.command('syn match PadLineno / \d*:/')
 			vim.command('syn match PadQuery /'+ query + '/')
-			vim.command('hi! PadTimestamp guifg=grey')
-			vim.command('hi! PadName guifg=#505050 gui=italic')
-			vim.command('hi! PadQuery guifg=red gui=underline')
+			vim.command('hi! PadTimestamp guifg=grey gui=italic')
+			vim.command('hi! link PadName Comment')
+			vim.command('hi! link PadLineno Number')
+			vim.command('hi! link PadQuery Search')
 			vim.command('hi! link Conceal PadTimestamp')
 			# We open the note when prssing <Enter> over a line
 			vim.command("map <enter> :py edit_pad()<cr>")
