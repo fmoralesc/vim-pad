@@ -2,7 +2,7 @@ if (exists("g:loaded_pad") && g:loaded_pad) || &cp
     finish
 endif
 
-let g:loaded_pad = 0
+let g:loaded_pad = 1
 let g:pad_dir = "~/notes/"
 let g:pad_format = "markdown"
 let g:pad_search_backend = "ack"
@@ -75,12 +75,12 @@ def search_pad():
 			command = ["grep", "-n",  "-r", query, expanduser(save_dir)]
 		elif search_backend == "ack":
 			command = ["/usr/bin/vendor_perl/ack", query, expanduser(save_dir), "--type=text"]
-		grep_search = [line for line in Popen(command, 
+		search_results = [line for line in Popen(command,
 							stdout=PIPE, stderr=PIPE).communicate()[0].\
 							replace(expanduser("~/notes/"), "").\
 							split("\n")
 							if line != '']
-		if len(grep_search) > 0:
+		if len(search_results) > 0:
 			vim.command("5split /tmp/pad-search")
 			lines = []
 			for line in grep_search:
@@ -89,16 +89,14 @@ def search_pad():
 			vim.current.buffer.append(lines)
 			vim.command("normal dd")
 			vim.command("setlocal nomodified")
-			# vim.command("setlocal cursorline")
 			vim.command("setlocal conceallevel=2")
-			vim.command('setlocal concealcursor="nc"')
+			vim.command('setlocal concealcursor=nc')
 			# We italize the timestamp and the query
 			vim.command('syn match PadTimestamp /^.*|/ contains=PadName')
 			vim.command('syn match PadName /^.*@/ contained conceal cchar=@')
 			vim.command('syn match PadLineno / \d*:/')
 			vim.command('syn match PadQuery /'+ query + '/')
-			vim.command('hi! PadTimestamp guifg=grey gui=italic')
-			vim.command('hi! link PadName Comment')
+			vim.command('hi! link PadTimestamp Comment')
 			vim.command('hi! link PadLineno Number')
 			vim.command('hi! link PadQuery Search')
 			vim.command('hi! link Conceal PadTimestamp')
