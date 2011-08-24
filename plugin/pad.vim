@@ -110,6 +110,7 @@ def search_pad():
 			print "no matches found"
 
 def edit_pad():
+	vim.command("unmap <enter>")
 	path = save_dir + vim.current.line.split(" @")[0]
 	vim.command("bd")
 	open_pad(path)
