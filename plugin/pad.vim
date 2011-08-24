@@ -6,6 +6,7 @@ let g:loaded_pad = 1
 let g:pad_dir = "~/notes/"
 let g:pad_format = "markdown"
 let g:pad_search_backend = "ack"
+let g:pad_search_ignorecase = 1
 
 command! OpenPad exec('py open_pad()')
 command! SearchPad exec('py search_pad()')
@@ -21,6 +22,7 @@ from os.path import expanduser
 from subprocess import Popen, PIPE
 
 search_backend = vim.eval("g:pad_search_backend")
+ignore_case = vim.eval("g:pad_search_ignorecase")
 save_dir = vim.eval("g:pad_dir")
 filetype = vim.eval("g:pad_format")
 
@@ -75,6 +77,8 @@ def search_pad():
 			command = ["grep", "-n",  "-r", query, expanduser(save_dir)]
 		elif search_backend == "ack":
 			command = ["/usr/bin/vendor_perl/ack", query, expanduser(save_dir), "--type=text"]
+		if ignore_case:
+			command.append("-i")
 		search_results = [line for line in Popen(command,
 							stdout=PIPE, stderr=PIPE).communicate()[0].\
 							replace(expanduser("~/notes/"), "").\
@@ -84,7 +88,8 @@ def search_pad():
 			vim.command("5new")
 			lines = []
 			for line in reversed(sorted(search_results)): # MRU-style ordering
-				timestamp, lineno, match = line.split(":")
+				data = line.split(":")
+				timestamp, lineno, match = data[0], data[1], ":".join(data[2:])
 				lines.append(timestamp + " @" + get_natural_timestamp(timestamp).ljust(20) + " | "
 							+ lineno + ":" + match)
 			vim.current.buffer.append(lines)
