@@ -1,0 +1,43 @@
+# vim-pad
+
+A quick-notetaking plugin for vim.
+
+## Usage
+
+`:OpenPad` (`<Shift><Escape>`) creates a new note.
+
+`:ListPads` (`<Control><Escape>`) lists the notes.
+
+`:SearchPad` (`<Control>|` [`|` is the key above `<Tab>`]) performs a search
+between the notes. If only one note matches, it is opened. The search term is
+highlighted.
+
+When in the lists of `:ListPads` or `:SearchPad`, you can open a note pressing
+`<Enter>` and delete it using `<Del>`. `<Escape>` closes the buffer.
+
+When in a note, `<leader><Del>` will delete it.
+
+The command maps are available both in normal and insert mode.
+
+## Configuration
+
+IMPORTANT: set the `g:pad_dir` variable in your .vimrc, to indicate where the
+notes must be saved. The default is:
+
+    let g:pad_dir = "~/notes/"
+
+The default format for new notes is `markdown`. To change this to the
+VimOutliner format, for example, put
+
+    lef g:pad_format = "otl"
+
+in your `.vimrc`.
+
+The height of the split windows this plugin uses can be set with
+`g:pad_window_height`.
+
+vim-pad can search using either `grep` or `ack` (ack is the default). You can
+set this using the `g:pad_search_backend` variable. By default, the search
+ignores case (adjust `g:pad_search_ignore_case` as desired). Also, by default 
+the search will show only the first matching line in a file. You can disable this
+by setting `g:pad_search_show_only_first` to 0.
