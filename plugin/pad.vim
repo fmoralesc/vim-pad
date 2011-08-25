@@ -21,6 +21,9 @@ endif
 if !exists('g:pad_search_show_only_first')
 	let g:pad_search_show_only_first = 1
 endif
+if !exists('g:pad_search_hightlight')
+	let g:pad_search_hightlight = 0
+endif
 
 command! OpenPad exec('py open_pad()')
 command! SearchPad exec('py search_pad()')
@@ -46,12 +49,13 @@ from shutil import move
 from glob import glob
 from subprocess import Popen, PIPE
 
+save_dir = vim.eval("g:pad_dir")
+filetype = vim.eval("g:pad_format")
 window_height = str(vim.eval("g:pad_window_height"))
 search_backend = vim.eval("g:pad_search_backend")
 ignore_case = bool(int((vim.eval("g:pad_search_ignorecase"))))
 only_first = bool(int(vim.eval("g:pad_search_show_only_first")))
-save_dir = vim.eval("g:pad_dir")
-filetype = vim.eval("g:pad_format")
+search_hightlight = bool(int(vim.eval("g:pad_search_hightlight")))
 
 def get_natural_timestamp(timestamp):
 	f_timestamp = float(int(timestamp)) / 1000000
@@ -96,7 +100,7 @@ def open_pad(path=None, highlight=None):
 	vim.command(window_height + "split " + path)
 	vim.command("set filetype=" + filetype)
 	vim.command("map <silent> <leader><delete> :py delete_current_pad()<cr>")
-	if highlight:
+	if search_hightlight and highlight:
 		vim.command('execute "normal /'+ highlight + '/\<CR>"')
 
 def delete_current_pad():
