@@ -12,9 +12,9 @@ command! OpenPad exec('py open_pad()')
 command! SearchPad exec('py search_pad()')
 command! ListPads exec('py list_pads()')
 
-noremap  <esc>:OpenPad<CR>
-noremap <S-esc> <esc>:SearchPad<CR>
 noremap <C-esc> <esc>:ListPads<CR>
+noremap <S-esc> <esc>:OpenPad<CR>
+noremap  <esc>:SearchPad<CR>
 
 python <<EOF
 import vim
