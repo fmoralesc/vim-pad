@@ -30,24 +30,6 @@ ignore_case = vim.eval("g:pad_search_ignorecase")
 save_dir = vim.eval("g:pad_dir")
 filetype = vim.eval("g:pad_format")
 
-def splitbelow(fun):
-	def new(*args):
-		splitbelow = bool(int(vim.eval("&splitbelow")))
-		if not splitbelow:
-			vim.command("set splitbelow")
-		fun(*args)
-		if not splitbelow:
-			vim.command("set nosplitbelow")
-	return new
-
-@splitbelow
-def open_pad(path=None):
-	if not path:
-		path = save_dir + str(int(time.time() * 1000000))
-	vim.command("5split " + path)
-	vim.command("set filetype=" + filetype)
-	vim.command("map silent <leader><delete> :py delete_current_pad()<cr>")
-
 def get_natural_timestamp(timestamp):
 	f_timestamp = float(int(timestamp)) / 1000000
 	tmp_datetime = datetime.datetime.fromtimestamp(f_timestamp)
@@ -73,6 +55,35 @@ def get_natural_timestamp(timestamp):
 				return str(hours) + "h and " + str(minutes_diff) + "m ago"
 			else:
 				return str(minutes) + "m ago"
+
+def splitbelow(fun):
+	def new(*args):
+		splitbelow = bool(int(vim.eval("&splitbelow")))
+		if not splitbelow:
+			vim.command("set splitbelow")
+		fun(*args)
+		if not splitbelow:
+			vim.command("set nosplitbelow")
+	return new
+
+@splitbelow
+def open_pad(path=None, highlight=None):
+	if not path:
+		path = save_dir + str(int(time.time() * 1000000))
+	vim.command("5split " + path)
+	vim.command("set filetype=" + filetype)
+	vim.command("map silent <leader><delete> :py delete_current_pad()<cr>")
+	if highlight:
+		vim.command('execute "normal /'+ highlight + '/\<cr>"')
+
+def delete_current_pad():
+	path = vim.current.buffer.name
+	if exists(path):
+		confirm = vim.eval('input("really delete? (Y/n): ")')
+		if confirm in ("y", "Y"):
+			remove(path)
+			vim.command("bd!")
+			vim.command("unmap <leader><delete>")
 
 @splitbelow
 def search_pad():
@@ -117,15 +128,15 @@ def search_pad():
 			
 			vim.command("setlocal nomodifiable")
 			if len(search_results) == 1:
-				edit_pad()
+				edit_pad(query)
 		else:
 			print "no matches found"
 
-def edit_pad():
+def edit_pad(highlight=None):
 	vim.command("unmap <enter>")
 	path = save_dir + vim.current.line.split(" @")[0]
 	vim.command("bd")
-	open_pad(path)
+	open_pad(path, highlight)
 
 def delete_pad():
 	confirm = vim.eval('input("really delete? (Y/n): ")')
@@ -134,15 +145,6 @@ def delete_pad():
 		remove(path)
 		vim.command("bd")
 		vim.command("unmap <delete>")
-
-def delete_current_pad():
-	path = vim.current.buffer.name
-	if exists(path):
-		confirm = vim.eval('input("really delete? (Y/n): ")')
-		if confirm in ("y", "Y"):
-			remove(path)
-			vim.command("bd!")
-			vim.command("unmap <leader><delete>")
 
 @splitbelow
 def list_pads():
@@ -175,5 +177,6 @@ def list_pads():
 		vim.command('hi! link PadNewLine Comment')
 		vim.command("map <enter> :py edit_pad()<cr>")
 		vim.command("map <delete> :py delete_pad()<cr>")
-
+	else:
+		print "no pads"
 EOF
