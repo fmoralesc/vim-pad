@@ -3,12 +3,24 @@ if (exists("g:loaded_pad") && g:loaded_pad) || &cp
 endif
 let g:loaded_pad = 1
 
-let g:pad_dir = "~/notes/"
-let g:pad_format = "markdown"
-let g:pad_window_height = 5
-let g:pad_search_backend = "ack"
-let g:pad_search_ignorecase = 1
-let g:pad_search_show_only_first = 1
+if !exists('g:pad_dir')
+	let g:pad_dir = "~/notes/"
+endif
+if !exists('g:pad_format')
+	let g:pad_format = "markdown"
+endif
+if !exists('g:pad_window_height')
+	let g:pad_window_height = 5
+endif
+if !exists('g:pad_search_backend')
+	let g:pad_search_backend = "ack"
+endif
+if !exists('g:pad_search_ignorecase')
+	let g:pad_search_ignorecase = 1
+endif
+if !exists('g:pad_search_show_only_first')
+	let g:pad_search_show_only_first = 1
+endif
 
 command! OpenPad exec('py open_pad()')
 command! SearchPad exec('py search_pad()')
@@ -78,7 +90,7 @@ def open_pad(path=None, highlight=None):
 		path = save_dir + str(int(time.time() * 1000000))
 	vim.command(window_height + "split " + path)
 	vim.command("set filetype=" + filetype)
-	vim.command("map silent <leader><delete> :py delete_current_pad()<cr>")
+	vim.command("map <silent> <leader><delete> :py delete_current_pad()<cr>")
 	if highlight:
 		vim.command('execute "normal /'+ highlight + '/\<CR>"')
 
@@ -162,7 +174,7 @@ def list_pads():
 		for pad in pad_files:
 			with open(expanduser(save_dir) + pad) as pad_file:
 				data = pad_file.read(100).split("\n")
-				summary, body = data[0], "\n".join([line for line in data[1:] if line != '']).\
+			summary, body = data[0], "\n".join([line for line in data[1:] if line != '']).\
 											replace("\n", u'\u21b2'.encode('utf-8'))
 			if data[1:] != ['']:
 				tail = u'\u21b2'.encode('utf-8') + ' ' +  body
