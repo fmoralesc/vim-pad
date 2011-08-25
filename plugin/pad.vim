@@ -5,6 +5,7 @@ let g:loaded_pad = 1
 
 let g:pad_dir = "~/notes/"
 let g:pad_format = "markdown"
+let g:pad_window_height = 5
 let g:pad_search_backend = "ack"
 let g:pad_search_ignorecase = 1
 let g:pad_search_show_only_first = 1
@@ -13,9 +14,11 @@ command! OpenPad exec('py open_pad()')
 command! SearchPad exec('py search_pad()')
 command! ListPads exec('py list_pads()')
 
-noremap <C-esc> <esc>:ListPads<CR>
-noremap <S-esc> <esc>:OpenPad<CR>
-noremap  <esc>:SearchPad<CR>
+noremap <silent> <C-esc> <esc>:ListPads<CR>
+inoremap <silent> <C-esc> <esc>:ListPads<CR>
+noremap <silent> <S-esc> <esc>:OpenPad<CR>
+inoremap <silent> <S-esc> <esc>:OpenPad<CR>
+noremap <silent>  <esc>:SearchPad<CR>
 
 python <<EOF
 import vim
@@ -26,9 +29,10 @@ from os.path import expanduser, exists
 from glob import glob
 from subprocess import Popen, PIPE
 
+window_height = str(vim.eval("g:pad_window_height"))
 search_backend = vim.eval("g:pad_search_backend")
-ignore_case = vim.eval("g:pad_search_ignorecase")
-only_first = vim.eval("g:pad_search_show_only_first")
+ignore_case = bool(vim.eval("g:pad_search_ignorecase"))
+only_first = bool(vim.eval("g:pad_search_show_only_first"))
 save_dir = vim.eval("g:pad_dir")
 filetype = vim.eval("g:pad_format")
 
@@ -72,7 +76,7 @@ def splitbelow(fun):
 def open_pad(path=None, highlight=None):
 	if not path:
 		path = save_dir + str(int(time.time() * 1000000))
-	vim.command("5split " + path)
+	vim.command(window_height + "split " + path)
 	vim.command("set filetype=" + filetype)
 	vim.command("map silent <leader><delete> :py delete_current_pad()<cr>")
 	if highlight:
@@ -127,9 +131,10 @@ def search_pad():
 			vim.command('hi! link PadQuery Search')
 			vim.command('hi! link Conceal PadTimestamp')
 			
-			vim.command('map <enter> :py edit_pad("' + query +'")<cr>')
-			vim.command("map <delete> :py delete_pad()<cr>")
-			
+			vim.command('map <buffer> <silent> <enter> :py edit_pad("' + query +'")<cr>')
+			vim.command("map <buffer> <silent> <delete> :py delete_pad()<cr>")
+			vim.command("map <buffer> <silent> <esc> :bd<cr>")
+	
 			vim.command("setlocal nomodifiable")
 			if len(search_results) == 1:
 				edit_pad(query)
@@ -137,7 +142,6 @@ def search_pad():
 			print "no matches found"
 
 def edit_pad(highlight=None):
-	vim.command("unmap <enter>")
 	path = save_dir + vim.current.line.split(" @")[0]
 	vim.command("bd")
 	open_pad(path, highlight)
@@ -148,13 +152,12 @@ def delete_pad():
 		path = expanduser(save_dir) + vim.current.line.split(" @")[0]
 		remove(path)
 		vim.command("bd")
-		vim.command("unmap <delete>")
 
 @splitbelow
 def list_pads():
 	pad_files = [path.replace(expanduser(save_dir), "") for path in glob(expanduser(save_dir) + "*")]
 	if len(pad_files) > 0:
-		vim.command("5new")
+		vim.command(window_height + "new")
 		lines = []
 		for pad in pad_files:
 			with open(expanduser(save_dir) + pad) as pad_file:
@@ -181,8 +184,9 @@ def list_pads():
 		vim.command('hi! link Conceal PadTimestamp')
 		vim.command('hi! PadSummary gui=bold')
 		vim.command('hi! link PadNewLine Comment')
-		vim.command("map <enter> :py edit_pad()<cr>")
-		vim.command("map <delete> :py delete_pad()<cr>")
+		vim.command("map <buffer> <silent> <enter> :py edit_pad()<cr>")
+		vim.command("map <buffer> <silent> <delete> :py delete_pad()<cr>")
+		vim.command("map <buffer> <silent> <esc> :bd<cr>")
 	else:
 		print "no pads"
 EOF
