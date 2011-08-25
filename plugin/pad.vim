@@ -25,9 +25,9 @@ if !exists('g:pad_search_hightlight')
 	let g:pad_search_hightlight = 0
 endif
 
-command! OpenPad exec('py open_pad()')
-command! SearchPad exec('py search_pad()')
-command! ListPads exec('py list_pads()')
+command! OpenPad exec 'py open_pad()'
+command! SearchPad exec 'py search_pad()'
+command! ListPads exec 'py list_pads()'
 
 noremap <silent> <C-esc> <esc>:ListPads<CR>
 inoremap <silent> <C-esc> <esc>:ListPads<CR>
