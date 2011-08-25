@@ -162,8 +162,10 @@ def list_pads():
 			else:
 				tail = ''
 			lines.append(pad + " @" + get_natural_timestamp(pad).ljust(20) + " | " + summary + tail)
-		vim.current.buffer.append(lines)
+		vim.current.buffer.append(list(reversed(sorted(lines))))
 		vim.command("normal dd")
+		vim.command("set nowrap")
+		vim.command("set listchars=extends:◢,precedes:◣")
 		vim.command("set nomodified")
 		vim.command("setlocal conceallevel=2")
 		vim.command('setlocal concealcursor=nc')
