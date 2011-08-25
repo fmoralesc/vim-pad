@@ -32,19 +32,24 @@ noremap <silent> <S-esc> <esc>:OpenPad<CR>
 inoremap <silent> <S-esc> <esc>:OpenPad<CR>
 noremap <silent>  <esc>:SearchPad<CR>
 
+" To update the date when files are modified
+execute "au! BufWritePre" printf("%s*", g:pad_dir) ":let pad_modified = eval(&modified)"
+execute "au! BufWritePost" printf("%s*", g:pad_dir) ":py update_pad()"
+
 python <<EOF
 import vim
 import time
 import datetime
 from os import remove
 from os.path import expanduser, exists
+from shutil import move
 from glob import glob
 from subprocess import Popen, PIPE
 
 window_height = str(vim.eval("g:pad_window_height"))
 search_backend = vim.eval("g:pad_search_backend")
-ignore_case = bool(vim.eval("g:pad_search_ignorecase"))
-only_first = bool(vim.eval("g:pad_search_show_only_first"))
+ignore_case = bool(int((vim.eval("g:pad_search_ignorecase"))))
+only_first = bool(int(vim.eval("g:pad_search_show_only_first")))
 save_dir = vim.eval("g:pad_dir")
 filetype = vim.eval("g:pad_format")
 
@@ -164,6 +169,15 @@ def delete_pad():
 		path = expanduser(save_dir) + vim.current.line.split(" @")[0]
 		remove(path)
 		vim.command("bd")
+
+def update_pad():
+	modified = bool(int(vim.eval("pad_modified")))
+	if modified:
+		old_path = expanduser(vim.current.buffer.name)
+		new_path = expanduser(save_dir + str(int(time.time() * 1000000)))
+		vim.command("bd")
+		move(old_path, new_path)
+		open_pad(new_path)
 
 @splitbelow
 def list_pads():
