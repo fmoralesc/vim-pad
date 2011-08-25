@@ -7,6 +7,7 @@ let g:pad_dir = "~/notes/"
 let g:pad_format = "markdown"
 let g:pad_search_backend = "ack"
 let g:pad_search_ignorecase = 1
+let g:pad_search_show_only_first = 1
 
 command! OpenPad exec('py open_pad()')
 command! SearchPad exec('py search_pad()')
@@ -27,6 +28,7 @@ from subprocess import Popen, PIPE
 
 search_backend = vim.eval("g:pad_search_backend")
 ignore_case = vim.eval("g:pad_search_ignorecase")
+only_first = vim.eval("g:pad_search_show_only_first")
 save_dir = vim.eval("g:pad_dir")
 filetype = vim.eval("g:pad_format")
 
@@ -95,6 +97,8 @@ def search_pad():
 			command = ["/usr/bin/vendor_perl/ack", query, expanduser(save_dir), "--type=text"]
 		if ignore_case:
 			command.append("-i")
+		if only_first:
+			command.append("--max-count=1")
 		search_results = [line for line in Popen(command,
 							stdout=PIPE, stderr=PIPE).communicate()[0].\
 							replace(expanduser(save_dir), "").\
@@ -114,8 +118,8 @@ def search_pad():
 			
 			vim.command("setlocal conceallevel=2")
 			vim.command('setlocal concealcursor=nc')
-			vim.command('syn match PadTimestamp /^.{-}|/ contains=PadName')
-			vim.command('syn match PadName /^.{-}@/ contained conceal cchar=@')
+			vim.command('syn match PadTimestamp /^.\{-}|/ contains=PadName')
+			vim.command('syn match PadName /^.\{-}@/ contained conceal cchar=@')
 			vim.command('syn match PadLineno / \d*:/')
 			vim.command('syn match PadQuery /'+ query + '/')
 			vim.command('hi! link PadTimestamp Comment')
@@ -169,8 +173,8 @@ def list_pads():
 		vim.command("set nomodified")
 		vim.command("setlocal conceallevel=2")
 		vim.command('setlocal concealcursor=nc')
-		vim.command('syn match PadTimestamp /^.{-}|/ contains=PadName')
-		vim.command('syn match PadName /^.{-}@/ contained conceal cchar=@')
+		vim.command('syn match PadTimestamp /^.\{-}|/ contains=PadName')
+		vim.command('syn match PadName /^.\{-}@/ contained conceal cchar=@')
 		vim.command('syn match PadNewLine /\%u21b2/' )
 		vim.command('syn region PadSummary start=/|\@<= /hs=s+1 end=/.\(\%u21b2\|$\)\@=/')
 		vim.command('hi! link PadTimestamp Comment')
