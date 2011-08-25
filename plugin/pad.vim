@@ -1,8 +1,8 @@
 if (exists("g:loaded_pad") && g:loaded_pad) || &cp
     finish
 endif
-
 let g:loaded_pad = 1
+
 let g:pad_dir = "~/notes/"
 let g:pad_format = "markdown"
 let g:pad_search_backend = "ack"
@@ -74,7 +74,7 @@ def open_pad(path=None, highlight=None):
 	vim.command("set filetype=" + filetype)
 	vim.command("map silent <leader><delete> :py delete_current_pad()<cr>")
 	if highlight:
-		vim.command('execute "normal /'+ highlight + '/\<cr>"')
+		vim.command('execute "normal /'+ highlight + '/\<CR>"')
 
 def delete_current_pad():
 	path = vim.current.buffer.name
@@ -123,7 +123,7 @@ def search_pad():
 			vim.command('hi! link PadQuery Search')
 			vim.command('hi! link Conceal PadTimestamp')
 			
-			vim.command("map <enter> :py edit_pad()<cr>")
+			vim.command('map <enter> :py edit_pad("' + query +'")<cr>')
 			vim.command("map <delete> :py delete_pad()<cr>")
 			
 			vim.command("setlocal nomodifiable")
