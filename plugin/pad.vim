@@ -10,15 +10,19 @@ let g:pad_search_ignorecase = 1
 
 command! OpenPad exec('py open_pad()')
 command! SearchPad exec('py search_pad()')
+command! ListPads exec('py list_pads()')
 
 noremap  <esc>:OpenPad<CR>
-noremap <C-esc> <esc>:SearchPad<CR>
+noremap <S-esc> <esc>:SearchPad<CR>
+noremap <C-esc> <esc>:ListPads<CR>
 
 python <<EOF
 import vim
 import time
 import datetime
-from os.path import expanduser
+from os import remove
+from os.path import expanduser, exists
+from glob import glob
 from subprocess import Popen, PIPE
 
 search_backend = vim.eval("g:pad_search_backend")
@@ -42,6 +46,7 @@ def open_pad(path=None):
 		path = save_dir + str(int(time.time() * 1000000))
 	vim.command("5split " + path)
 	vim.command("set filetype=" + filetype)
+	vim.command("map silent <leader><delete> :py delete_current_pad()<cr>")
 
 def get_natural_timestamp(timestamp):
 	f_timestamp = float(int(timestamp)) / 1000000
@@ -81,7 +86,7 @@ def search_pad():
 			command.append("-i")
 		search_results = [line for line in Popen(command,
 							stdout=PIPE, stderr=PIPE).communicate()[0].\
-							replace(expanduser("~/notes/"), "").\
+							replace(expanduser(save_dir), "").\
 							split("\n")
 							if line != '']
 		if len(search_results) > 0:
@@ -95,9 +100,9 @@ def search_pad():
 			vim.current.buffer.append(lines)
 			vim.command("normal dd")
 			vim.command("setlocal nomodified")
+			
 			vim.command("setlocal conceallevel=2")
 			vim.command('setlocal concealcursor=nc')
-			# We italize the timestamp and the query
 			vim.command('syn match PadTimestamp /^.*|/ contains=PadName')
 			vim.command('syn match PadName /^.*@/ contained conceal cchar=@')
 			vim.command('syn match PadLineno / \d*:/')
@@ -106,8 +111,10 @@ def search_pad():
 			vim.command('hi! link PadLineno Number')
 			vim.command('hi! link PadQuery Search')
 			vim.command('hi! link Conceal PadTimestamp')
-			# We open the note when prssing <Enter> over a line
+			
 			vim.command("map <enter> :py edit_pad()<cr>")
+			vim.command("map <delete> :py delete_pad()<cr>")
+			
 			vim.command("setlocal nomodifiable")
 			if len(search_results) == 1:
 				edit_pad()
@@ -119,4 +126,54 @@ def edit_pad():
 	path = save_dir + vim.current.line.split(" @")[0]
 	vim.command("bd")
 	open_pad(path)
+
+def delete_pad():
+	confirm = vim.eval('input("really delete? (Y/n): ")')
+	if confirm in ("y", "Y"):
+		path = expanduser(save_dir) + vim.current.line.split(" @")[0]
+		remove(path)
+		vim.command("bd")
+		vim.command("unmap <delete>")
+
+def delete_current_pad():
+	path = vim.current.buffer.name
+	if exists(path):
+		confirm = vim.eval('input("really delete? (Y/n): ")')
+		if confirm in ("y", "Y"):
+			remove(path)
+			vim.command("bd!")
+			vim.command("unmap <leader><delete>")
+
+@splitbelow
+def list_pads():
+	pad_files = [path.replace(expanduser(save_dir), "") for path in glob(expanduser(save_dir) + "*")]
+	if len(pad_files) > 0:
+		vim.command("5new")
+		lines = []
+		for pad in pad_files:
+			with open(expanduser(save_dir) + pad) as pad_file:
+				data = pad_file.read(100).split("\n")
+				summary, body = data[0], "\n".join([line for line in data[1:] if line != '']).\
+											replace("\n", u'\u21b2'.encode('utf-8'))
+			if data[1:] != ['']:
+				tail = u'\u21b2'.encode('utf-8') + ' ' +  body
+			else:
+				tail = ''
+			lines.append(pad + " @" + get_natural_timestamp(pad).ljust(20) + " | " + summary + tail)
+		vim.current.buffer.append(lines)
+		vim.command("normal dd")
+		vim.command("set nomodified")
+		vim.command("setlocal conceallevel=2")
+		vim.command('setlocal concealcursor=nc')
+		vim.command('syn match PadTimestamp /^.*|/ contains=PadName')
+		vim.command('syn match PadName /^.*@/ contained conceal cchar=@')
+		vim.command('syn match PadNewLine /\%u21b2/' )
+		vim.command('syn region PadSummary start=/|\@<= /hs=s+1 end=/.\(\%u21b2\|$\)\@=/')
+		vim.command('hi! link PadTimestamp Comment')
+		vim.command('hi! link Conceal PadTimestamp')
+		vim.command('hi! PadSummary gui=bold')
+		vim.command('hi! link PadNewLine Comment')
+		vim.command("map <enter> :py edit_pad()<cr>")
+		vim.command("map <delete> :py delete_pad()<cr>")
+
 EOF
