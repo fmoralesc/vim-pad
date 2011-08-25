@@ -72,7 +72,7 @@ def get_natural_timestamp(timestamp):
 			if minutes_diff != 0:
 				return str(hours) + "h and " + str(minutes_diff) + "m ago"
 			else:
-				return str(minutes) + "m ago"
+				return str(hours) + "h ago"
 
 def splitbelow(fun):
 	def new(*args):
@@ -176,6 +176,9 @@ def list_pads():
 				data = pad_file.read(100).split("\n")
 			summary, body = data[0], "\n".join([line for line in data[1:] if line != '']).\
 											replace("\n", u'\u21b2'.encode('utf-8'))
+			
+			if summary[0] in ("%", "#"): #pandoc and markdown titles
+				summary = "".join(summary[1:]).strip()
 			if data[1:] != ['']:
 				tail = u'\u21b2'.encode('utf-8') + ' ' +  body
 			else:
