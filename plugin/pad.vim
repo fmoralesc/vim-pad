@@ -62,7 +62,7 @@ search_hightlight = bool(int(vim.eval("g:pad_search_hightlight")))
 # This should fix that.
 mru_exclude_files = vim.eval("MRU_Exclude_Files")
 if mru_exclude_files != '':
-	tail = "|" + mru_exclude_files
+	tail = "\|" + mru_exclude_files
 else:
 	tail = ''
 vim.command("let MRU_Exclude_Files = '^" + save_dir.replace("~", expanduser("~")) + "*" + tail + "'")
