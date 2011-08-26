@@ -43,7 +43,7 @@ python <<EOF
 import vim
 import time
 import datetime
-from re import match
+import re
 from os import remove
 from os.path import expanduser, exists
 from shutil import move
@@ -204,7 +204,16 @@ def list_pads():
 			with open(expanduser(save_dir) + pad) as pad_file:
 				data = pad_file.read(200).split("\n")
 			
-			if match("^.* vim: set .*: .*$", data[0]): #we have a modeline
+			head = ''
+			if re.match("^.* vim: set .*:.*$", data[0]): #we have a modeline
+				ft = re.search("ft=.*(?=:)", data[0]).group().split("=")[1]
+				if ft == "vo_base":
+					ft = "vo"
+				elif ft == "pandoc":
+					ft = "pd"
+				elif ft == "markdown":
+					ft = "md"
+				head = '▪' + ft + '▪ '
 				data = data[1:] #we discard it
 			
 			summary = data[0].strip()
@@ -214,11 +223,11 @@ def list_pads():
 			body = "\n".join([line.strip() for line in data[1:] if line != '']).\
 					replace("\n", u'\u21b2 '.encode('utf-8'))
 			
+			tail = ''
 			if data[1:] != ['']:
 				tail = u'\u21b2'.encode('utf-8') + ' ' +  body
-			else:
-				tail = ''
-			lines.append(pad + " @" + get_natural_timestamp(pad).ljust(20) + " | " + summary + tail)
+
+			lines.append(pad + " @" + get_natural_timestamp(pad).ljust(20) + " | " + head + summary + tail)
 		vim.current.buffer.append(list(reversed(sorted(lines))))
 		vim.command("normal dd")
 		vim.command("set nowrap")
@@ -229,11 +238,13 @@ def list_pads():
 		vim.command('syn match PadTimestamp /^.\{-}|/ contains=PadName')
 		vim.command('syn match PadName /^.\{-}@/ contained conceal cchar=@')
 		vim.command('syn match PadNewLine /\%u21b2/' )
+		vim.command('syn match PadFiletype /\%u25aa.*\%u25aa/')
 		vim.command(r'syn match PadHashTag /\(@\|#\)\a\+/')
-		vim.command('syn region PadSummary start=/|\@<= /hs=s+1 end=/\(\%u21b2\|$\)\@=/ contains=PadHashTag')
+		vim.command('syn region PadSummary start=/|\@<= /hs=s+1 end=/\(\%u21b2\|$\)\@=/ contains=PadHashTag,PadFiletype')
 		vim.command('hi! link PadTimestamp Comment')
 		vim.command('hi! link Conceal PadTimestamp')
 		vim.command('hi! link PadHashTag Identifier')
+		vim.command('hi! link PadFiletype Comment')
 		vim.command('hi! PadSummary gui=bold')
 		vim.command('hi! link PadNewLine Comment')
 		vim.command("map <buffer> <silent> <enter> :py edit_pad()<cr>")
