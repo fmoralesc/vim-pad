@@ -43,6 +43,7 @@ python <<EOF
 import vim
 import time
 import datetime
+from re import match
 from os import remove
 from os.path import expanduser, exists
 from shutil import move
@@ -107,7 +108,8 @@ def open_pad(path=None, highlight=None):
 	if not path:
 		path = save_dir + str(int(time.time() * 1000000))
 	vim.command(window_height + "split " + path)
-	vim.command("set filetype=" + filetype)
+	if vim.eval('&filetype') in ('', 'conf'):
+		vim.command("set filetype=" + filetype)
 	vim.command("map <silent> <leader><delete> :py delete_current_pad()<cr>")
 	if search_hightlight and highlight:
 		vim.command('execute "normal /'+ highlight + '/\<CR>"')
@@ -200,12 +202,18 @@ def list_pads():
 		lines = []
 		for pad in pad_files:
 			with open(expanduser(save_dir) + pad) as pad_file:
-				data = pad_file.read(100).split("\n")
-			summary, body = data[0], "\n".join([line for line in data[1:] if line != '']).\
-											replace("\n", u'\u21b2'.encode('utf-8'))
+				data = pad_file.read(200).split("\n")
 			
+			if match("^.* vim: set .*: .*$", data[0]): #we have a modeline
+				data = data[1:] #we discard it
+			
+			summary = data[0].strip()
 			if summary[0] in ("%", "#"): #pandoc and markdown titles
 				summary = "".join(summary[1:]).strip()
+			
+			body = "\n".join([line.strip() for line in data[1:] if line != '']).\
+					replace("\n", u'\u21b2 '.encode('utf-8'))
+			
 			if data[1:] != ['']:
 				tail = u'\u21b2'.encode('utf-8') + ' ' +  body
 			else:
