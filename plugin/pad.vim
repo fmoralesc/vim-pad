@@ -146,7 +146,7 @@ def search_pad():
 			for line in reversed(sorted(search_results)): # MRU-style ordering
 				data = line.split(":")
 				timestamp, lineno, match = data[0], data[1], ":".join(data[2:])
-				lines.append(timestamp + " @" + get_natural_timestamp(timestamp).ljust(20) + " | "
+				lines.append(timestamp + " @" + get_natural_timestamp(timestamp).ljust(20) + " │ "
 							+ lineno + ":" + match)
 			vim.current.buffer.append(lines)
 			vim.command("normal dd")
@@ -154,7 +154,7 @@ def search_pad():
 			
 			vim.command("setlocal conceallevel=2")
 			vim.command('setlocal concealcursor=nc')
-			vim.command('syn match PadTimestamp /^.\{-}|/ contains=PadName')
+			vim.command('syn match PadTimestamp /^.\{-}│/ contains=PadName')
 			vim.command('syn match PadName /^.\{-}@/ contained conceal cchar=@')
 			vim.command('syn match PadLineno / \d*:/')
 			vim.command('syn match PadQuery /'+ query + '/')
@@ -227,7 +227,7 @@ def list_pads():
 			if data[1:] != ['']:
 				tail = u'\u21b2'.encode('utf-8') + ' ' +  body
 
-			lines.append(pad + " @" + get_natural_timestamp(pad).ljust(20) + " | " + head + summary + tail)
+			lines.append(pad + " @" + get_natural_timestamp(pad).ljust(20) + " │ " + head + summary + tail)
 		vim.current.buffer.append(list(reversed(sorted(lines))))
 		vim.command("normal dd")
 		vim.command("set nowrap")
@@ -235,12 +235,12 @@ def list_pads():
 		vim.command("set nomodified")
 		vim.command("setlocal conceallevel=2")
 		vim.command('setlocal concealcursor=nc')
-		vim.command('syn match PadTimestamp /^.\{-}|/ contains=PadName')
+		vim.command('syn match PadTimestamp /^.\{-}│/ contains=PadName')
 		vim.command('syn match PadName /^.\{-}@/ contained conceal cchar=@')
 		vim.command('syn match PadNewLine /\%u21b2/' )
 		vim.command('syn match PadFT /\%u25aa.*\%u25aa/')
 		vim.command(r'syn match PadHashTag /\(@\|#\)\a\+/')
-		vim.command('syn region PadSummary start=/|\@<= /hs=s+1 end=/\(\%u21b2\|$\)\@=/ contains=PadHashTag,PadFT')
+		vim.command('syn region PadSummary start=/│\@<= /hs=s+1 end=/\(\%u21b2\|$\)\@=/ contains=PadHashTag,PadFT')
 		vim.command('hi! link PadTimestamp Comment')
 		vim.command('hi! link Conceal PadTimestamp')
 		vim.command('hi! link PadHashTag Identifier')
