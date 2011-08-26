@@ -146,20 +146,37 @@ def search_pad():
 			for line in reversed(sorted(search_results)): # MRU-style ordering
 				data = line.split(":")
 				timestamp, lineno, match = data[0], data[1], ":".join(data[2:])
+				
+				with open(expanduser(save_dir) + timestamp) as pad_file:
+					file_data = pad_file.read(200).split("\n")
+				if re.match("^.* vim: set .*:.*$", file_data[0]): #we have a modeline
+					file_data = file_data[1:]
+				summary = file_data[0].strip()
+				if summary[0] in ("%", "#"): #pandoc and markdown titles
+					summary = "".join(summary[1:]).strip()
+				tail = ''
+				if file_data[1:]:
+					tail = "…"
+
 				lines.append(timestamp + " @" + get_natural_timestamp(timestamp).ljust(20) + " │ "
-							+ lineno + ":" + match)
+							+ lineno + ":" + match + " 「 " + summary + tail)
 			vim.current.buffer.append(lines)
 			vim.command("normal dd")
-			vim.command("setlocal nomodified")
-			
+			vim.command("set nowrap")
+			vim.command("set listchars=extends:◢,precedes:◣")
+			vim.command("set nomodified")
 			vim.command("setlocal conceallevel=2")
 			vim.command('setlocal concealcursor=nc')
 			vim.command('syn match PadTimestamp /^.\{-}│/ contains=PadName')
 			vim.command('syn match PadName /^.\{-}@/ contained conceal cchar=@')
 			vim.command('syn match PadLineno / \d*:/')
+			vim.command(r'syn match PadHashTag /\(@\|#\)\a\+/')
+			vim.command('syn match PadSummary /「.*$/hs=s+1 contains=PadHashTag')
 			vim.command('syn match PadQuery /'+ query + '/')
 			vim.command('hi! link PadTimestamp Comment')
 			vim.command('hi! link PadLineno Number')
+			vim.command('hi! PadSummary gui=bold')
+			vim.command('hi! link PadHashTag Identifier')
 			vim.command('hi! link PadQuery Search')
 			vim.command('hi! link Conceal PadTimestamp')
 			
