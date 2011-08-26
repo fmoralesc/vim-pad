@@ -21,17 +21,17 @@ The command maps are available both in normal and insert mode.
 ## Configuration
 
 IMPORTANT: set the `g:pad_dir` variable in your .vimrc, to indicate where the
-notes must be saved. The default is:
+notes will be saved. The default is:
 
     let g:pad_dir = "~/notes/"
 
-The default format for new notes is `markdown`. To change this to the
-`pandoc` format, for example, put
+The default format for new notes is `markdown`. To change this to another format,
+`pandoc` for example, put
 
-    lef g:pad_format = "pandoc"
+    let g:pad_format = "pandoc"
 
 in your `.vimrc`. You can also set the individual format of a note by turning
-the first line in the note into a modeline. For example,
+the first line in the note into a modeline:
 
 	<!-- vim: set ft=vo_base: -->
 

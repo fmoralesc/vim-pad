@@ -230,7 +230,7 @@ def list_pads():
 		vim.command('syn match PadName /^.\{-}@/ contained conceal cchar=@')
 		vim.command('syn match PadNewLine /\%u21b2/' )
 		vim.command(r'syn match PadHashTag /\(@\|#\)\a\+/')
-		vim.command('syn region PadSummary start=/|\@<= /hs=s+1 end=/.\(\%u21b2\|$\)\@=/')
+		vim.command('syn region PadSummary start=/|\@<= /hs=s+1 end=/\(\%u21b2\|$\)\@=/ contains=PadHashTag')
 		vim.command('hi! link PadTimestamp Comment')
 		vim.command('hi! link Conceal PadTimestamp')
 		vim.command('hi! link PadHashTag Identifier')
