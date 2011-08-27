@@ -110,7 +110,8 @@ def open_pad(path=None, highlight=None):
 	vim.command(window_height + "split " + path)
 	if vim.eval('&filetype') in ('', 'conf'):
 		vim.command("set filetype=" + filetype)
-	vim.command("map <silent> <leader><delete> :py delete_current_pad()<cr>")
+	vim.command("map <silent> <buffer> <localleader><delete> :py delete_current_pad()<cr>")
+	vim.command("map <silent> <buffer> <localleader>mode :py add_modeline()<cr>")
 	if search_hightlight and highlight:
 		vim.command('execute "normal /'+ highlight + '/\<CR>"')
 
@@ -122,6 +123,14 @@ def delete_current_pad():
 			remove(path)
 			vim.command("bd!")
 			vim.command("unmap <leader><delete>")
+
+def add_modeline():
+	mode = vim.eval('input("mode: ")')
+	if mode:
+		vim.current.buffer[0] = "<!-- vim: set " + mode + ": -->"
+		ft = re.search("ft=.*(?=:)", vim.current.line).group().split("=")[1]
+		vim.command("set filetype=" + ft)
+		vim.command("set nomodified")
 
 @splitbelow
 def search_pad():
