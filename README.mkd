@@ -14,7 +14,8 @@ between the notes. If only one note matches, it is opened.
 When in the lists of `:ListPads` or `:SearchPad`, you can open a note pressing
 `<Enter>` and delete it using `<Del>`. `<Escape>` closes the buffer.
 
-When in a note, `<leader><Del>` will delete it.
+When in a note, `<localleader><Del>` will delete it. `<localleader>+m` will ask
+for a filetype and insert a modeline in the file accordingly.
 
 The command maps are available both in normal and insert mode.
 
