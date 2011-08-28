@@ -167,7 +167,7 @@ def search_pad():
 				if file_data[1:]:
 					tail = "…"
 
-				lines.append(timestamp + " @" + get_natural_timestamp(timestamp).ljust(20) + " │ "
+				lines.append(timestamp + " @" + get_natural_timestamp(timestamp).ljust(19) + " │ "
 							+ lineno + ":" + match + " 「 " + summary + tail)
 			vim.current.buffer.append(lines)
 			vim.command("normal dd")
@@ -253,7 +253,7 @@ def list_pads():
 			if data[1:] != ['']:
 				tail = u'\u21b2'.encode('utf-8') + ' ' +  body
 
-			lines.append(pad + " @" + get_natural_timestamp(pad).ljust(20) + " │ " + head + summary + tail)
+			lines.append(pad + " @" + get_natural_timestamp(pad).ljust(19) + " │ " + head + summary + tail)
 		vim.current.buffer.append(list(reversed(sorted(lines))))
 		vim.command("normal dd")
 		vim.command("set nowrap")
