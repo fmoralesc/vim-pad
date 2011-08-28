@@ -26,8 +26,8 @@ notes will be saved. The default is:
 
     let g:pad_dir = "~/notes/"
 
-The default format for new notes is `markdown`. To change this to another format,
-`pandoc` for example, put
+The default format for new notes is [`markdown`][markdown]. To change this to
+another format, [`pandoc`][vim-pandoc] for example, put
 
     let g:pad_format = "pandoc"
 
@@ -36,8 +36,9 @@ the first line in the note into a modeline:
 
 	<!-- vim: set ft=vo_base: -->
 
-at the beggining of a file will tell vim to open the file as a VimOutliner
-file. The modeline won't be shown in the list view.
+at the beggining of a file will tell vim to open the file as
+a [VimOutliner][vimoutliner] file. The modeline won't be shown in the list
+view.
 
 The height of the split windows this plugin uses can be set with
 `g:pad_window_height`.
@@ -49,3 +50,7 @@ the search will show only the first matching line in a file. You can disable thi
 by setting `g:pad_search_show_only_first` to 0. The search term will be
 highlighted if `g:pad_search_highlight` is set to 1 (the default is not to
 highlight the term).
+
+[markdown]: http://daringfireball.net/projects/markdown/
+[vim-pandoc]: https://github.com/vim-pandoc/vim-pandoc
+[vimoutliner]: http://www.vimoutliner.org/
