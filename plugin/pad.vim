@@ -71,9 +71,12 @@ def get_natural_timestamp(timestamp):
 	f_timestamp = float(int(timestamp)) / 1000000
 	tmp_datetime = datetime.datetime.fromtimestamp(f_timestamp)
 	diff = datetime.datetime.now() - tmp_datetime
+	days = diff.days
 	seconds = diff.seconds
 	minutes = seconds/60
 	hours = minutes/60
+	if days > 0:
+		return tmp_datetime.strftime("%Y-%m-%d %H:%M:%S")
 	if hours < 1:
 		if minutes < 1:
 			return str(seconds) + "s ago"
@@ -84,14 +87,11 @@ def get_natural_timestamp(timestamp):
 			else:
 				return str(minutes) + "m ago"
 	else:
-		if hours >= 24:
-			return tmp_datetime.strftime("%Y-%m-%d %H:%M:%S")
+		minutes_diff = minutes - (hours * 60)
+		if minutes_diff != 0:
+			return str(hours) + "h and " + str(minutes_diff) + "m ago"
 		else:
-			minutes_diff = minutes - (hours * 60)
-			if minutes_diff != 0:
-				return str(hours) + "h and " + str(minutes_diff) + "m ago"
-			else:
-				return str(hours) + "h ago"
+			return str(hours) + "h ago"
 
 def splitbelow(fun):
 	def new(*args):
