@@ -36,8 +36,9 @@ inoremap <silent> <S-esc> <esc>:OpenPad<CR>
 noremap <silent>  <esc>:SearchPad<CR>
 
 " To update the date when files are modified
+execute "au! BufEnter" printf("%s*", g:pad_dir) ":let pad_modified = 0"
 execute "au! BufWritePre" printf("%s*", g:pad_dir) ":let pad_modified = eval(&modified)"
-execute "au! BufWritePost" printf("%s*", g:pad_dir) ":py update_pad()"
+execute "au! BufLeave" printf("%s*", g:pad_dir) ":py update_pad()"
 
 python <<EOF
 import vim
@@ -66,6 +67,10 @@ if mru_exclude_files != '':
 else:
 	tail = ''
 vim.command("let MRU_Exclude_Files = '^" + save_dir.replace("~", expanduser("~")) + "*" + tail + "'")
+
+# we forbid writing backups of the notes
+orig_backupskip = vim.eval("&backupskip")
+vim.command("set backupskip=" + ",".join([orig_backupskip, save_dir.replace("~", expanduser("~")) + "*"]))
 
 def get_natural_timestamp(timestamp):
 	f_timestamp = float(int(timestamp)) / 1000000
@@ -218,7 +223,6 @@ def update_pad():
 		new_path = expanduser(save_dir + str(int(time.time() * 1000000)))
 		vim.command("bd")
 		move(old_path, new_path)
-		open_pad(new_path)
 
 @splitbelow
 def list_pads():
