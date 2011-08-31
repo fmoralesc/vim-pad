@@ -24,17 +24,27 @@ endif
 if !exists('g:pad_search_hightlight')
 	let g:pad_search_hightlight = 0
 endif
+if !exists('g:pad_use_leader')
+	let g:pad_use_leader = 0
+endif
 
 command! OpenPad exec 'py open_pad()'
 command! SearchPad exec 'py search_pad()'
 command! ListPads exec 'py list_pads()'
 
-noremap <silent> <C-esc> <esc>:ListPads<CR>
-inoremap <silent> <C-esc> <esc>:ListPads<CR>
-noremap <silent> <S-esc> <esc>:OpenPad<CR>
-inoremap <silent> <S-esc> <esc>:OpenPad<CR>
-noremap <silent>  <esc>:SearchPad<CR>
-
+if g:pad_use_leader
+	noremap <silent> <leader><esc> <esc>:ListPads<CR>
+	inoremap <silent> <leader><esc> <esc>:ListPads<CR>
+	noremap <silent> <leader>\| <esc>:OpenPad<CR>
+	inoremap <silent> <leader>\| <esc>:OpenPad<CR>
+	noremap <silent> <leader><esc><esc> <esc>:SearchPad<CR>
+else
+	noremap <silent> <C-esc> <esc>:ListPads<CR>
+	inoremap <silent> <C-esc> <esc>:ListPads<CR>
+	noremap <silent>  <esc>:OpenPad<CR>
+	inoremap <silent>  <esc>:OpenPad<CR>
+	noremap <silent> <S-esc> <esc>:SearchPad<CR>
+endif
 " To update the date when files are modified
 execute "au! BufEnter" printf("%s*", g:pad_dir) ":let pad_modified = 0"
 execute "au! BufWritePre" printf("%s*", g:pad_dir) ":let pad_modified = eval(&modified)"
