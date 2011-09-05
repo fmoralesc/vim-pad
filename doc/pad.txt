@@ -36,8 +36,9 @@ Also, it keeps the filename issue away by:
   the way most markup styles work (e.g., markdown)
 
 vim-pad doesn't specify a format for your notes. Instead, it uses a default,
-which you can configure, and allows the use of modelines. Modelines aren't show
-in the list of notes.
+which you can configure, and allows the use of modelines. This means that your
+notes can be free-form and adapt to your needs. Modelines aren't shown in the
+list of notes.
 
 *vim-pad-configuration*
 
