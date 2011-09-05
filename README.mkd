@@ -2,55 +2,40 @@
 
 A quick-notetaking plugin for vim.
 
-## Usage
+## Rationale
 
-`:OpenPad` (`<Shift><Escape>`) creates a new note.
+There are many notetaking plugins for vim. Most of them depend on your notes
+having a certain format for the convenience of highlighting stuff like headers,
+lists and links. Also mostly, they don't provide a workflow for your notetaking:
+you need to create manually a file to put your notes on and save it somewhere
+with a name that hopefully makes sense (ever saved a note and then updated its
+contents so the filename no longer applied?). Usually too, taking notes is
+disruptive of whatever you are doing: imagine you're coding and have an idea you
+think you might use afterwards. Ideally, you could just take the note right
+there, without needing to travel to your notes, or cluttering your filesystem.
 
-`:ListPads` (`<Control><Escape>`) lists the notes.
+*vim-pad* tries to solve those issues, by focusing on a definite workflow.
+First, it makes it so you can at any moment (in insert and normal mode):
 
-`:SearchPad` (`<Control>|` [`|` is the key above `<Tab>`]) performs a search
-between the notes. If only one note matches, it is opened.
+- open your notes.
+- search in your notes.
+- create a new note.
 
-When in the lists of `:ListPads` or `:SearchPad`, you can open a note pressing
-`<Enter>` and delete it using `<Del>`. `<Escape>` closes the buffer.
+Also, it keeps the filename issue away by:
 
-When in a note, `<localleader><Del>` will delete it. `<localleader>+m` will ask
-for a filetype and insert a modeline in the file accordingly.
+- naming your files after the time you created them. This makes them unique and
+  allows for easy sorting. The filenames are updated when changes are made in
+  old files, so the date is always equal to the last time you modified your
+  notes.
+- considering the first line of your document as its title. This is in tune with
+  the way most markup styles work (e.g., markdown)
 
-The command maps are available both in normal and insert mode.
+vim-pad doesn't specify a format for your notes. Instead, it uses a default,
+which you can configure, and allows the use of modelines. Modelines aren't show
+in the list of notes.
 
-## Configuration
+## Configuration in Usage
 
-IMPORTANT: set the `g:pad_dir` variable in your .vimrc, to indicate where the
-notes will be saved. The default is:
+In vim, see
 
-    let g:pad_dir = "~/notes/"
-
-The default format for new notes is [`markdown`][markdown]. To change this to
-another format, [`pandoc`][vim-pandoc] for example, put
-
-    let g:pad_format = "pandoc"
-
-in your `.vimrc`. You can also set the individual format of a note by turning
-the first line in the note into a modeline:
-
-	<!-- vim: set ft=vo_base: -->
-
-at the beggining of a file will tell vim to open the file as
-a [VimOutliner][vimoutliner] file. The modeline won't be shown in the list
-view.
-
-The height of the split windows this plugin uses can be set with
-`g:pad_window_height`.
-
-vim-pad can search using either `grep` or `ack` (ack is the default). You can
-set this using the `g:pad_search_backend` variable. By default, the search
-ignores case (adjust `g:pad_search_ignore_case` as desired). Also, by default 
-the search will show only the first matching line in a file. You can disable this
-by setting `g:pad_search_show_only_first` to 0. The search term will be
-highlighted if `g:pad_search_highlight` is set to 1 (the default is not to
-highlight the term).
-
-[markdown]: http://daringfireball.net/projects/markdown/
-[vim-pandoc]: https://github.com/vim-pandoc/vim-pandoc
-[vimoutliner]: http://www.vimoutliner.org/
+	:help vim-pad
