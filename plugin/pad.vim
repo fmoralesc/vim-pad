@@ -3,6 +3,8 @@ if (exists("g:loaded_pad") && g:loaded_pad) || &cp
 endif
 let g:loaded_pad = 1
 
+" Default Settings:
+"
 if !exists('g:pad_dir')
 	let g:pad_dir = "~/notes/"
 endif
@@ -24,27 +26,25 @@ endif
 if !exists('g:pad_search_hightlight')
 	let g:pad_search_hightlight = 0
 endif
-if !exists('g:pad_use_leader')
-	let g:pad_use_leader = 0
-endif
 
+" Commands:
+"
 command! OpenPad exec 'py open_pad()'
 command! SearchPad exec 'py search_pad()'
 command! ListPads exec 'py list_pads()'
 
-if g:pad_use_leader
-	noremap <silent> <leader><esc> <esc>:ListPads<CR>
-	inoremap <silent> <leader><esc> <esc>:ListPads<CR>
-	noremap <silent> <leader>\| <esc>:OpenPad<CR>
-	inoremap <silent> <leader>\| <esc>:OpenPad<CR>
-	noremap <silent> <leader><esc><esc> <esc>:SearchPad<CR>
-else
+" Key Mappings:
+"
+" IMPORTANT: Change this to your linking
+"
+if !exists("g:pad_custom_mappings") || g:pad_custom_mappings = 0
 	noremap <silent> <C-esc> <esc>:ListPads<CR>
 	inoremap <silent> <C-esc> <esc>:ListPads<CR>
 	noremap <silent>  <esc>:OpenPad<CR>
 	inoremap <silent>  <esc>:OpenPad<CR>
 	noremap <silent> <S-esc> <esc>:SearchPad<CR>
 endif
+
 " To update the date when files are modified
 execute "au! BufEnter" printf("%s*", g:pad_dir) ":let pad_modified = 0"
 execute "au! BufWritePre" printf("%s*", g:pad_dir) ":let pad_modified = eval(&modified)"
@@ -128,7 +128,7 @@ def open_pad(path=None, highlight=None):
 	vim.command("map <silent> <buffer> <localleader><delete> :py delete_current_pad()<cr>")
 	vim.command("map <silent> <buffer> <localleader>+m :py add_modeline()<cr>")
 	if search_hightlight and highlight:
-		vim.command('execute "normal /'+ highlight + '/\<CR>"')
+		vim.command('execute "normal! /'+ highlight + '/\<CR>"')
 
 def delete_current_pad():
 	path = vim.current.buffer.name
@@ -185,7 +185,7 @@ def search_pad():
 				lines.append(timestamp + " @" + get_natural_timestamp(timestamp).ljust(19) + " │ "
 							+ lineno + ":" + match + " 「 " + summary + tail)
 			vim.current.buffer.append(lines)
-			vim.command("normal dd")
+			vim.command("normal! dd")
 			vim.command("set nowrap")
 			vim.command("set listchars=extends:◢,precedes:◣")
 			vim.command("set nomodified")

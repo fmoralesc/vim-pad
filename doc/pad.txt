@@ -42,7 +42,12 @@ list of notes.
 
 *vim-pad-configuration*
 
-IMPORTANT: set the *g:pad_dir* variable in your .vimrc, to indicate where the
+IMPORTANT 1: Default keybidings are quite ergonomic in a QWERTY keyboard, but
+they will fail in other layouts. Please check the keybindings before using the
+plugin. To set custom mappings, set *g:pad_custom_mappings* to 1 in your .vimrc
+before defining your new mappings.
+
+IMPORTANT 2: set the *g:pad_dir* variable in your .vimrc, to indicate where the
 notes will be saved. The default is:
 
     let g:pad_dir = "~/notes/"
