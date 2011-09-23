@@ -37,7 +37,7 @@ command! ListPads exec 'py list_pads()'
 "
 " IMPORTANT: Change this to your linking
 "
-if !exists("g:pad_custom_mappings") || g:pad_custom_mappings = 0
+if !exists('g:pad_custom_mappings') || g:pad_custom_mappings == 0
 	noremap <silent> <C-esc> <esc>:ListPads<CR>
 	inoremap <silent> <C-esc> <esc>:ListPads<CR>
 	noremap <silent>  <esc>:OpenPad<CR>
