@@ -56,7 +56,7 @@ import time
 import datetime
 import re
 from os import remove
-from os.path import expanduser, exists
+from os.path import expanduser, exists, basename
 from shutil import move
 from glob import glob
 from subprocess import Popen, PIPE
@@ -165,7 +165,11 @@ def search_pad():
 							split("\n")
 							if line != '']
 		if len(search_results) > 0:
-			vim.command("5new")
+			if vim.eval("bufexists('__pad search__')") == "1":
+				vim.command("bw __pad search__")
+			vim.command("5new __pad search__")
+			vim.command("setlocal buftype=nofile")
+			vim.command("setlocal noswapfile")
 			lines = []
 			for line in reversed(sorted(search_results)): # MRU-style ordering
 				data = line.split(":")
@@ -206,7 +210,7 @@ def search_pad():
 			
 			vim.command('map <buffer> <silent> <enter> :py edit_pad("' + query +'")<cr>')
 			vim.command("map <buffer> <silent> <delete> :py delete_pad()<cr>")
-			vim.command("map <buffer> <silent> <esc> :bd<cr>")
+			vim.command("map <buffer> <silent> <esc> :bw<cr>")
 	
 			vim.command("setlocal nomodifiable")
 			if len(search_results) == 1:
@@ -238,7 +242,11 @@ def update_pad():
 def list_pads():
 	pad_files = [path.replace(expanduser(save_dir), "") for path in glob(expanduser(save_dir) + "*")]
 	if len(pad_files) > 0:
-		vim.command(window_height + "new")
+		if vim.eval("bufexists('__pad__')") == "1":
+			vim.command("bw __pad__")
+		vim.command(window_height + "new __pad__")
+		vim.command("setlocal buftype=nofile")
+		vim.command("setlocal noswapfile")
 		lines = []
 		for pad in pad_files:
 			with open(expanduser(save_dir) + pad) as pad_file:
@@ -289,7 +297,7 @@ def list_pads():
 		vim.command('hi! link PadNewLine Comment')
 		vim.command("map <buffer> <silent> <enter> :py edit_pad()<cr>")
 		vim.command("map <buffer> <silent> <delete> :py delete_pad()<cr>")
-		vim.command("map <buffer> <silent> <esc> :bd<cr>")
+		vim.command("map <buffer> <silent> <esc> :bw<cr>")
 	else:
 		print "no pads"
 EOF
