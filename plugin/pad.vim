@@ -189,6 +189,7 @@ class Pad(object):
 			lines.append(pad + " @" + get_natural_timestamp(pad).ljust(19) + " │ " + head + summary + tail)
 		vim.current.buffer.append(list(reversed(sorted(lines))))
 		vim.command("normal dd")
+		vim.command("setlocal nomodifiable")
 	
 	def list_pads(self):
 		pad_files = self.get_filelist()
@@ -228,10 +229,12 @@ class Pad(object):
 			except:
 				if list(raw_char) == ['\x80', 'k', 'b']:
 					query = query[:-1]
+			vim.command("setlocal modifiable")
 			pad_files = self.get_filelist(query)
 			if pad_files != []:
 				self.fill_list(pad_files)
 			else:
+				vim.command("redraw!")
 				break
 			vim.command("redraw")
 			vim.command('echo ">> ' + query + '"')
