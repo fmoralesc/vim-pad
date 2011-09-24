@@ -23,9 +23,6 @@ endif
 if !exists('g:pad_search_show_only_first')
 	let g:pad_search_show_only_first = 1
 endif
-if !exists('g:pad_search_hightlight')
-	let g:pad_search_hightlight = 0
-endif
 
 " Commands:
 "
@@ -94,7 +91,6 @@ class Pad(object):
 		self.search_backend = vim.eval("g:pad_search_backend")
 		self.ignore_case = bool(int((vim.eval("g:pad_search_ignorecase"))))
 		self.only_first = bool(int(vim.eval("g:pad_search_show_only_first")))
-		self.search_highlight = bool(int(vim.eval("g:pad_search_hightlight")))
 
 		# vim-pad pollutes the MRU.vim list quite a lot, if let alone.
 		# This should fix that.
@@ -118,7 +114,7 @@ class Pad(object):
 			vim.command("bd")
 			move(old_path, new_path)
 
-	def open_pad(self, path=None, highlight=None):
+	def open_pad(self, path=None):
 		if not path:
 			path = self.save_dir + str(int(time.time() * 1000000))
 		vim.command("botright" + self.window_height + "split " + path)
@@ -126,8 +122,6 @@ class Pad(object):
 			vim.command("set filetype=" + self.filetype)
 		vim.command("noremap <silent> <buffer> <localleader><delete> :py delete_current_pad()<cr>")
 		vim.command("noremap <silent> <buffer> <localleader>+m :py add_modeline()<cr>")
-		if self.search_highlight and highlight:
-			vim.command('execute "normal! /'+ highlight + '/\<CR>"')
 
 	def delete_current_pad(self):
 		path = vim.current.buffer.name
@@ -149,6 +143,19 @@ class Pad(object):
 	def get_filelist(self, query=None):
 		if not query or query == "":
 			return [path.replace(expanduser(self.save_dir), "") for path in glob(expanduser(self.save_dir) + "*")]
+		else:
+			if self.search_backend == "grep":
+				command = ["grep", "-n", "-r", query, expanduser(self.save_dir)]
+			elif self.search_backend == "ack":
+				command = ["/usr/bin/vendor_perl/ack", query, expanduser(self.save_dir), "--type=text"]
+			if self.ignore_case:
+				command.append("-i")
+			if self.only_first:
+				command.append("--max-count=1")
+			search_results = [line.split(":")[0] for line in Popen(command, stdout=PIPE, stderr=PIPE).communicate()[0].\
+												replace(expanduser(self.save_dir), "").\
+												split("\n")	if line != '']	
+			return reversed(sorted(search_results))
 	
 	def fill_list(self, files):
 		del vim.current.buffer[:] # clear the buffer
@@ -194,10 +201,10 @@ class Pad(object):
 		else:
 			print "no pads"
 
-	def edit_pad(self, highlight=None):
+	def edit_pad(self):
 		path = self.save_dir + vim.current.line.split(" @")[0]
 		vim.command("bd")
-		self.open_pad(path, highlight)
+		self.open_pad(path)
 
 	def delete_pad(self):
 		confirm = vim.eval('input("really delete? (Y/n): ")')
@@ -207,7 +214,9 @@ class Pad(object):
 			vim.command("bd")
 
 	def search_inplace(self):
-		print "search in place"
+		query = vim.eval('input(">>")')
+		pad_files = self.get_filelist(query)
+		self.fill_list(pad_files)
 
 pad = Pad()
 EOF
