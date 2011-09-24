@@ -155,7 +155,7 @@ class Pad(object):
 			search_results = [line.split(":")[0] for line in Popen(command, stdout=PIPE, stderr=PIPE).communicate()[0].\
 												replace(expanduser(self.save_dir), "").\
 												split("\n")	if line != '']	
-			return reversed(sorted(search_results))
+			return list(reversed(sorted(search_results)))
 	
 	def fill_list(self, files):
 		del vim.current.buffer[:] # clear the buffer
@@ -213,10 +213,29 @@ class Pad(object):
 			remove(path)
 			vim.command("bd")
 
-	def search_inplace(self):
-		query = vim.eval('input(">>")')
-		pad_files = self.get_filelist(query)
-		self.fill_list(pad_files)
-
+	def incremental_search(self):
+		query = ""
+		vim.command('echo ">> "')
+		while True:
+			raw_char = vim.eval("getchar()")
+			try:
+				char = int(raw_char)
+				if char == 13: # <Enter>
+					break
+				elif char == 27: # <Esc>
+					break
+				else:
+					query = query + vim.eval("nr2char(" + str(char) + ")")
+			except:
+				if list(raw_char) == ['\x80', 'k', 'b']:
+					query = query[:-1]
+			pad_files = self.get_filelist(query)
+			if pad_files != []:
+				self.fill_list(pad_files)
+			else:
+				break
+			vim.command("redraw")
+			vim.command('echo ">> ' + query + '"')
+		vim.command("redraw")
 pad = Pad()
 EOF
