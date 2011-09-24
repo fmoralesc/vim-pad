@@ -1,7 +1,7 @@
 if (exists("g:loaded_pad") && g:loaded_pad) || &cp
     finish
 endif
-let g:loaded_pad = 1
+let g:loaded_pad = 0
 
 " Default Settings:
 "
@@ -29,9 +29,8 @@ endif
 
 " Commands:
 "
-command! OpenPad exec 'py open_pad()'
-command! SearchPad exec 'py search_pad()'
-command! ListPads exec 'py list_pads()'
+command! OpenPad exec 'py pad.open_pad()'
+command! ListPads exec 'py pad.list_pads()'
 
 " Key Mappings:
 "
@@ -42,13 +41,12 @@ if !exists('g:pad_custom_mappings') || g:pad_custom_mappings == 0
 	inoremap <silent> <C-esc> <esc>:ListPads<CR>
 	noremap <silent>  <esc>:OpenPad<CR>
 	inoremap <silent>  <esc>:OpenPad<CR>
-	noremap <silent> <S-esc> <esc>:SearchPad<CR>
 endif
 
 " To update the date when files are modified
-execute "au! BufEnter" printf("%s*", g:pad_dir) ":let pad_modified = 0"
-execute "au! BufWritePre" printf("%s*", g:pad_dir) ":let pad_modified = eval(&modified)"
-execute "au! BufLeave" printf("%s*", g:pad_dir) ":py update_pad()"
+execute "au! BufEnter" printf("%s*", g:pad_dir) ":let b:pad_modified = 0"
+execute "au! BufWritePre" printf("%s*", g:pad_dir) ":let b:pad_modified = eval(&modified)"
+execute "au! BufLeave" printf("%s*", g:pad_dir) ":py pad.update_pad()"
 
 python <<EOF
 import vim
@@ -60,27 +58,6 @@ from os.path import expanduser, exists, basename
 from shutil import move
 from glob import glob
 from subprocess import Popen, PIPE
-
-save_dir = vim.eval("g:pad_dir")
-filetype = vim.eval("g:pad_format")
-window_height = str(vim.eval("g:pad_window_height"))
-search_backend = vim.eval("g:pad_search_backend")
-ignore_case = bool(int((vim.eval("g:pad_search_ignorecase"))))
-only_first = bool(int(vim.eval("g:pad_search_show_only_first")))
-search_hightlight = bool(int(vim.eval("g:pad_search_hightlight")))
-
-# vim-pad pollutes the MRU.vim list quite a lot, if let alone.
-# This should fix that.
-mru_exclude_files = vim.eval("MRU_Exclude_Files")
-if mru_exclude_files != '':
-	tail = "\|" + mru_exclude_files
-else:
-	tail = ''
-vim.command("let MRU_Exclude_Files = '^" + save_dir.replace("~", expanduser("~")) + "*" + tail + "'")
-
-# we forbid writing backups of the notes
-orig_backupskip = vim.eval("&backupskip")
-vim.command("set backupskip=" + ",".join([orig_backupskip, save_dir.replace("~", expanduser("~")) + "*"]))
 
 def get_natural_timestamp(timestamp):
 	f_timestamp = float(int(timestamp)) / 1000000
@@ -118,140 +95,77 @@ def splitbelow(fun):
 			vim.command("set nosplitbelow")
 	return new
 
-@splitbelow
-def open_pad(path=None, highlight=None):
-	if not path:
-		path = save_dir + str(int(time.time() * 1000000))
-	vim.command(window_height + "split " + path)
-	if vim.eval('&filetype') in ('', 'conf'):
-		vim.command("set filetype=" + filetype)
-	vim.command("noremap <silent> <buffer> <localleader><delete> :py delete_current_pad()<cr>")
-	vim.command("noremap <silent> <buffer> <localleader>+m :py add_modeline()<cr>")
-	if search_hightlight and highlight:
-		vim.command('execute "normal! /'+ highlight + '/\<CR>"')
+# actually, we use this mainly as a namespace of sorts
+class Pad(object):
+	def __init__(self):
+		self.save_dir = vim.eval("g:pad_dir")
+		self.filetype = vim.eval("g:pad_format")
+		self.window_height = str(vim.eval("g:pad_window_height"))
+		self.search_backend = vim.eval("g:pad_search_backend")
+		self.ignore_case = bool(int((vim.eval("g:pad_search_ignorecase"))))
+		self.only_first = bool(int(vim.eval("g:pad_search_show_only_first")))
+		self.search_highlight = bool(int(vim.eval("g:pad_search_hightlight")))
 
-def delete_current_pad():
-	path = vim.current.buffer.name
-	if exists(path):
-		confirm = vim.eval('input("really delete? (Y/n): ")')
-		if confirm in ("y", "Y"):
-			remove(path)
-			vim.command("bd!")
-			vim.command("unmap <leader><delete>")
-
-def add_modeline():
-	mode = vim.eval('input("filetype: ", "", "filetype")')
-	if mode:
-		vim.current.buffer[0] = "<!-- vim: set ft=" + mode + ": -->"
-		ft = re.search("ft=.*(?=:)", vim.current.line).group().split("=")[1]
-		vim.command("set filetype=" + ft)
-		vim.command("set nomodified")
-
-@splitbelow
-def search_pad():
-	query = vim.eval('input("pad-search: ")')
-	if query:
-		if search_backend == "grep":
-			command = ["grep", "-n",  "-r", query, expanduser(save_dir)]
-		elif search_backend == "ack":
-			command = ["/usr/bin/vendor_perl/ack", query, expanduser(save_dir), "--type=text"]
-		if ignore_case:
-			command.append("-i")
-		if only_first:
-			command.append("--max-count=1")
-		search_results = [line for line in Popen(command,
-							stdout=PIPE, stderr=PIPE).communicate()[0].\
-							replace(expanduser(save_dir), "").\
-							split("\n")
-							if line != '']
-		if len(search_results) > 0:
-			if vim.eval("bufexists('__pad search__')") == "1":
-				vim.command("bw __pad search__")
-			vim.command("5new __pad search__")
-			vim.command("setlocal buftype=nofile")
-			vim.command("setlocal noswapfile")
-			lines = []
-			for line in reversed(sorted(search_results)): # MRU-style ordering
-				data = line.split(":")
-				timestamp, lineno, match = data[0], data[1], ":".join(data[2:])
-				
-				with open(expanduser(save_dir) + timestamp) as pad_file:
-					file_data = pad_file.read(200).split("\n")
-				if re.match("^.* vim: set .*:.*$", file_data[0]): #we have a modeline
-					file_data = file_data[1:]
-				summary = file_data[0].strip()
-				if summary[0] in ("%", "#"): #pandoc and markdown titles
-					summary = "".join(summary[1:]).strip()
-				tail = ''
-				if file_data[1:]:
-					tail = "…"
-
-				lines.append(timestamp + " @" + get_natural_timestamp(timestamp).ljust(19) + " │ "
-							+ lineno + ":" + match + " 「 " + summary + tail)
-			vim.current.buffer.append(lines)
-			vim.command("normal! dd")
-			vim.command("set nowrap")
-			vim.command("set listchars=extends:◢,precedes:◣")
-			vim.command("set nomodified")
-			vim.command("setlocal conceallevel=2")
-			vim.command('setlocal concealcursor=nc')
-			vim.command('syn match PadTimestamp /^.\{-}│/ contains=PadName')
-			vim.command('syn match PadName /^.\{-}@/ contained conceal cchar=@')
-			vim.command('syn match PadLineno / \d*:/')
-			vim.command(r'syn match PadHashTag /\(@\|#\)\a\+/')
-			vim.command('syn match PadSummary /「.*$/hs=s+1 contains=PadHashTag')
-			vim.command('syn match PadQuery /'+ query + '/')
-			vim.command('hi! link PadTimestamp Comment')
-			vim.command('hi! link PadLineno Number')
-			vim.command('hi! PadSummary gui=bold')
-			vim.command('hi! link PadHashTag Identifier')
-			vim.command('hi! link PadQuery Search')
-			vim.command('hi! link Conceal PadTimestamp')
-			
-			vim.command('noremap <buffer> <silent> <enter> :py edit_pad("' + query +'")<cr>')
-			vim.command("noremap <buffer> <silent> <delete> :py delete_pad()<cr>")
-			vim.command("noremap <buffer> <silent> <esc> :bw<cr>")
-	
-			vim.command("setlocal nomodifiable")
-			if len(search_results) == 1:
-				edit_pad(query)
+		# vim-pad pollutes the MRU.vim list quite a lot, if let alone.
+		# This should fix that.
+		mru_exclude_files = vim.eval("MRU_Exclude_Files")
+		if mru_exclude_files != '':
+			tail = "\|" + mru_exclude_files
 		else:
-			print "no matches found"
+			tail = ''
+		vim.command("let MRU_Exclude_Files = '^" + self.save_dir.replace("~", expanduser("~")) + "*" + tail + "'")
 
-def edit_pad(highlight=None):
-	path = save_dir + vim.current.line.split(" @")[0]
-	vim.command("bd")
-	open_pad(path, highlight)
+		# we forbid writing backups of the notes
+		orig_backupskip = vim.eval("&backupskip")
+		vim.command("set backupskip=" + ",".join([orig_backupskip, self.save_dir.replace("~", expanduser("~")) + "*"]))
 
-def delete_pad():
-	confirm = vim.eval('input("really delete? (Y/n): ")')
-	if confirm in ("y", "Y"):
-		path = expanduser(save_dir) + vim.current.line.split(" @")[0]
-		remove(path)
-		vim.command("bd")
 
-def update_pad():
-	modified = bool(int(vim.eval("pad_modified")))
-	if modified:
-		old_path = expanduser(vim.current.buffer.name)
-		new_path = expanduser(save_dir + str(int(time.time() * 1000000)))
-		vim.command("bd")
-		move(old_path, new_path)
+	def update_pad(self):
+		modified = bool(int(vim.eval("b:pad_modified")))
+		if modified:
+			old_path = expanduser(vim.current.buffer.name)
+			new_path = expanduser(self.save_dir + str(int(time.time() * 1000000)))
+			vim.command("bd")
+			move(old_path, new_path)
 
-@splitbelow
-def list_pads():
-	pad_files = [path.replace(expanduser(save_dir), "") for path in glob(expanduser(save_dir) + "*")]
-	if len(pad_files) > 0:
-		if vim.eval("bufexists('__pad__')") == "1":
-			vim.command("bw __pad__")
-		vim.command(window_height + "new __pad__")
-		vim.command("setlocal buftype=nofile")
-		vim.command("setlocal noswapfile")
+	@splitbelow
+	def open_pad(self, path=None, highlight=None):
+		if not path:
+			path = self.save_dir + str(int(time.time() * 1000000))
+		vim.command(self.window_height + "split " + path)
+		if vim.eval('&filetype') in ('', 'conf'):
+			vim.command("set filetype=" + self.filetype)
+		vim.command("noremap <silent> <buffer> <localleader><delete> :py delete_current_pad()<cr>")
+		vim.command("noremap <silent> <buffer> <localleader>+m :py add_modeline()<cr>")
+		if self.search_highlight and highlight:
+			vim.command('execute "normal! /'+ highlight + '/\<CR>"')
+
+	def delete_current_pad(self):
+		path = vim.current.buffer.name
+		if exists(path):
+			confirm = vim.eval('input("really delete? (Y/n): ")')
+			if confirm in ("y", "Y"):
+				remove(path)
+				vim.command("bd!")
+				vim.command("unmap <leader><delete>")
+
+	def add_modeline(self):
+		mode = vim.eval('input("filetype: ", "", "filetype")')
+		if mode:
+			vim.current.buffer[0] = "<!-- vim: set ft=" + mode + ": -->"
+			ft = re.search("ft=.*(?=:)", vim.current.line).group().split("=")[1]
+			vim.command("set filetype=" + ft)
+			vim.command("set nomodified")
+
+	def get_filelist(self, query=None):
+		if not query or query == "":
+			return [path.replace(expanduser(self.save_dir), "") for path in glob(expanduser(self.save_dir) + "*")]
+	
+	def fill_list(self, files):
 		lines = []
-		for pad in pad_files:
-			with open(expanduser(save_dir) + pad) as pad_file:
+		for pad in files:
+			with open(expanduser(self.save_dir) + pad) as pad_file:
 				data = pad_file.read(200).split("\n")
-			
 			head = ''
 			if re.match("^.* vim: set .*:.*$", data[0]): #we have a modeline
 				ft = re.search("ft=.*(?=:)", data[0]).group().split("=")[1]
@@ -278,26 +192,85 @@ def list_pads():
 			lines.append(pad + " @" + get_natural_timestamp(pad).ljust(19) + " │ " + head + summary + tail)
 		vim.current.buffer.append(list(reversed(sorted(lines))))
 		vim.command("normal dd")
-		vim.command("set nowrap")
-		vim.command("set listchars=extends:◢,precedes:◣")
-		vim.command("set nomodified")
-		vim.command("setlocal conceallevel=2")
-		vim.command('setlocal concealcursor=nc')
-		vim.command('syn match PadTimestamp /^.\{-}│/ contains=PadName')
-		vim.command('syn match PadName /^.\{-}@/ contained conceal cchar=@')
-		vim.command('syn match PadNewLine /\%u21b2/' )
-		vim.command('syn match PadFT /\%u25aa.*\%u25aa/')
-		vim.command(r'syn match PadHashTag /\(@\|#\)\a\+/')
-		vim.command('syn region PadSummary start=/│\@<= /hs=s+1 end=/\(\%u21b2\|$\)\@=/ contains=PadHashTag,PadFT')
-		vim.command('hi! link PadTimestamp Comment')
-		vim.command('hi! link Conceal PadTimestamp')
-		vim.command('hi! link PadHashTag Identifier')
-		vim.command('hi! link PadFT Type')
-		vim.command('hi! PadSummary gui=bold')
-		vim.command('hi! link PadNewLine Comment')
-		vim.command("noremap <buffer> <silent> <enter> :py edit_pad()<cr>")
-		vim.command("noremap <buffer> <silent> <delete> :py delete_pad()<cr>")
-		vim.command("noremap <buffer> <silent> <esc> :bw<cr>")
-	else:
-		print "no pads"
+	
+	@splitbelow
+	def list_pads(self):
+		pad_files = self.get_filelist()
+		if len(pad_files) > 0:
+			if vim.eval("bufexists('__pad__')") == "1":
+				vim.command("bw __pad__")
+			vim.command(self.window_height + "new __pad__")
+			vim.command("setlocal buftype=nofile")
+			vim.command("setlocal noswapfile")
+			lines = []
+			for pad in pad_files:
+				with open(expanduser(self.save_dir) + pad) as pad_file:
+					data = pad_file.read(200).split("\n")
+				
+				head = ''
+				if re.match("^.* vim: set .*:.*$", data[0]): #we have a modeline
+					ft = re.search("ft=.*(?=:)", data[0]).group().split("=")[1]
+					if ft == "vo_base":
+						ft = "vo"
+					elif ft == "pandoc":
+						ft = "pd"
+					elif ft == "markdown":
+						ft = "md"
+					head = '▪' + ft + '▪ '
+					data = data[1:] #we discard it
+				
+				summary = data[0].strip()
+				if summary[0] in ("%", "#"): #pandoc and markdown titles
+					summary = "".join(summary[1:]).strip()
+				
+				body = "\n".join([line.strip() for line in data[1:] if line != '']).\
+						replace("\n", u'\u21b2 '.encode('utf-8'))
+				
+				tail = ''
+				if data[1:] != ['']:
+					tail = u'\u21b2'.encode('utf-8') + ' ' +  body
+
+				lines.append(pad + " @" + get_natural_timestamp(pad).ljust(19) + " │ " + head + summary + tail)
+			vim.current.buffer.append(list(reversed(sorted(lines))))
+			vim.command("normal dd")
+			vim.command("set nowrap")
+			vim.command("set listchars=extends:◢,precedes:◣")
+			vim.command("set nomodified")
+			vim.command("setlocal conceallevel=2")
+			vim.command('setlocal concealcursor=nc')
+			vim.command('syn match PadTimestamp /^.\{-}│/ contains=PadName')
+			vim.command('syn match PadName /^.\{-}@/ contained conceal cchar=@')
+			vim.command('syn match PadNewLine /\%u21b2/' )
+			vim.command('syn match PadFT /\%u25aa.*\%u25aa/')
+			vim.command('syn match PadHashTag /\(@\|#\)\\a\+/')
+			vim.command('syn region PadSummary start=/│\@<= /hs=s+1 end=/\(\%u21b2\|$\)\@=/ contains=PadHashTag,PadFT')
+			vim.command('hi! link PadTimestamp Comment')
+			vim.command('hi! link Conceal PadTimestamp')
+			vim.command('hi! link PadHashTag Identifier')
+			vim.command('hi! link PadFT Type')
+			vim.command('hi! PadSummary gui=bold')
+			vim.command('hi! link PadNewLine Comment')
+			vim.command("noremap <buffer> <silent> <enter> :py pad.edit_pad()<cr>")
+			vim.command("noremap <buffer> <silent> <delete> :py pad.delete_pad()<cr>")
+			vim.command("noremap <buffer> <silent> <esc> :bw<cr>")
+			vim.command("noremap <buffer> <silent> <C-f> :py pad.search_inplace()<cr>")
+		else:
+			print "no pads"
+
+	def edit_pad(self, highlight=None):
+		path = self.save_dir + vim.current.line.split(" @")[0]
+		vim.command("bd")
+		self.open_pad(path, highlight)
+
+	def delete_pad(self):
+		confirm = vim.eval('input("really delete? (Y/n): ")')
+		if confirm in ("y", "Y"):
+			path = expanduser(self.save_dir) + vim.current.line.split(" @")[0]
+			remove(path)
+			vim.command("bd")
+
+	def search_inplace(self):
+		print "search in place"
+
+pad = Pad()
 EOF
