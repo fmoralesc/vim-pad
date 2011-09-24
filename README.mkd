@@ -2,6 +2,9 @@
 
 A quick-notetaking plugin for vim.
 
+![screen 1](http://i.minus.com/ivZwNLoxgbRbm.png)
+![screen 2](http://i.minus.com/i4B9vW0CpdXuN.png)
+
 ## Rationale
 
 There are many notetaking plugins for vim. Most of them depend on your notes
