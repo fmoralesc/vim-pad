@@ -72,9 +72,7 @@ vim-pad can search using either `grep` or `ack` (ack is the default). You can
 set this using the *g:pad_search_backend* variable. By default, the search
 ignores case (adjust *g:pad_search_ignore_case* as desired). Also, by default
 the search will show only the first matching line in a file. You can disable
-this by setting *g:pad_search_show_only_first* to 0. The search term will be
-highlighted if *g:pad_search_highlight* is set to 1 (the default is not to
-highlight the term).
+this by setting *g:pad_search_show_only_first* to 0.
 
 *vim-pad-global-commands*
 
@@ -82,13 +80,11 @@ highlight the term).
 
 - *:ListPads* (`<Control><Escape>`) lists the notes.
 
-- *:SearchPad* (`<Control>|` [`|` is the key above `<Tab>`]) performs a search
-between the notes. If only one note matches, it is opened.
-
 *vim-pad-local-commands*
 
-When in the lists of `:ListPads` or `:SearchPad`, you can open a note pressing
-`<Enter>` and delete it using `<Del>`. `<Escape>` closes the buffer.
+When in the buffer cretaed by `:ListPads`, you can open a note pressing
+`<Enter>` and delete it using `<Del>`. `<Escape>` closes the buffer. Also, you
+can search among your notes using <Shift-F>. This will update the buffer in real time.
 
 When in a note, `<localleader><Del>` will delete it. `<localleader>+m` will ask
 for a filetype and insert a modeline in the file accordingly.

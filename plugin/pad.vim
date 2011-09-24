@@ -36,8 +36,8 @@ command! ListPads exec 'py pad.list_pads()'
 if !exists('g:pad_custom_mappings') || g:pad_custom_mappings == 0
 	noremap <silent> <C-esc> <esc>:ListPads<CR>
 	inoremap <silent> <C-esc> <esc>:ListPads<CR>
-	noremap <silent>  <esc>:OpenPad<CR>
-	inoremap <silent>  <esc>:OpenPad<CR>
+	noremap <silent> <S-esc> <esc>:OpenPad<CR>
+	inoremap <silent> <S-esc> <esc>:OpenPad<CR>
 endif
 
 " To update the date when files are modified
