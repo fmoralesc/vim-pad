@@ -1,7 +1,12 @@
+" File:			pad.vim
+" Description:	Quick-notetaking for vim.
+" Author:		Felipe Morales
+" Version:		0.3
+
 if (exists("g:loaded_pad") && g:loaded_pad) || &cp
     finish
 endif
-let g:loaded_pad = 0
+let g:loaded_pad = 1
 
 " Default Settings:
 "
@@ -233,11 +238,12 @@ class Pad(object):
 			pad_files = self.get_filelist(query)
 			if pad_files != []:
 				self.fill_list(pad_files)
+				vim.command("redraw")
+				vim.command('echo ">> ' + query + '"')
 			else:
-				vim.command("redraw!")
-				break
-			vim.command("redraw")
-			vim.command('echo ">> ' + query + '"')
+				del vim.current.buffer[:]
+				vim.command("redraw")
+				vim.command('echo ">> [NOT FOUND] ' + query + '"')
 
 pad = Pad()
 EOF
