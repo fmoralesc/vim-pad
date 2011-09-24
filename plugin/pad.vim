@@ -220,9 +220,8 @@ class Pad(object):
 			raw_char = vim.eval("getchar()")
 			try:
 				char = int(raw_char)
-				if char == 13: # <Enter>
-					break
-				elif char == 27: # <Esc>
+				if char in (13, 27): # <Enter>
+					vim.command("redraw!")
 					break
 				else:
 					query = query + vim.eval("nr2char(" + str(char) + ")")
@@ -236,6 +235,6 @@ class Pad(object):
 				break
 			vim.command("redraw")
 			vim.command('echo ">> ' + query + '"')
-		vim.command("redraw")
+
 pad = Pad()
 EOF
