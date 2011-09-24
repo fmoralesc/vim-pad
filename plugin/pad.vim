@@ -125,8 +125,8 @@ def open_pad(path=None, highlight=None):
 	vim.command(window_height + "split " + path)
 	if vim.eval('&filetype') in ('', 'conf'):
 		vim.command("set filetype=" + filetype)
-	vim.command("map <silent> <buffer> <localleader><delete> :py delete_current_pad()<cr>")
-	vim.command("map <silent> <buffer> <localleader>+m :py add_modeline()<cr>")
+	vim.command("noremap <silent> <buffer> <localleader><delete> :py delete_current_pad()<cr>")
+	vim.command("noremap <silent> <buffer> <localleader>+m :py add_modeline()<cr>")
 	if search_hightlight and highlight:
 		vim.command('execute "normal! /'+ highlight + '/\<CR>"')
 
@@ -208,9 +208,9 @@ def search_pad():
 			vim.command('hi! link PadQuery Search')
 			vim.command('hi! link Conceal PadTimestamp')
 			
-			vim.command('map <buffer> <silent> <enter> :py edit_pad("' + query +'")<cr>')
-			vim.command("map <buffer> <silent> <delete> :py delete_pad()<cr>")
-			vim.command("map <buffer> <silent> <esc> :bw<cr>")
+			vim.command('noremap <buffer> <silent> <enter> :py edit_pad("' + query +'")<cr>')
+			vim.command("noremap <buffer> <silent> <delete> :py delete_pad()<cr>")
+			vim.command("noremap <buffer> <silent> <esc> :bw<cr>")
 	
 			vim.command("setlocal nomodifiable")
 			if len(search_results) == 1:
@@ -295,9 +295,9 @@ def list_pads():
 		vim.command('hi! link PadFT Type')
 		vim.command('hi! PadSummary gui=bold')
 		vim.command('hi! link PadNewLine Comment')
-		vim.command("map <buffer> <silent> <enter> :py edit_pad()<cr>")
-		vim.command("map <buffer> <silent> <delete> :py delete_pad()<cr>")
-		vim.command("map <buffer> <silent> <esc> :bw<cr>")
+		vim.command("noremap <buffer> <silent> <enter> :py edit_pad()<cr>")
+		vim.command("noremap <buffer> <silent> <delete> :py delete_pad()<cr>")
+		vim.command("noremap <buffer> <silent> <esc> :bw<cr>")
 	else:
 		print "no pads"
 EOF
