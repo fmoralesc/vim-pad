@@ -85,16 +85,6 @@ def get_natural_timestamp(timestamp):
 		else:
 			return str(hours) + "h ago"
 
-def splitbelow(fun):
-	def new(*args):
-		splitbelow = bool(int(vim.eval("&splitbelow")))
-		if not splitbelow:
-			vim.command("set splitbelow")
-		fun(*args)
-		if not splitbelow:
-			vim.command("set nosplitbelow")
-	return new
-
 # actually, we use this mainly as a namespace of sorts
 class Pad(object):
 	def __init__(self):
@@ -128,11 +118,10 @@ class Pad(object):
 			vim.command("bd")
 			move(old_path, new_path)
 
-	@splitbelow
 	def open_pad(self, path=None, highlight=None):
 		if not path:
 			path = self.save_dir + str(int(time.time() * 1000000))
-		vim.command(self.window_height + "split " + path)
+		vim.command("botright" + self.window_height + "split " + path)
 		if vim.eval('&filetype') in ('', 'conf'):
 			vim.command("set filetype=" + self.filetype)
 		vim.command("noremap <silent> <buffer> <localleader><delete> :py delete_current_pad()<cr>")
@@ -162,6 +151,7 @@ class Pad(object):
 			return [path.replace(expanduser(self.save_dir), "") for path in glob(expanduser(self.save_dir) + "*")]
 	
 	def fill_list(self, files):
+		del vim.current.buffer[:] # clear the buffer
 		lines = []
 		for pad in files:
 			with open(expanduser(self.save_dir) + pad) as pad_file:
@@ -193,46 +183,15 @@ class Pad(object):
 		vim.current.buffer.append(list(reversed(sorted(lines))))
 		vim.command("normal dd")
 	
-	@splitbelow
 	def list_pads(self):
 		pad_files = self.get_filelist()
 		if len(pad_files) > 0:
 			if vim.eval("bufexists('__pad__')") == "1":
 				vim.command("bw __pad__")
-			vim.command(self.window_height + "new __pad__")
+			vim.command("silent! botright " + self.window_height + "new __pad__")
+			self.fill_list(pad_files)
 			vim.command("setlocal buftype=nofile")
 			vim.command("setlocal noswapfile")
-			lines = []
-			for pad in pad_files:
-				with open(expanduser(self.save_dir) + pad) as pad_file:
-					data = pad_file.read(200).split("\n")
-				
-				head = ''
-				if re.match("^.* vim: set .*:.*$", data[0]): #we have a modeline
-					ft = re.search("ft=.*(?=:)", data[0]).group().split("=")[1]
-					if ft == "vo_base":
-						ft = "vo"
-					elif ft == "pandoc":
-						ft = "pd"
-					elif ft == "markdown":
-						ft = "md"
-					head = '▪' + ft + '▪ '
-					data = data[1:] #we discard it
-				
-				summary = data[0].strip()
-				if summary[0] in ("%", "#"): #pandoc and markdown titles
-					summary = "".join(summary[1:]).strip()
-				
-				body = "\n".join([line.strip() for line in data[1:] if line != '']).\
-						replace("\n", u'\u21b2 '.encode('utf-8'))
-				
-				tail = ''
-				if data[1:] != ['']:
-					tail = u'\u21b2'.encode('utf-8') + ' ' +  body
-
-				lines.append(pad + " @" + get_natural_timestamp(pad).ljust(19) + " │ " + head + summary + tail)
-			vim.current.buffer.append(list(reversed(sorted(lines))))
-			vim.command("normal dd")
 			vim.command("set nowrap")
 			vim.command("set listchars=extends:◢,precedes:◣")
 			vim.command("set nomodified")
