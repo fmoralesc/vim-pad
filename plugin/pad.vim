@@ -238,12 +238,12 @@ class Pad(object):
 			pad_files = self.get_filelist(query)
 			if pad_files != []:
 				self.fill_list(pad_files)
-				vim.command("redraw")
-				vim.command('echo ">> ' + query + '"')
+				info = ""
 			else:
 				del vim.current.buffer[:]
-				vim.command("redraw")
-				vim.command('echo ">> [NOT FOUND] ' + query + '"')
+				info = "[NOT FOUND] "
+			vim.command("redraw")
+			vim.command('echo ">> ' + info + query + '"')
 
 pad = Pad()
 EOF

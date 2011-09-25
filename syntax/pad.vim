@@ -1,5 +1,5 @@
 syn match PadTimestamp /^.\{-}│/ contains=PadName
-syn match PadName /^.\{-}@/ contained conceal cchar=@
+syn match PadName /^.\{-}@/ contained conceal
 syn match PadNewLine /\%u21b2/
 syn match PadFT /\%u25aa.*\%u25aa/
 syn match PadHashTag /\(@\|#\)\a\+/
