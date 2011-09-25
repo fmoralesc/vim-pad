@@ -32,7 +32,7 @@ endif
 " Commands:
 "
 command! OpenPad exec 'py pad.open_pad()'
-command! ListPads exec 'py pad.list_pads()'
+command! -nargs=? ListPads exec 'py pad.list_pads("<args>")'
 
 " Key Mappings:
 "
@@ -196,8 +196,8 @@ class Pad(object):
 		vim.command("normal dd")
 		vim.command("setlocal nomodifiable")
 	
-	def list_pads(self):
-		pad_files = self.get_filelist()
+	def list_pads(self, query):
+		pad_files = self.get_filelist(query)
 		if len(pad_files) > 0:
 			if vim.eval("bufexists('__pad__')") == "1":
 				vim.command("bw __pad__")

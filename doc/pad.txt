@@ -78,7 +78,8 @@ this by setting *g:pad_search_show_only_first* to 0.
 
 - *:OpenPad* (`<Shift><Escape>`) creates a new note.
 
-- *:ListPads* (`<Control><Escape>`) lists the notes.
+- *:ListPads* (`<Control><Escape>`) lists the notes. You can pass a string to this 
+command if you want to filter the notes.
 
 *vim-pad-local-commands*
 
