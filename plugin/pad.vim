@@ -224,24 +224,27 @@ class Pad(object):
 		vim.command('echo ">> "')
 		while True:
 			raw_char = vim.eval("getchar()")
-			try:
-				char = int(raw_char)
-				if char in (13, 27): # <Enter>
-					vim.command("redraw!")
-					break
-				else:
-					query = query + vim.eval("nr2char(" + str(char) + ")")
-			except:
-				if list(raw_char) == ['\x80', 'k', 'b']:
-					query = query[:-1]
+			if raw_char in ("13", "27"):
+				vim.command("redraw!")
+				break
+			else:
+				try: # if we can convert to an int, we have a regular key
+					int(raw_char) # we check this way so we bring up an error on nr2char
+					query = query + vim.eval("nr2char(" + raw_char + ")")
+				except: # if we don't, we have some special key
+					keycode = unicode(raw_char, errors="ignore")
+					if keycode == "kb":
+						query = query[:-1]
 			vim.command("setlocal modifiable")
 			pad_files = self.get_filelist(query)
 			if pad_files != []:
 				self.fill_list(pad_files)
 				info = ""
+				vim.command("echohl None")
 			else:
 				del vim.current.buffer[:]
 				info = "[NOT FOUND] "
+				vim.command("echohl Error")
 			vim.command("redraw")
 			vim.command('echo ">> ' + info + query + '"')
 
