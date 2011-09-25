@@ -123,7 +123,7 @@ class Pad(object):
 			vim.command("bd")
 			move(old_path, new_path)
 
-	def open_pad(self, path=None):
+	def open_pad(self, path=None, first_line=None):
 		if not path:
 			path = self.save_dir + str(int(time.time() * 1000000))
 		vim.command("silent! botright" + self.window_height + "split " + path)
@@ -131,6 +131,9 @@ class Pad(object):
 			vim.command("set filetype=" + self.filetype)
 		vim.command("noremap <silent> <buffer> <localleader><delete> :py pad.delete_current_pad()<cr>")
 		vim.command("noremap <silent> <buffer> <localleader>+m :py pad.add_modeline()<cr>")
+		if first_line:
+			vim.current.buffer.append(first_line,0)
+			vim.command("normal j")
 
 	def delete_current_pad(self):
 		path = vim.current.buffer.name
@@ -215,7 +218,7 @@ class Pad(object):
 	def edit_pad(self):
 		path = self.save_dir + vim.current.line.split(" @")[0]
 		vim.command("bd")
-		self.open_pad(path)
+		self.open_pad(path=path)
 
 	def delete_pad(self):
 		confirm = vim.eval('input("really delete? (y/n): ")')
@@ -227,10 +230,17 @@ class Pad(object):
 
 	def incremental_search(self):
 		query = ""
+		should_create_on_enter = False
+		
+		vim.command("echohl None")
 		vim.command('echo ">> "')
 		while True:
 			raw_char = vim.eval("getchar()")
 			if raw_char in ("13", "27"):
+				if raw_char == "13" and should_create_on_enter:
+					vim.command("bw")
+					self.open_pad(first_line=query)
+					vim.command("echohl None")
 				vim.command("redraw!")
 				break
 			else:
@@ -247,10 +257,12 @@ class Pad(object):
 				self.fill_list(pad_files)
 				info = ""
 				vim.command("echohl None")
+				should_create_on_enter = False
 			else:
 				del vim.current.buffer[:]
-				info = "[NOT FOUND] "
-				vim.command("echohl Error")
+				info = "[NEW] "
+				vim.command("echohl WarningMsg")
+				should_create_on_enter = True
 			vim.command("redraw")
 			vim.command('echo ">> ' + info + query + '"')
 

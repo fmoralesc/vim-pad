@@ -94,7 +94,9 @@ without arguments.
 
 When in the buffer cretaed by `:ListPads`, you can open a note pressing
 `<Enter>` and delete it using `<Del>`. `<Escape>` closes the buffer. Also, you
-can search among your notes using <Shift-F>. This will update the buffer in real time.
+can search among your notes using <Shift-F>. This will update the buffer in
+real time. If the query doesn't match any of the existing files, pressing
+`Enter` will create a new note with the query inserted in the first line.
 
 When in a note, `<localleader><Del>` will delete it. `<localleader>+m` will ask
 for a filetype and insert a modeline in the file accordingly.
