@@ -169,31 +169,24 @@ class Pad(object):
 		lines = []
 		for pad in files:
 			with open(expanduser(self.save_dir) + pad) as pad_file:
-				data = pad_file.read(200).split("\n")
-			head = ''
-			if re.match("^.* vim: set .*:.*$", data[0]): #we have a modeline
-				ft = re.search("ft=.*(?=:)", data[0]).group().split("=")[1]
-				if ft == "vo_base":
-					ft = "vo"
-				elif ft == "pandoc":
-					ft = "pd"
-				elif ft == "markdown":
-					ft = "md"
-				head = '▪' + ft + '▪ '
-				data = data[1:] #we discard it
+				data = [line for line in pad_file.read(200).split("\n") if line != ""]
 			
+			# we discard modelines
+			if re.match("^.* vim: set .*:.*$", data[0]):
+				data = data[1:]
+		
 			summary = data[0].strip()
 			if summary[0] in ("%", "#"): #pandoc and markdown titles
 				summary = "".join(summary[1:]).strip()
 			
-			body = "\n".join([line.strip() for line in data[1:] if line != '']).\
+			body = "\n".join([line.strip() for line in data[1:]]).\
 					replace("\n", u'\u21b2 '.encode('utf-8'))
 			
 			tail = ''
-			if data[1:] != ['']:
+			if data[1:] not in ([''], []):
 				tail = u'\u21b2'.encode('utf-8') + ' ' +  body
 
-			lines.append(pad + " @" + get_natural_timestamp(pad).ljust(19) + " │ " + head + summary + tail)
+			lines.append(pad + " @" + get_natural_timestamp(pad).ljust(19) + " │ " + summary + tail)
 		vim.current.buffer.append(list(reversed(sorted(lines))))
 		vim.command("normal dd")
 		vim.command("setlocal nomodifiable")
@@ -220,7 +213,7 @@ class Pad(object):
 		self.open_pad(path)
 
 	def delete_pad(self):
-		confirm = vim.eval('input("really delete? (Y/n): ")')
+		confirm = vim.eval('input("really delete? (y/n): ")')
 		if confirm in ("y", "Y"):
 			path = expanduser(self.save_dir) + vim.current.line.split(" @")[0]
 			remove(path)
