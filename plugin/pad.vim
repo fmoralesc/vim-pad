@@ -126,8 +126,8 @@ class Pad(object):
 		vim.command("silent! botright" + self.window_height + "split " + path)
 		if vim.eval('&filetype') in ('', 'conf'):
 			vim.command("set filetype=" + self.filetype)
-		vim.command("noremap <silent> <buffer> <localleader><delete> :py delete_current_pad()<cr>")
-		vim.command("noremap <silent> <buffer> <localleader>+m :py add_modeline()<cr>")
+		vim.command("noremap <silent> <buffer> <localleader><delete> :py pad.delete_current_pad()<cr>")
+		vim.command("noremap <silent> <buffer> <localleader>+m :py pad.add_modeline()<cr>")
 
 	def delete_current_pad(self):
 		path = vim.current.buffer.name
