@@ -32,17 +32,18 @@ endif
 " Commands:
 "
 command! OpenPad exec 'py pad.open_pad()'
-command! -nargs=? ListPads exec 'py pad.list_pads("<args>")'
+command! -nargs=? ListPads exec "py pad.list_pads('<args>')"
 
 " Key Mappings:
 "
 " IMPORTANT: Change this to your linking
-"
+
 if !exists('g:pad_custom_mappings') || g:pad_custom_mappings == 0
 	noremap <silent> <C-esc> <esc>:ListPads<CR>
 	inoremap <silent> <C-esc> <esc>:ListPads<CR>
 	noremap <silent> <S-esc> <esc>:OpenPad<CR>
 	inoremap <silent> <S-esc> <esc>:OpenPad<CR>
+	noremap <silent> <leader>s  :py pad.search_pads()<cr>
 endif
 
 " To update the date when files are modified
@@ -206,6 +207,11 @@ class Pad(object):
 			vim.command("set filetype=pad")
 		else:
 			print "no pads"
+
+	def search_pads(self):
+		query = vim.eval('input("search in notes for: ")')
+		self.list_pads(query)
+		vim.command("redraw!")
 
 	def edit_pad(self):
 		path = self.save_dir + vim.current.line.split(" @")[0]
