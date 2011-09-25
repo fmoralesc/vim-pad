@@ -2,36 +2,22 @@
 
 A quick-notetaking plugin for vim.
 
-![screen 1](http://i.minus.com/ivZwNLoxgbRbm.png)
-![screen 2](http://i.minus.com/i4B9vW0CpdXuN.png)
+![screen 1](http://i.minus.com/iOd0AOpCUXgu4.png)
+![screen 2](http://i.minus.com/i86fzuBua28Ox.png)
+![screen 3](http://i.minus.com/iwWXEI8oPZ4Wh.png)
 
 ## Rationale
 
-There are many notetaking plugins for vim. Most of them depend on your notes
-having a certain format for the convenience of highlighting stuff like headers,
-lists and links. Also mostly, they don't provide a workflow for your notetaking:
-you need to create manually a file to put your notes on and save it somewhere
-with a name that hopefully makes sense (ever saved a note and then updated its
-contents so the filename no longer applied?). Usually too, taking notes is
-disruptive of whatever you are doing: imagine you're coding and have an idea you
-think you might use afterwards. Ideally, you could just take the note right
-there, without needing to travel to your notes, or cluttering your filesystem.
-
-*vim-pad* tries to solve those issues, by focusing on a definite workflow.
-First, it makes it so you can at any moment (in insert and normal mode):
-
-- open your notes.
-- search in your notes.
-- create a new note.
-
-Also, it keeps the filename issue away by:
-
-- naming your files after the time you created them. This makes them unique and
-  allows for easy sorting. The filenames are updated when changes are made in
-  old files, so the date is always equal to the last time you modified your
-  notes.
-- considering the first line of your document as its title. This is in tune with
-  the way most markup styles work (e.g., markdown)
+*vim-pad* tries to solve common notetaking issues (availability/workflow
+disruption, file managing). These problems don't exist with physical notebooks;
+vim-pad tries to solve them sanely. First, it makes it so you can at any moment
+(in insert and normal mode) open, create, list and search notes. It deals with
+file management by naming their files after the time you created them. This
+makes them unique and allows for easy sorting. The filenames are updated when
+changes are made in old files, so the date is always equal to the last time you
+modified your notes. When listing your notes, it takes the first line of your
+document as its title. This is in tune with the way most markup styles work
+(e.g., markdown)
 
 vim-pad doesn't specify a format for your notes. Instead, it uses a default,
 which you can configure, and allows the use of modelines. Esentially, this
