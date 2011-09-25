@@ -132,17 +132,18 @@ class Pad(object):
 	def delete_current_pad(self):
 		path = vim.current.buffer.name
 		if exists(path):
-			confirm = vim.eval('input("really delete? (Y/n): ")')
+			confirm = vim.eval('input("really delete? (y/n): ")')
 			if confirm in ("y", "Y"):
 				remove(path)
 				vim.command("bd!")
 				vim.command("unmap <leader><delete>")
+				vim.command("redraw!")
 
 	def add_modeline(self):
 		mode = vim.eval('input("filetype: ", "", "filetype")')
 		if mode:
-			vim.current.buffer[0] = "<!-- vim: set ft=" + mode + ": -->"
-			ft = re.search("ft=.*(?=:)", vim.current.line).group().split("=")[1]
+			vim.current.buffer.append("<!-- vim: set ft=" + mode + ": -->", 0)
+			ft = re.search("ft=.*(?=:)", vim.current.buffer[0]).group().split("=")[1]
 			vim.command("set filetype=" + ft)
 			vim.command("set nomodified")
 
