@@ -28,6 +28,9 @@ endif
 if !exists('g:pad_read_nchars_from_files')
 	let g:pad_read_nchars_from_files = 200
 endif
+if !exists('g:pad_highlighting_variant')
+	let g:pad_highlighting_variant = 0
+endif
 
 " Commands:
 "

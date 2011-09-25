@@ -6,9 +6,11 @@ syn match PadHashTag /\(@\|#\)\a\+\(\s\|\n\|\%u21b2\)\@=/
 syn match PadEmptyLabel /\[EMPTY\]/ contained
 syn region PadSummary start=/│\@<= /hs=s+1 end=/\(\%u21b2\|$\|[.,]\)\@=/ contains=PadHashTag,PadEmptyLabel
 
-hi! link PadTimestamp Comment
-" For an alternative highlighting of dates, uncomment the following line.
-" hi! link PadTimestamp Number
+if g:pad_highlighting_variant == 1
+	hi! link PadTimestamp Number
+else
+	hi! link PadTimestamp Comment
+endif
 hi! link PadTimestampDelimiter Delimiter
 hi! link Conceal PadTimestamp
 hi! link PadHashTag Identifier
