@@ -122,7 +122,7 @@ class Pad(object):
 	def open_pad(self, path=None):
 		if not path:
 			path = self.save_dir + str(int(time.time() * 1000000))
-		vim.command("botright" + self.window_height + "split " + path)
+		vim.command("silent! botright" + self.window_height + "split " + path)
 		if vim.eval('&filetype') in ('', 'conf'):
 			vim.command("set filetype=" + self.filetype)
 		vim.command("noremap <silent> <buffer> <localleader><delete> :py delete_current_pad()<cr>")
