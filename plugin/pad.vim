@@ -20,7 +20,7 @@ if !exists('g:pad_window_height')
 	let g:pad_window_height = 5
 endif
 if !exists('g:pad_search_backend')
-	let g:pad_search_backend = "ack"
+	let g:pad_search_backend = "grep"
 endif
 if !exists('g:pad_search_ignorecase')
 	let g:pad_search_ignorecase = 1
