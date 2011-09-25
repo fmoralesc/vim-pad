@@ -170,22 +170,25 @@ class Pad(object):
 			with open(expanduser(self.save_dir) + pad) as pad_file:
 				data = [line for line in pad_file.read(self.read_chars).split("\n") if line != ""]
 			
-			# we discard modelines
-			if re.match("^.* vim: set .*:.*$", data[0]):
-				data = data[1:]
-		
-			summary = data[0].strip()
-			if summary[0] in ("%", "#"): #pandoc and markdown titles
-				summary = "".join(summary[1:]).strip()
-			
-			body = "\n".join([line.strip() for line in data[1:]]).\
-					replace("\n", u'\u21b2 '.encode('utf-8'))
-			
-			tail = ''
-			if data[1:] not in ([''], []):
-				tail = u'\u21b2'.encode('utf-8') + ' ' +  body
+			if data != []:
+				# we discard modelines
+				if re.match("^.* vim: set .*:.*$", data[0]):
+					data = data[1:]
+				
+				summary = data[0].strip()
+				if summary[0] in ("%", "#"): #pandoc and markdown titles
+					summary = "".join(summary[1:]).strip()
+				
+				body = "\n".join([line.strip() for line in data[1:]]).\
+						replace("\n", u'\u21b2 '.encode('utf-8'))
+				
+				tail = ''
+				if data[1:] not in ([''], []):
+					tail = u'\u21b2'.encode('utf-8') + ' ' +  body
 
-			lines.append(pad + " @" + get_natural_timestamp(pad).ljust(19) + " │ " + summary + tail)
+				lines.append(pad + " @" + get_natural_timestamp(pad).ljust(19) + " │ " + summary + tail)
+			else:
+				lines.append(pad + " @" + get_natural_timestamp(pad).ljust(19) + " │ " + "[EMPTY]")
 		vim.current.buffer.append(list(reversed(sorted(lines))))
 		vim.command("normal dd")
 		vim.command("setlocal nomodifiable")
@@ -217,6 +220,7 @@ class Pad(object):
 			path = expanduser(self.save_dir) + vim.current.line.split(" @")[0]
 			remove(path)
 			vim.command("bd")
+			vim.command("redraw!")
 
 	def incremental_search(self):
 		query = ""
