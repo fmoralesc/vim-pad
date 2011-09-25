@@ -5,6 +5,7 @@ A quick-notetaking plugin for vim.
 ![screen 1](http://i.minus.com/iOd0AOpCUXgu4.png)
 ![screen 2](http://i.minus.com/i86fzuBua28Ox.png)
 ![screen 3](http://i.minus.com/iwWXEI8oPZ4Wh.png)
+![screen 4](http://i.minus.com/it88jeH3qlKyO.png)
 
 ## Rationale
 
