@@ -81,6 +81,10 @@ this by setting *g:pad_search_show_only_first* to 0.
 - *:ListPads* (`<Control><Escape>`) lists the notes. You can pass a string to this 
 command if you want to filter the notes.
 
+`<leader>s` also calls ListPads, but asks for a query to filter the notes before
+presenting the list. Giving an empty query is equivalent to calling `ListPads`
+without arguments.
+
 *vim-pad-local-commands*
 
 When in the buffer cretaed by `:ListPads`, you can open a note pressing
