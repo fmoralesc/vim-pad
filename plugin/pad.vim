@@ -25,8 +25,8 @@ endif
 if !exists('g:pad_search_ignorecase')
 	let g:pad_search_ignorecase = 1
 endif
-if !exists('g:pad_search_show_only_first')
-	let g:pad_search_show_only_first = 1
+if !exists('g:pad_read_nchars_from_files')
+	let g:pad_read_nchars_from_files = 200
 endif
 
 " Commands:
@@ -95,8 +95,8 @@ class Pad(object):
 		self.filetype = vim.eval("g:pad_format")
 		self.window_height = str(vim.eval("g:pad_window_height"))
 		self.search_backend = vim.eval("g:pad_search_backend")
-		self.ignore_case = bool(int((vim.eval("g:pad_search_ignorecase"))))
-		self.only_first = bool(int(vim.eval("g:pad_search_show_only_first")))
+		self.ignore_case = bool(int(vim.eval("g:pad_search_ignorecase")))
+		self.read_chars = int(vim.eval("g:pad_read_nchars_from_files"))
 
 		# vim-pad pollutes the MRU.vim list quite a lot, if let alone.
 		# This should fix that.
@@ -157,8 +157,7 @@ class Pad(object):
 				command = ["/usr/bin/vendor_perl/ack", query, expanduser(self.save_dir), "--type=text"]
 			if self.ignore_case:
 				command.append("-i")
-			if self.only_first:
-				command.append("--max-count=1")
+			command.append("--max-count=1")
 			search_results = [line.split(":")[0] for line in Popen(command, stdout=PIPE, stderr=PIPE).communicate()[0].\
 												replace(expanduser(self.save_dir), "").\
 												split("\n")	if line != '']	
@@ -169,7 +168,7 @@ class Pad(object):
 		lines = []
 		for pad in files:
 			with open(expanduser(self.save_dir) + pad) as pad_file:
-				data = [line for line in pad_file.read(200).split("\n") if line != ""]
+				data = [line for line in pad_file.read(self.read_chars).split("\n") if line != ""]
 			
 			# we discard modelines
 			if re.match("^.* vim: set .*:.*$", data[0]):
