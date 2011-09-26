@@ -160,7 +160,11 @@ class Pad(object):
 			if self.search_backend == "grep":
 				command = ["grep", "-n", "-r", query, expanduser(self.save_dir)]
 			elif self.search_backend == "ack":
-				command = ["/usr/bin/vendor_perl/ack", query, expanduser(self.save_dir), "--type=text"]
+				if vim.eval("executable('ack')") == "1":
+					ack_path = "ack"
+				else:
+					ack_path = "/usr/bin/vendor_perl/ack"
+				command = [ack_path, query, expanduser(self.save_dir), "--type=text"]
 			if self.ignore_case:
 				command.append("-i")
 			command.append("--max-count=1")
