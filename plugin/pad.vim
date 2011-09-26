@@ -158,7 +158,7 @@ class Pad(object):
 			return [path.replace(expanduser(self.save_dir), "") for path in glob(expanduser(self.save_dir) + "*")]
 		else:
 			if self.search_backend == "grep":
-				command = ["grep", "-n", "-r", query, expanduser(self.save_dir)]
+				command = ["grep", "-P", "-n", "-r", query, expanduser(self.save_dir)]
 			elif self.search_backend == "ack":
 				if vim.eval("executable('ack')") == "1":
 					ack_path = "ack"
@@ -253,7 +253,7 @@ class Pad(object):
 					query = query + vim.eval("nr2char(" + raw_char + ")")
 				except: # if we don't, we have some special key
 					keycode = unicode(raw_char, errors="ignore")
-					if keycode == "kb":
+					if keycode == "kb": # backspace
 						query = query[:-1]
 			vim.command("setlocal modifiable")
 			pad_files = self.get_filelist(query)
