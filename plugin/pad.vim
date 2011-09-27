@@ -14,7 +14,11 @@ if !exists('g:pad_dir')
 	if filewritable(expand("~/notes/")) == 2
 		let g:pad_dir = "~/notes/"
 	else
-		finish
+		let g:pad_dir = ""
+	endif
+else
+	if filewritable(expand(eval("g:pad_dir"))) != 2
+		let g:pad_dir = ""
 	endif
 endif
 if !exists('g:pad_format')
@@ -99,6 +103,7 @@ def get_natural_timestamp(timestamp):
 class Pad(object):
 	def __init__(self):
 		self.save_dir = vim.eval("g:pad_dir")
+		self.save_dir_set = self.save_dir != ""
 		self.filetype = vim.eval("g:pad_format")
 		self.window_height = str(vim.eval("g:pad_window_height"))
 		self.search_backend = vim.eval("g:pad_search_backend")
@@ -129,6 +134,9 @@ class Pad(object):
 			move(old_path, new_path)
 
 	def open_pad(self, path=None, first_line=None):
+		if not self.save_dir_set:
+			vim.command('let tmp = confirm("IMPORTANT:\nPlease set g:pad_dir to a valid path in your vimrc.", "OK", 1, "Error")')
+			return
 		if not path:
 			path = self.save_dir + str(int(time.time() * 1000000))
 		vim.command("silent! botright" + self.window_height + "split " + path)
@@ -209,6 +217,9 @@ class Pad(object):
 		vim.command("setlocal nomodifiable")
 	
 	def list_pads(self, query):
+		if not self.save_dir_set:
+			vim.command('let tmp = confirm("IMPORTANT:\nPlease set g:pad_dir to a valid path in your vimrc.", "OK", 1, "Error")')
+			return
 		pad_files = self.get_filelist(query)
 		if len(pad_files) > 0:
 			if vim.eval("bufexists('__pad__')") == "1":
@@ -220,6 +231,9 @@ class Pad(object):
 			print "no pads"
 
 	def search_pads(self):
+		if not self.save_dir_set:
+			vim.command('let tmp = confirm("IMPORTANT:\nPlease set g:pad_dir to a valid path in your vimrc.", "OK", 1, "Error")')
+			return
 		query = vim.eval('input("search in notes for: ")')
 		self.list_pads(query)
 		vim.command("redraw!")
