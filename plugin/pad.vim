@@ -11,7 +11,11 @@ let g:loaded_pad = 1
 " Default Settings:
 "
 if !exists('g:pad_dir')
-	let g:pad_dir = "~/notes/"
+	if filewritable(expand("~/notes/")) == 2
+		let g:pad_dir = "~/notes/"
+	else
+		finish
+	endif
 endif
 if !exists('g:pad_format')
 	let g:pad_format = "markdown"
@@ -103,12 +107,13 @@ class Pad(object):
 
 		# vim-pad pollutes the MRU.vim list quite a lot, if let alone.
 		# This should fix that.
-		mru_exclude_files = vim.eval("MRU_Exclude_Files")
-		if mru_exclude_files != '':
-			tail = "\|" + mru_exclude_files
-		else:
-			tail = ''
-		vim.command("let MRU_Exclude_Files = '^" + self.save_dir.replace("~", expanduser("~")) + "*" + tail + "'")
+		if vim.eval('exists(":MRU")') == "2":
+			mru_exclude_files = vim.eval("MRU_Exclude_Files")
+			if mru_exclude_files != '':
+				tail = "\|" + mru_exclude_files
+			else:
+				tail = ''
+			vim.command("let MRU_Exclude_Files = '^" + self.save_dir.replace("~", expanduser("~")) + "*" + tail + "'")
 
 		# we forbid writing backups of the notes
 		orig_backupskip = vim.eval("&backupskip")
