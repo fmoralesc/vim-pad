@@ -1,31 +1,55 @@
 # vim-pad
 
-A quick-notetaking plugin for vim.
+A quick notetaking plugin for vim.
+
+It offers a way of managing notes similar to the one in tools like Notational
+Velocity: file management is removed from the notetaking workflow, and creation
+and searching of notes can be done using the same interface.
 
 ![screen 1](http://i.minus.com/iOd0AOpCUXgu4.png)
 ![screen 2](http://i.minus.com/i86fzuBua28Ox.png)
 ![screen 3](http://i.minus.com/iwWXEI8oPZ4Wh.png)
 ![screen 4](http://i.minus.com/it88jeH3qlKyO.png)
 
-## Rationale
+## Configuration and Usage
 
-*vim-pad* tries to solve common notetaking issues (availability/workflow
-disruption, file managing). These problems don't exist with physical notebooks;
-vim-pad tries to solve them sanely. First, it makes it so you can at any moment
-(in insert and normal mode) open, create, list and search notes. It deals with
-file management by naming their files after the time you created them. This
-makes them unique and allows for easy sorting. The filenames are updated when
-changes are made in old files, so the date is always equal to the last time you
-modified your notes. When listing your notes, it takes the first line of your
-document as its title. This is in tune with the way most markup styles work
-(e.g., markdown)
+**IMPORTANT**: you must set the g:pad_dir variable to a valid path. It is
+recommended to use an empty folder for this.
 
-vim-pad doesn't specify a format for your notes. Instead, it uses a default,
-which you can configure, and allows the use of modelines. Esentially, this
-means your notes can be free-form, and you can adapt them to your needs.
-
-## Configuration in Usage
-
-In vim, see
+For the full documentation, please consult
 
 	:help vim-pad
+
+## Rationale
+
+vim-pad has two goals:
+
+- Abstract file management for notes. You shouldn't have to think about where
+  to put your notes and how to name them.
+
+- Make input and retrieval of notes as fast as possible. Search should be easy.
+
+Or, in a sentence: to make note taking as effortless as possible, trying never
+to disrupt your workflow more than necessary.
+
+vim-pad tries to solve those issues, by enabling a definite workflow for note
+taking.  First, with it you can at any moment (in insert and normal mode):
+
+- list/search in your notes, and then retrieve them.
+- create a new note.
+
+It abstracts file management by:
+
+- keeping your notes in a single place.
+- naming your files after the time you created them. This makes them unique
+  and allows for easy historical sorting. The filenames are updated when
+  changes are made in old files, so the date is always equal to the last time
+  you modified your notes.
+- considering the first line of your document as its title. This is in tune
+  with the way most markup styles work (e.g., markdown)
+
+vim-pad doesn't specify a format for your notes. Instead, it uses a default,
+which you can configure, and allows the use of modelines (modelines aren't
+shown in the list of notes). This means that your notes can be free-form and
+adapt to your needs, and also, that you can use vim-pad as a complement for
+other note taking plugins.
