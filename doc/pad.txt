@@ -1,4 +1,4 @@
-*vim-pad*                     for vim 7.3               Last change: 25 sept 2011
+*vim-pad*                     for vim 7.3               Last change: 27 sept 2011
 
 *vim-pad* is a quick notetaking plugin for vim.
 
@@ -19,7 +19,7 @@ disruptive of whatever you are doing: imagine you're coding and have an idea you
 think you might use afterwards. Ideally, you could just take the note right
 there, without needing to travel to your notes, or cluttering your filesystem.
 
-*vim-pad* tries to solve those issues, by focusing on a definite workflow.
+vim-pad tries to solve those issues, by focusing on a definite workflow.
 First, it makes it so you can at any moment (in insert and normal mode):
 
 - open your notes.
