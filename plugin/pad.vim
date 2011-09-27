@@ -168,7 +168,7 @@ class Pad(object):
 
 	def get_filelist(self, query=None):
 		if not query or query == "":
-			return [path.replace(expanduser(self.save_dir), "") for path in glob(expanduser(self.save_dir) + "*")]
+			files = [path.replace(expanduser(self.save_dir), "") for path in glob(expanduser(self.save_dir) + "*")]
 		else:
 			if self.search_backend == "grep":
 				command = ["grep", "-P", "-n", "-r", query, expanduser(self.save_dir)]
@@ -184,7 +184,9 @@ class Pad(object):
 			search_results = [line.split(":")[0] for line in Popen(command, stdout=PIPE, stderr=PIPE).communicate()[0].\
 												replace(expanduser(self.save_dir), "").\
 												split("\n")	if line != '']	
-			return list(reversed(sorted(search_results)))
+			files = list(reversed(sorted(search_results)))
+		return filter(lambda p: basename(p).isdigit() == True, files)
+
 	
 	def fill_list(self, files):
 		del vim.current.buffer[:] # clear the buffer
@@ -269,11 +271,12 @@ class Pad(object):
 			else:
 				try: # if we can convert to an int, we have a regular key
 					int(raw_char) # we check this way so we bring up an error on nr2char
-					query = query + vim.eval("nr2char(" + raw_char + ")")
+					last_char = vim.eval("nr2char(" + raw_char + ")")
+					query = query + last_char
 				except: # if we don't, we have some special key
 					keycode = unicode(raw_char, errors="ignore")
 					if keycode == "kb": # backspace
-						query = query[:-1]
+						query = query[:-len(last_char)]
 			vim.command("setlocal modifiable")
 			pad_files = self.get_filelist(query)
 			if pad_files != []:
