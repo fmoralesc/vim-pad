@@ -11,8 +11,8 @@ let g:loaded_pad = 1
 " Default Settings:
 "
 if !exists('g:pad_dir')
-	if filewritable(expand("~/notes/")) == 2
-		let g:pad_dir = "~/notes/"
+	if filewritable(expand("~/notes")) == 2
+		let g:pad_dir = "~/notes"
 	else
 		let g:pad_dir = ""
 	endif
@@ -68,7 +68,7 @@ import time
 import datetime
 import re
 from os import remove
-from os.path import expanduser, exists, basename
+from os.path import expanduser, exists, basename, join
 from shutil import move
 from glob import glob
 from subprocess import Popen, PIPE
@@ -118,18 +118,18 @@ class Pad(object):
 				tail = "\|" + mru_exclude_files
 			else:
 				tail = ''
-			vim.command("let MRU_Exclude_Files = '^" + self.save_dir.replace("~", expanduser("~")) + "*" + tail + "'")
+			vim.command("let MRU_Exclude_Files = '^" + self.save_dir.replace("~", expanduser("~")) + "/*" + tail + "'")
 
 		# we forbid writing backups of the notes
 		orig_backupskip = vim.eval("&backupskip")
-		vim.command("set backupskip=" + ",".join([orig_backupskip, self.save_dir.replace("~", expanduser("~")) + "*"]))
+		vim.command("set backupskip=" + ",".join([orig_backupskip, self.save_dir.replace("~", expanduser("~")) + "/*"]))
 
 
 	def update_pad(self):
 		modified = bool(int(vim.eval("b:pad_modified")))
 		if modified:
 			old_path = expanduser(vim.current.buffer.name)
-			new_path = expanduser(self.save_dir + str(int(time.time() * 1000000)))
+			new_path = expanduser(join(self.save_dir, str(int(time.time() * 1000000))))
 			vim.command("bd")
 			move(old_path, new_path)
 
@@ -138,7 +138,7 @@ class Pad(object):
 			vim.command('let tmp = confirm("IMPORTANT:\nPlease set g:pad_dir to a valid path in your vimrc.", "OK", 1, "Error")')
 			return
 		if not path:
-			path = self.save_dir + str(int(time.time() * 1000000))
+			path = join(self.save_dir, str(int(time.time() * 1000000)))
 		vim.command("silent! botright" + self.window_height + "split " + path)
 		if vim.eval('&filetype') in ('', 'conf'):
 			vim.command("set filetype=" + self.filetype)
@@ -168,21 +168,21 @@ class Pad(object):
 
 	def get_filelist(self, query=None):
 		if not query or query == "":
-			files = [path.replace(expanduser(self.save_dir), "") for path in glob(expanduser(self.save_dir) + "*")]
+			files = [path.replace(expanduser(self.save_dir) + "/", "") for path in glob(expanduser(self.save_dir) + "/*")]
 		else:
 			if self.search_backend == "grep":
-				command = ["grep", "-P", "-n", "-r", query, expanduser(self.save_dir)]
+				command = ["grep", "-P", "-n", "-r", query, expanduser(self.save_dir) + "/"]
 			elif self.search_backend == "ack":
 				if vim.eval("executable('ack')") == "1":
 					ack_path = "ack"
 				else:
 					ack_path = "/usr/bin/vendor_perl/ack"
-				command = [ack_path, query, expanduser(self.save_dir), "--type=text"]
+				command = [ack_path, query, expanduser(self.save_dir) + "/", "--type=text"]
 			if self.ignore_case:
 				command.append("-i")
 			command.append("--max-count=1")
 			search_results = [line.split(":")[0] for line in Popen(command, stdout=PIPE, stderr=PIPE).communicate()[0].\
-												replace(expanduser(self.save_dir), "").\
+												replace(expanduser(self.save_dir) + "/", "").\
 												split("\n")	if line != '']	
 			files = list(reversed(sorted(search_results)))
 		return filter(lambda p: basename(p).isdigit() == True, files)
@@ -192,7 +192,7 @@ class Pad(object):
 		del vim.current.buffer[:] # clear the buffer
 		lines = []
 		for pad in files:
-			with open(expanduser(self.save_dir) + pad) as pad_file:
+			with open(join(expanduser(self.save_dir), pad)) as pad_file:
 				data = [line for line in pad_file.read(self.read_chars).split("\n") if line != ""]
 			
 			if data != []:
@@ -241,14 +241,14 @@ class Pad(object):
 		vim.command("redraw!")
 
 	def edit_pad(self):
-		path = self.save_dir + vim.current.line.split(" @")[0]
+		path = join(self.save_dir, vim.current.line.split(" @")[0])
 		vim.command("bd")
 		self.open_pad(path=path)
 
 	def delete_pad(self):
 		confirm = vim.eval('input("really delete? (y/n): ")')
 		if confirm in ("y", "Y"):
-			path = expanduser(self.save_dir) + vim.current.line.split(" @")[0]
+			path = join(expanduser(self.save_dir), vim.current.line.split(" @")[0])
 			remove(path)
 			vim.command("bd")
 			vim.command("redraw!")
