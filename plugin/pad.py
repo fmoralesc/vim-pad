@@ -52,8 +52,8 @@ class Pad(object):
 				tail = "\|" + mru_exclude_files
 			else:
 				tail = ''
-			vim.command("let MRU_Exclude_Files = '^" 
-					+ self.save_dir.replace("~", expanduser("~")) + "/*" + tail + "'")
+			vim.command("let MRU_Exclude_Files = '^" + 
+					self.save_dir.replace("~", expanduser("~")) + "/*" + tail + "'")
 
 		# we forbid writing backups of the notes
 		orig_backupskip = vim.eval("&backupskip")
@@ -118,7 +118,7 @@ class Pad(object):
 	###################################################################################################
 	# Pad List:
 
-	def get_filelist(self, query=None):
+	def __get_filelist(self, query=None):
 		if not query or query == "":
 			files = [path.replace(expanduser(self.save_dir) + "/", "") 
 					for path in glob(expanduser(self.save_dir) + "/*")]
@@ -142,7 +142,7 @@ class Pad(object):
 		return filter(lambda p: basename(p).isdigit() == True, files)
 
 	
-	def fill_list(self, files):
+	def __fill_list(self, files):
 		del vim.current.buffer[:] # clear the buffer
 		lines = []
 		for pad in files:
@@ -177,12 +177,12 @@ class Pad(object):
 			vim.command('let tmp = confirm("IMPORTANT:\n'\
 					'Please set g:pad_dir to a valid path in your vimrc.", "OK", 1, "Error")')
 			return
-		pad_files = self.get_filelist(query)
+		pad_files = self.__get_filelist(query)
 		if len(pad_files) > 0:
 			if vim.eval("bufexists('__pad__')") == "1":
 				vim.command("bw __pad__")
 			vim.command("silent! botright " + self.window_height + "new __pad__")
-			self.fill_list(pad_files)
+			self.__fill_list(pad_files)
 			vim.command("set filetype=pad")
 		else:
 			print "no pads"
@@ -195,19 +195,6 @@ class Pad(object):
 		query = vim.eval('input(">> ")')
 		self.list_pads(query)
 		vim.command("redraw!")
-
-	def edit_pad(self):
-		path = join(self.save_dir, vim.current.line.split(" @")[0])
-		vim.command("bd")
-		self.pad_open(path=path)
-
-	def delete_pad(self):
-		confirm = vim.eval('input("really delete? (y/n): ")')
-		if confirm in ("y", "Y"):
-			path = join(expanduser(self.save_dir), vim.current.line.split(" @")[0])
-			remove(path)
-			vim.command("bd")
-			vim.command("redraw!")
 
 	def incremental_search(self):
 		query = ""
@@ -234,9 +221,9 @@ class Pad(object):
 					if keycode == "kb": # backspace
 						query = query[:-len(last_char)]
 			vim.command("setlocal modifiable")
-			pad_files = self.get_filelist(query)
+			pad_files = self.__get_filelist(query)
 			if pad_files != []:
-				self.fill_list(pad_files)
+				self.__fill_list(pad_files)
 				info = ""
 				vim.command("echohl None")
 				should_create_on_enter = False
@@ -247,3 +234,18 @@ class Pad(object):
 				should_create_on_enter = True
 			vim.command("redraw")
 			vim.command('echo ">> ' + info + query + '"')
+	
+	def edit_pad(self):
+		path = join(self.save_dir, vim.current.line.split(" @")[0])
+		vim.command("bd")
+		self.pad_open(path=path)
+
+	def delete_pad(self):
+		confirm = vim.eval('input("really delete? (y/n): ")')
+		if confirm in ("y", "Y"):
+			path = join(expanduser(self.save_dir), vim.current.line.split(" @")[0])
+			remove(path)
+			vim.command("bd")
+			vim.command("redraw!")
+
+
