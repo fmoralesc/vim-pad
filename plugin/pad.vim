@@ -42,7 +42,7 @@ endif
 
 " Commands:
 "
-command! OpenPad exec 'py pad.pad_pad()'
+command! OpenPad exec 'py pad.pad_open()'
 command! -nargs=? ListPads exec "py pad.list_pads('<args>')"
 
 " Key Mappings:
