@@ -1,6 +1,6 @@
-*vim-pad*                     for vim 7.3               Last change: 27 sept 2011
+*vim-pad*                     for vim 7.3               Last change: 13 oct 2011
 
-*vim-pad* is a quick notetaking plugin for vim.
+vim-pad is a quick notetaking plugin for vim.
 
 It offers a way of managing notes similar to the one in tools like Notational
 Velocity: file management is removed from the notetaking workflow, and creation
