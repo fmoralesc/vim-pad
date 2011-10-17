@@ -14,6 +14,7 @@ def pad_timestamp():
 	return str(int(time.time() * 1000000))
 
 def pad_natural_timestamp(timestamp):
+	timestamp = basename(timestamp)
 	f_timestamp = float(int(timestamp)) / 1000000
 	tmp_datetime = datetime.datetime.fromtimestamp(f_timestamp)
 	diff = datetime.datetime.now() - tmp_datetime
