@@ -4,10 +4,9 @@ import vim
 import time
 import datetime
 import re
-from os import remove
-from os.path import expanduser, exists, basename, join
+from os import remove, listdir
+from os.path import expanduser, exists, basename, join, getmtime
 from shutil import move
-from glob import glob
 from subprocess import Popen, PIPE
 
 def pad_timestamp():
@@ -61,6 +60,10 @@ class Pad(object):
 		vim.command("set backupskip=" + 
 				",".join([orig_backupskip, self.save_dir.replace("~", expanduser("~")) + "/*"]))
 
+		self.cached_data = []
+		self.cached_timestamps = []
+		self.cached_filenames = []
+
 	def update_vars(self):
 		self.save_dir = vim.eval("g:pad_dir")
 		self.save_dir_set = self.save_dir != ""
@@ -97,7 +100,6 @@ class Pad(object):
 			vim.command("bw")
 			move(old_path, new_path)
 
-
 	def pad_delete(self):
 		path = vim.current.buffer.name
 		if exists(path):
@@ -121,8 +123,7 @@ class Pad(object):
 
 	def __get_filelist(self, query=None):
 		if not query or query == "":
-			files = [path.replace(expanduser(self.save_dir) + "/", "") 
-					for path in glob(expanduser(self.save_dir) + "/*")]
+			files = listdir(expanduser(self.save_dir))
 		else:
 			if self.search_backend == "grep":
 				command = ["grep", "-P", "-n", "-r", query, expanduser(self.save_dir) + "/"]
@@ -144,32 +145,37 @@ class Pad(object):
 
 	
 	def __fill_list(self, files):
-		del vim.current.buffer[:] # clear the buffer
-		lines = []
-		for pad in files:
-			with open(join(expanduser(self.save_dir), pad)) as pad_file:
-				data = [line for line in pad_file.read(self.read_chars).split("\n") if line != ""]
-			
-			if data != []:
-				# we discard modelines
-				if re.match("^.* vim: set .*:.*$", data[0]):
-					data = data[1:]
-				
-				summary = data[0].strip()
-				if summary[0] in ("%", "#"): #pandoc and markdown titles
-					summary = "".join(summary[1:]).strip()
-				
-				body = "\n".join([line.strip() for line in data[1:]]).\
-						replace("\n", u'\u21b2 '.encode('utf-8'))
-				
-				tail = ''
-				if data[1:] not in ([''], []):
-					tail = u'\u21b2'.encode('utf-8') + ' ' +  body
+		timestamps = [getmtime(expanduser(self.save_dir) + "/" + f) for f in files]
+		
+		if files != self.cached_filenames or timestamps != self.cached_timestamps:
+			self.cached_data = []
+			for pad in files:
+				with open(join(expanduser(self.save_dir), pad)) as pad_file:
+					data = [line for line in pad_file.read(self.read_chars).split("\n") if line != ""]
+				if data != []:
+					# we discard modelines
+					if re.match("^.* vim: set .*:.*$", data[0]):
+						data = data[1:]
+					
+					summary = data[0].strip()
+					if summary[0] in ("%", "#"): #pandoc and markdown titles
+						summary = "".join(summary[1:]).strip()
+					
+					body = "\n".join([line.strip() for line in data[1:]]).\
+							replace("\n", u'\u21b2 '.encode('utf-8'))
+					
+					tail = ''
+					if data[1:] not in ([''], []):
+						tail = u'\u21b2'.encode('utf-8') + ' ' +  body
 
-				lines.append(pad + " @" + pad_natural_timestamp(pad).ljust(19) + " │ " + summary + tail)
-			else:
-				lines.append(pad + " @" + pad_natural_timestamp(pad).ljust(19) + " │ " + "[EMPTY]")
-		vim.current.buffer.append(list(reversed(sorted(lines))))
+					self.cached_data.append(pad + " @" + pad_natural_timestamp(pad).ljust(19) + " │ " + summary + tail)
+				else:
+					self.cached_data.append(pad + " @" + pad_natural_timestamp(pad).ljust(19) + " │ " + "[EMPTY]")
+			self.cached_timestamps = timestamps
+			self.cached_filenames = files
+
+		del vim.current.buffer[:] # clear the buffer
+		vim.current.buffer.append(list(reversed(sorted(self.cached_data))))
 		vim.command("normal dd")
 		vim.command("setlocal nomodifiable")
 	
@@ -248,5 +254,3 @@ class Pad(object):
 			remove(path)
 			vim.command("bd")
 			vim.command("redraw!")
-
-
