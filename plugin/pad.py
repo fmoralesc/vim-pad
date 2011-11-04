@@ -39,6 +39,10 @@ def pad_natural_timestamp(timestamp):
 		else:
 			return str(hours) + "h ago"
 
+def add_natural_timestamp(matchobj):
+	id_string = matchobj.group("id")
+	return id_string + " @ " + pad_natural_timestamp(id_string).ljust(19) + " │"
+
 # actually, we use this mainly as a namespace of sorts
 class Pad(object):
 	def __init__(self):
@@ -168,14 +172,18 @@ class Pad(object):
 					if data[1:] not in ([''], []):
 						tail = u'\u21b2'.encode('utf-8') + ' ' +  body
 
-					self.cached_data.append(pad + " @" + pad_natural_timestamp(pad).ljust(19) + " │ " + summary + tail)
+					self.cached_data.append(pad + " @ " + summary + tail)
 				else:
-					self.cached_data.append(pad + " @" + pad_natural_timestamp(pad).ljust(19) + " │ " + "[EMPTY]")
+					self.cached_data.append(pad + " @ " + "[EMPTY]")
 			self.cached_timestamps = timestamps
 			self.cached_filenames = files
 
+		# update natural timestamps
+		lines = [re.sub("(?P<id>^.*?) @", add_natural_timestamp, line) for line in self.cached_data]
+
+		# we now show the list
 		del vim.current.buffer[:] # clear the buffer
-		vim.current.buffer.append(list(reversed(sorted(self.cached_data))))
+		vim.current.buffer.append(list(reversed(sorted(lines))))
 		vim.command("normal dd")
 		vim.command("setlocal nomodifiable")
 	
