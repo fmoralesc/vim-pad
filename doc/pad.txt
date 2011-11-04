@@ -1,4 +1,4 @@
-*vim-pad*                     for vim 7.3               Last change: 13 oct 2011
+*vim-pad*                     for vim 7.3               Last change: 3 nov 2011
 
 vim-pad is a quick notetaking plugin for vim.
 
