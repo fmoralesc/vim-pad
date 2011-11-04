@@ -111,7 +111,6 @@ class Pad(object):
 			if confirm in ("y", "Y"):
 				remove(path)
 				vim.command("bd!")
-				vim.command("unmap <leader><delete>")
 				vim.command("redraw!")
 
 	def pad_add_modeline(self):
