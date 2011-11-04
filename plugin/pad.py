@@ -207,7 +207,7 @@ class Pad(object):
 			vim.command('let tmp = confirm("IMPORTANT:\n'\
 					'Please set g:pad_dir to a valid path in your vimrc.", "OK", 1, "Error")')
 			return
-		query = vim.eval('input(">> ")')
+		query = vim.eval('input(">>> ")')
 		self.list_pads(query)
 		vim.command("redraw!")
 
