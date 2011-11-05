@@ -147,11 +147,12 @@ class Pad(object):
 		return filter(lambda p: basename(p).isdigit() == True, files)
 
 	
-	def __fill_list(self, files):
+	def __fill_list(self, files, queried=False):
 		timestamps = [getmtime(expanduser(self.save_dir) + "/" + f) for f in files]
 		
-		if files != self.cached_filenames or timestamps != self.cached_timestamps:
-			self.cached_data = []
+		# we have to update the list only when we are queried or the files have changed
+		if queried or files != self.cached_filenames or timestamps != self.cached_timestamps:
+			lines = []
 			for pad in files:
 				with open(join(expanduser(self.save_dir), pad)) as pad_file:
 					data = [line for line in pad_file.read(self.read_chars).split("\n") if line != ""]
@@ -171,14 +172,21 @@ class Pad(object):
 					if data[1:] not in ([''], []):
 						tail = u'\u21b2'.encode('utf-8') + ' ' +  body
 
-					self.cached_data.append(pad + " @ " + summary + tail)
+					lines.append(pad + " @ " + summary + tail)
 				else:
-					self.cached_data.append(pad + " @ " + "[EMPTY]")
-			self.cached_timestamps = timestamps
-			self.cached_filenames = files
+					lines.append(pad + " @ " + "[EMPTY]")
+			
+			# we only update the cache if we are not queried, to preserve the global cache
+			if not queried:
+				self.cached_data = lines
+				self.cached_timestamps = timestamps
+				self.cached_filenames = files
 
 		# update natural timestamps
-		lines = [re.sub("(?P<id>^.*?) @", add_natural_timestamp, line) for line in self.cached_data]
+		if not queried:
+			lines = [re.sub("(?P<id>^.*?) @", add_natural_timestamp, line) for line in self.cached_data]
+		else:
+			lines = [re.sub("(?P<id>^.*?) @", add_natural_timestamp, line) for line in lines]
 
 		# we now show the list
 		del vim.current.buffer[:] # clear the buffer
@@ -196,7 +204,7 @@ class Pad(object):
 			if vim.eval("bufexists('__pad__')") == "1":
 				vim.command("bw __pad__")
 			vim.command("silent! botright " + self.window_height + "new __pad__")
-			self.__fill_list(pad_files)
+			self.__fill_list(pad_files, query != "")
 			vim.command("set filetype=pad")
 		else:
 			print "no pads"
@@ -237,7 +245,7 @@ class Pad(object):
 			vim.command("setlocal modifiable")
 			pad_files = self.__get_filelist(query)
 			if pad_files != []:
-				self.__fill_list(pad_files)
+				self.__fill_list(pad_files, query != "")
 				info = ""
 				vim.command("echohl None")
 				should_create_on_enter = False
