@@ -43,8 +43,10 @@ def add_natural_timestamp(matchobj):
 	id_string = matchobj.group("id")
 	return id_string + " @ " + pad_natural_timestamp(id_string).ljust(19) + " │"
 
-# actually, we use this mainly as a namespace of sorts
 class Pad(object):
+	"""This handles all the operations of the plugin. 
+	It works as a namespace of sorts."""
+
 	def __init__(self):
 		self.update_vars()
 
@@ -77,7 +79,6 @@ class Pad(object):
 		self.ignore_case = bool(int(vim.eval("g:pad_search_ignorecase")))
 		self.read_chars = int(vim.eval("g:pad_read_nchars_from_files"))
 	
-	#################################################################################################
 	# Pads
 
 	def pad_open(self, path=None, first_line=None):
@@ -121,7 +122,6 @@ class Pad(object):
 			vim.command("set filetype=" + ft)
 			vim.command("set nomodified")
 
-	###################################################################################################
 	# Pad List:
 
 	def __get_filelist(self, query=None):

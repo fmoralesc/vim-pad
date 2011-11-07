@@ -13,8 +13,9 @@ and searching of notes can be done using the same interface.
 
 *vim-pad-global-commands*
 
-- *:ListPads* (`<Control><Escape>`) lists the notes. You can pass a string to this
-command if you want to filter the notes.
+- *:ListPads* (`<Control><Escape>`, <leader><Escape> for the terminal) lists
+  the notes. You can pass a string to this command if you want to filter the
+  notes.
 
 The list of notes should display a series of lines like:
 
@@ -32,7 +33,7 @@ the title instead. Line breaks are displayed as ↲.
 presenting the list. Giving an empty query is equivalent to calling `ListPads`
 without arguments.
 
-- *:OpenPad* (`<Shift><Escape>`) creates a new note.
+- *:OpenPad* (`<Shift><Escape>`, <leader>n in the terminal) creates a new note.
 
 *vim-pad-local-commands*
 
@@ -57,10 +58,8 @@ notes will be saved. The default is:
 If the path is invalid (is not writeable or doesn't exist), vim-pad will nag
 you to set a valid one.
 
-IMPORTANT 2: The default mappings are quite ergonomic in a QWERTY keyboard, but
-they will fail in other layouts. Please check the mappings before using the
-plugin. To set custom mappings, set *g:pad_custom_mappings* to 1 in your .vimrc
-before defining your new mappings.
+IMPORTANT 2: Please check the mappings before using the plugin. The default
+mappings are quite ergonomic, but you might want to change them.
 
 The default format for new notes is `markdown`. To change this to another
 format, `pandoc` for example, put
