@@ -10,9 +10,22 @@ from shutil import move
 from subprocess import Popen, PIPE
 
 def pad_timestamp():
+	"""pad_timestamp() -> timestamp_string
+	
+	Returns a string of digits representing the current time.
+	"""
 	return str(int(time.time() * 1000000))
 
 def pad_natural_timestamp(timestamp):
+	"""pad_natural_timestamp(timestamp) -> natural_timestamp
+	
+	Returns a string representing a datetime object.
+
+	    timestamp: a string in the format returned by pad_timestamp.
+
+	The output uses a natural format for timestamps within the previous
+	24 hours, and the format %Y-%m-%d %H:%M:%S otherwise.
+	"""
 	timestamp = basename(timestamp)
 	f_timestamp = float(int(timestamp)) / 1000000
 	tmp_datetime = datetime.datetime.fromtimestamp(f_timestamp)
@@ -21,6 +34,7 @@ def pad_natural_timestamp(timestamp):
 	seconds = diff.seconds
 	minutes = seconds/60
 	hours = minutes/60
+	
 	if days > 0:
 		return tmp_datetime.strftime("%Y-%m-%d %H:%M:%S")
 	if hours < 1:
@@ -39,16 +53,23 @@ def pad_natural_timestamp(timestamp):
 		else:
 			return str(hours) + "h ago"
 
-def add_natural_timestamp(matchobj):
-	id_string = matchobj.group("id")
-	return id_string + " @ " + pad_natural_timestamp(id_string).ljust(19) + " │"
-
 class Pad(object):
 	"""This handles all the operations of the plugin. 
 	It works as a namespace of sorts."""
 
 	def __init__(self):
-		self.update_vars()
+		"""
+		Updates the internal variables and initializes the caches.
+
+		Adjusts some external options.
+		"""
+		self.save_dir = vim.eval("g:pad_dir")
+		self.save_dir_set = self.save_dir != ""
+		self.filetype = vim.eval("g:pad_format")
+		self.window_height = str(vim.eval("g:pad_window_height"))
+		self.search_backend = vim.eval("g:pad_search_backend")
+		self.ignore_case = bool(int(vim.eval("g:pad_search_ignorecase")))
+		self.read_chars = int(vim.eval("g:pad_read_nchars_from_files"))
 
 		# vim-pad pollutes the MRU.vim list quite a lot, if let alone.
 		# This should fix that.
@@ -70,34 +91,46 @@ class Pad(object):
 		self.cached_timestamps = []
 		self.cached_filenames = []
 
-	def update_vars(self):
-		self.save_dir = vim.eval("g:pad_dir")
-		self.save_dir_set = self.save_dir != ""
-		self.filetype = vim.eval("g:pad_format")
-		self.window_height = str(vim.eval("g:pad_window_height"))
-		self.search_backend = vim.eval("g:pad_search_backend")
-		self.ignore_case = bool(int(vim.eval("g:pad_search_ignorecase")))
-		self.read_chars = int(vim.eval("g:pad_read_nchars_from_files"))
-	
 	# Pads
 
 	def pad_open(self, path=None, first_line=None):
+		"""Creates or opens a note.
+
+		path: a valid path for a note.
+
+		first_line: a string to insert to a new note, if given.
+		"""
+		# we require self.save_dir_set to be set to a valid path
 		if not self.save_dir_set:
 			vim.command('let tmp = confirm("IMPORTANT:\n'\
 					'Please set g:pad_dir to a valid path in your vimrc.", "OK", 1, "Error")')
 			return
+		
+		# if no path is provided, we create one using the current time
 		if not path:
 			path = join(self.save_dir, pad_timestamp())
+
 		vim.command("silent! botright" + self.window_height + "split " + path)
+		
+		# set the filetype to our default
 		if vim.eval('&filetype') in ('', 'conf'):
 			vim.command("set filetype=" + self.filetype)
+		
+		# map the local commands
 		vim.command("noremap <silent> <buffer> <localleader><delete> :py pad.pad_delete()<cr>")
 		vim.command("noremap <silent> <buffer> <localleader>+m :py pad.pad_add_modeline()<cr>")
+		
+		# insert the text in first_line to the buffer, if provided
 		if first_line:
 			vim.current.buffer.append(first_line,0)
 			vim.command("normal! j")
 
 	def pad_update(self):
+		""" Moves a note to a new location if its contents are modified.
+
+		Called on the BufLeave event for the notes.
+
+		"""
 		modified = bool(int(vim.eval("b:pad_modified")))
 		if modified:
 			old_path = expanduser(vim.current.buffer.name)
@@ -106,6 +139,8 @@ class Pad(object):
 			move(old_path, new_path)
 
 	def pad_delete(self):
+		""" (Local command) Deletes the current note.
+		"""
 		path = vim.current.buffer.name
 		if exists(path):
 			confirm = vim.eval('input("really delete? (y/n): ")')
@@ -115,20 +150,28 @@ class Pad(object):
 				vim.command("redraw!")
 
 	def pad_add_modeline(self):
+		""" (Local command) Add a modeline to the current note.
+		"""
 		mode = vim.eval('input("filetype: ", "", "filetype")')
 		if mode:
 			vim.current.buffer.append("<!-- vim: set ft=" + mode + ": -->", 0)
-			ft = re.search("ft=.*(?=:)", vim.current.buffer[0]).group().split("=")[1]
-			vim.command("set filetype=" + ft)
+			vim.command("set filetype=" + mode)
 			vim.command("set nomodified")
 
 	# Pad List:
 
 	def __get_filelist(self, query=None):
+		""" __get_filelist(query) -> list_of_notes
+
+		Returns a list of notes. If no query is provided, all the valid filenames in
+		self.save_dir are returned in a list, otherwise, return the results of grep
+		or ack search for query in self.save_dir.
+		"""
 		if not query or query == "":
 			files = listdir(expanduser(self.save_dir))
 		else:
 			if self.search_backend == "grep":
+				# we use Perl mode for grep (-P), because it is really fast
 				command = ["grep", "-P", "-n", "-r", query, expanduser(self.save_dir) + "/"]
 			elif self.search_backend == "ack":
 				if vim.eval("executable('ack')") == "1":
@@ -136,21 +179,34 @@ class Pad(object):
 				else:
 					ack_path = "/usr/bin/vendor_perl/ack"
 				command = [ack_path, query, expanduser(self.save_dir) + "/", "--type=text"]
+			
 			if self.ignore_case:
 				command.append("-i")
 			command.append("--max-count=1")
+			
 			search_results = [line.split(":")[0] 
 					for line in Popen(command, stdout=PIPE, stderr=PIPE).communicate()[0].\
 								replace(expanduser(self.save_dir) + "/", "").\
 								split("\n")	if line != '']	
+			
 			files = list(reversed(sorted(search_results)))
+		
+		# we are interested only on the files whose name is a digit, because it means they are created by us
 		return filter(lambda p: basename(p).isdigit() == True, files)
 
 	
 	def __fill_list(self, files, queried=False):
+		""" Writes the list of notes to the __pad__ buffer.
+
+		files: a list of files to process.
+
+		queried: whether files is the result of a query or not.
+
+		Keeps a cache so we only read the notes when the files have been modified.
+		"""
 		timestamps = [getmtime(expanduser(self.save_dir) + "/" + f) for f in files]
 		
-		# we have to update the list only when we are queried or the files have changed
+		# we will have a new list only on the following cases
 		if queried or files != self.cached_filenames or timestamps != self.cached_timestamps:
 			lines = []
 			for pad in files:
@@ -183,9 +239,13 @@ class Pad(object):
 				self.cached_filenames = files
 
 		# update natural timestamps
-		if not queried:
+		def add_natural_timestamp(matchobj):
+			id_string = matchobj.group("id")
+			return id_string + " @ " + pad_natural_timestamp(id_string).ljust(19) + " │"
+		
+		if not queried: # we use the cache
 			lines = [re.sub("(?P<id>^.*?) @", add_natural_timestamp, line) for line in self.cached_data]
-		else:
+		else: # we use the new values in lines
 			lines = [re.sub("(?P<id>^.*?) @", add_natural_timestamp, line) for line in lines]
 
 		# we now show the list
@@ -195,6 +255,12 @@ class Pad(object):
 		vim.command("setlocal nomodifiable")
 	
 	def list_pads(self, query):
+		""" Shows a list of notes.
+
+		query: a string representing a regex search. Can be "".
+
+		Builds a list of files for query and then processes it to show the list in the pad format.
+		"""
 		if not self.save_dir_set:
 			vim.command('let tmp = confirm("IMPORTANT:\n'\
 					'Please set g:pad_dir to a valid path in your vimrc.", "OK", 1, "Error")')
@@ -210,6 +276,8 @@ class Pad(object):
 			print "no pads"
 
 	def search_pads(self):
+		""" Aks for a query and lists the matching notes.
+		"""
 		if not self.save_dir_set:
 			vim.command('let tmp = confirm("IMPORTANT:\n'\
 					'Please set g:pad_dir to a valid path in your vimrc.", "OK", 1, "Error")')
@@ -219,6 +287,8 @@ class Pad(object):
 		vim.command("redraw!")
 
 	def incremental_search(self):
+		""" Provides incremental search within the __pad__ buffer.
+		"""
 		query = ""
 		should_create_on_enter = False
 		
@@ -249,7 +319,7 @@ class Pad(object):
 				info = ""
 				vim.command("echohl None")
 				should_create_on_enter = False
-			else:
+			else: # we will create a new pad
 				del vim.current.buffer[:]
 				info = "[NEW] "
 				vim.command("echohl WarningMsg")
@@ -258,11 +328,15 @@ class Pad(object):
 			vim.command('echo ">> ' + info + query + '"')
 	
 	def edit_pad(self):
+		""" Opens the currently selected note in the __pad__ buffer.
+		"""
 		path = join(self.save_dir, vim.current.line.split(" @")[0])
 		vim.command("bd")
 		self.pad_open(path=path)
 
 	def delete_pad(self):
+		""" Deletes the currently selected note in the __pad__ buffer.
+		"""
 		confirm = vim.eval('input("really delete? (y/n): ")')
 		if confirm in ("y", "Y"):
 			path = join(expanduser(self.save_dir), vim.current.line.split(" @")[0])
