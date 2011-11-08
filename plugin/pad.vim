@@ -52,17 +52,17 @@ command! -nargs=? ListPads exec "py pad.list_pads('<args>')"
 " IMPORTANT: Change this to your linking
 
 if has("gui_running")
-	noremap <silent> <C-esc> <esc>:ListPads<CR>
-	inoremap <silent> <C-esc> <esc>:ListPads<CR>
-	noremap <silent> <S-esc> <esc>:OpenPad<CR>
-	inoremap <silent> <S-esc> <esc>:OpenPad<CR>
+	sil! noremap <silent> <unique> <C-esc> <esc>:ListPads<CR>
+	sil! inoremap <silent> <unique> <C-esc> <esc>:ListPads<CR>
+	sil! noremap <silent> <unique> <S-esc> <esc>:OpenPad<CR>
+	sil! inoremap <silent> <unique> <S-esc> <esc>:OpenPad<CR>
 else " the previous mappings don't work in the terminal
-	noremap <silent> <leader><esc> <esc>:ListPads<CR>
-	inoremap <silent> <leader><esc> <esc>:ListPads<CR>
-	noremap <silent> <leader>n <esc>:OpenPad<CR>
-	inoremap <silent> <leader>n <esc>:OpenPad<CR>
+	sil! noremap <silent> <unique> <leader><esc> <esc>:ListPads<CR>
+	sil! inoremap <silent> <unique> <leader><esc> <esc>:ListPads<CR>
+	sil! noremap <silent> <unique> <leader>n <esc>:OpenPad<CR>
+	sil! inoremap <silent> <unique> <leader>n <esc>:OpenPad<CR>
 endif
-noremap <silent> <leader>s  :py pad.search_pads()<cr>
+sil! noremap <silent> <unique> <leader>s  :py pad.search_pads()<cr>
 
 " To update the date when files are modified
 execute "au! BufEnter" printf("%s*", g:pad_dir) ":let b:pad_modified = 0"
