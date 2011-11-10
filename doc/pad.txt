@@ -6,14 +6,16 @@ It offers a way of managing notes similar to the one in tools like Notational
 Velocity: file management is removed from the notetaking workflow, and creation
 and searching of notes can be done using the same interface.
 
-- |vim-pad-global-commands|
-- |vim-pad-local-commands|
-- |vim-pad-configuration|
-	- |vim-pad-notes-format|
-	- |vim-pad-misc-config|
-- |vim-pad-design-rationale|
+- Global Commands |vim-pad-global-commands|
+- Local Commands |vim-pad-local-commands|
+- Configuration |vim-pad-configuration|
+	- Notes Format |vim-pad-notes-format|
+	- Misc |vim-pad-misc-config|
+- Rationale |vim-pad-design-rationale|
 
-# *vim-pad-global-commands*
+
+GLOBAL COMMANDS										 *vim-pad-global-commands*
+---------------
 
 - *:ListPads* (`<Control><Escape>`, <leader><Escape> for the terminal, global:
   <Plug>PadListPads) lists the notes. You can pass a string to this command if
@@ -38,7 +40,9 @@ Giving an empty query is equivalent to calling `ListPads` without arguments.
 - *:OpenPad* (`<Shift><Escape>`, <leader>n in the terminal, global:
   <Plug>PadOpenPad) creates a new note.
 
-# *vim-pad-local-commands*
+
+LOCAL COMMANDS										 *vim-pad-local-commands*
+--------------
 
 When in the notes list, you can open a note pressing `<Enter>` and delete it
 using `<Del>` (`dd` in the terminal ). `<Escape>` closes the buffer.
@@ -52,7 +56,9 @@ When in a note, `<localleader><Del>` (`<localleader>dd` in the terminal) will
 delete it. `<localleader>+m` will ask for a filetype and insert a modeline in
 the file accordingly.
 
-# *vim-pad-configuration*
+
+CONFIGURATION										 *vim-pad-configuration*
+-------------
 
 IMPORTANT 1: set the *g:pad_dir* variable in your .vimrc, to indicate where the
 notes will be saved. The default is:
@@ -76,7 +82,7 @@ should add the followings lines to your vimrc:
 
 replacing USERMAP with your desired mappings.
 
-## *vim-pad-notes-format*
+NOTES FORMAT										 *vim-pad-notes-format*
 
 The default format for new notes is `markdown`. To change this to another
 format, `pandoc` for example, put
@@ -92,7 +98,7 @@ at the beggining of a file will tell vim to open the file as a VimOutliner file.
 The modeline won't be shown in the list view.
 
 
-## *vim-pad-misc-config*
+MISC												 *vim-pad-misc-config*
 
 The height of the split windows this plugin uses can be set with
 `*g:pad_window_height*`.
@@ -108,7 +114,9 @@ When showing the list of notes, vim-pad reads by default 200 chars from the
 files, in order to show a summary of the file. You can adjust how many chars
 you want vim-pad to read by setting the *g:pad_read_nchars_from_files* variable.
 
-# *vim-pad-design-rationale*
+
+RATIONALE											 *vim-pad-design-rationale*
+---------
 
 vim-pad has two goals:
 
