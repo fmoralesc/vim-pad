@@ -12,7 +12,6 @@ else
 	hi! link PadTimestamp Comment
 endif
 hi! link PadTimestampDelimiter Delimiter
-hi! link Conceal PadTimestamp
 hi! link PadHashTag Identifier
 hi! link PadEmptyLabel Error
 hi! link PadSummary Title
