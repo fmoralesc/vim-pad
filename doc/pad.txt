@@ -1,4 +1,4 @@
-*vim-pad*                     for vim 7.3               Last change: 3 nov 2011
+*vim-pad*                     for vim 7.3               Last change: 10 nov 2011
 
 vim-pad is a quick notetaking plugin for vim.
 
@@ -9,13 +9,15 @@ and searching of notes can be done using the same interface.
 - |vim-pad-global-commands|
 - |vim-pad-local-commands|
 - |vim-pad-configuration|
+	- |vim-pad-notes-format|
+	- |vim-pad-misc-config|
 - |vim-pad-design-rationale|
 
-*vim-pad-global-commands*
+# *vim-pad-global-commands*
 
-- *:ListPads* (`<Control><Escape>`, <leader><Escape> for the terminal) lists
-  the notes. You can pass a string to this command if you want to filter the
-  notes.
+- *:ListPads* (`<Control><Escape>`, <leader><Escape> for the terminal, global:
+  <Plug>PadListPads) lists the notes. You can pass a string to this command if
+  you want to filter the notes.
 
 The list of notes should display a series of lines like:
 
@@ -29,13 +31,14 @@ The first line of the file is taken as a title, and highlighted accordingly.
 If the note only spans one line, the text before a dot or a comma is taken as
 the title instead. Line breaks are displayed as ↲.
 
-`<leader>s` also calls ListPads, but asks for a query to filter the notes before
-presenting the list. Giving an empty query is equivalent to calling `ListPads`
-without arguments.
+`<leader>s` in normal mode (default, global: <Plug>PadSearchPads) also calls
+ListPads, but asks for a query to filter the notes before presenting the list.
+Giving an empty query is equivalent to calling `ListPads` without arguments.
 
-- *:OpenPad* (`<Shift><Escape>`, <leader>n in the terminal) creates a new note.
+- *:OpenPad* (`<Shift><Escape>`, <leader>n in the terminal, global:
+  <Plug>PadOpenPad) creates a new note.
 
-*vim-pad-local-commands*
+# *vim-pad-local-commands*
 
 When in the notes list, you can open a note pressing `<Enter>` and delete it
 using `<Del>`. `<Escape>` closes the buffer.
@@ -48,7 +51,7 @@ in the first line.
 When in a note, `<localleader><Del>` will delete it. `<localleader>+m` will ask
 for a filetype and insert a modeline in the file accordingly.
 
-*vim-pad-configuration*
+# *vim-pad-configuration*
 
 IMPORTANT 1: set the *g:pad_dir* variable in your .vimrc, to indicate where the
 notes will be saved. The default is:
@@ -59,7 +62,20 @@ If the path is invalid (is not writeable or doesn't exist), vim-pad will nag
 you to set a valid one.
 
 IMPORTANT 2: Please check the mappings before using the plugin. The default
-mappings are quite ergonomic, but you might want to change them.
+mappings are quite ergonomic, but you might want to change them. Also, if the
+default mappings have conflicts, vim-pad will let you know. You can disable the
+default mappings by setting g:pad_use_default_mappings to 0. If you do so, you
+should add the followings lines to your vimrc:
+
+	nmap USERMAP <Plug>PadListPads
+	imap USERMAP <Plug>PadListPads
+	nmap USERMAP <Plug>PadOpenPad
+	imap USERMAP <Plug>PadOpenPad
+	nmap USERMAP <Plug>PadSearchPads
+
+replacing USERMAP with your desired mappings.
+
+## *vim-pad-notes-format*
 
 The default format for new notes is `markdown`. To change this to another
 format, `pandoc` for example, put
@@ -73,6 +89,9 @@ the first line in the note into a modeline:
 
 at the beggining of a file will tell vim to open the file as a VimOutliner file.
 The modeline won't be shown in the list view.
+
+
+## *vim-pad-misc-config*
 
 The height of the split windows this plugin uses can be set with
 `*g:pad_window_height*`.
@@ -88,7 +107,7 @@ When showing the list of notes, vim-pad reads by default 200 chars from the
 files, in order to show a summary of the file. You can adjust how many chars
 you want vim-pad to read by setting the *g:pad_read_nchars_from_files* variable.
 
-*vim-pad-design-rationale*
+# *vim-pad-design-rationale*
 
 vim-pad has two goals:
 

@@ -39,6 +39,9 @@ endif
 if !exists('g:pad_highlighting_variant')
 	let g:pad_highlighting_variant = 0
 endif
+if !exists('g:pad_use_default_mappings')
+	let g:pad_use_default_mappings = 1
+endif
 
 " Commands:
 "
@@ -49,26 +52,79 @@ command! -nargs=? ListPads exec "py pad.list_pads('<args>')"
 
 " Key Mappings:
 "
-" IMPORTANT: Change this to your linking
+noremap <silent> <unique> <Plug>ListPads <esc>:ListPads<CR>
+inoremap <silent> <unique> <Plug>ListPads <esc>:ListPads<CR>
+noremap <silent> <unique>  <Plug>OpenPad <esc>:OpenPad<CR>
+inoremap <silent> <unique> <Plug>OpenPad <esc>:OpenPad<CR>
+noremap <silent> <unique> <Plug>SearchPads :py pad.search_pads()<cr>
 
-if has("gui_running")
-	sil! noremap <silent> <unique> <C-esc> <esc>:ListPads<CR>
-	sil! inoremap <silent> <unique> <C-esc> <esc>:ListPads<CR>
-	sil! noremap <silent> <unique> <S-esc> <esc>:OpenPad<CR>
-	sil! inoremap <silent> <unique> <S-esc> <esc>:OpenPad<CR>
-else " the previous mappings don't work in the terminal
-	sil! noremap <silent> <unique> <leader><esc> <esc>:ListPads<CR>
-	sil! inoremap <silent> <unique> <leader><esc> <esc>:ListPads<CR>
-	sil! noremap <silent> <unique> <leader>n <esc>:OpenPad<CR>
-	sil! inoremap <silent> <unique> <leader>n <esc>:OpenPad<CR>
+" You can set custom bindings by re-mapping the previous ones.
+" For example, you can add the following to your vimrc:
+" 
+"     nmap ,pl <Plug>ListPads
+"
+" If you want disable the default_mappings, set
+" g:pad_use_default_mappings to 0
+
+
+" TODO: make this ugly thing cleaner
+if g:pad_use_default_mappings == 1
+	if has("gui_running")
+		try
+			nmap <unique> <C-esc> <Plug>ListPads
+		catch /E227/
+			echom "[vim-pad] <C-esc> in normal mode is already mapped."
+		endtry
+		try
+			imap <unique> <C-esc> <Plug>ListPads
+		catch /E227/
+			echom "[vim-pad] <C-esc> in insert mode is already mapped."
+		endtry
+		try
+			nmap <unique> <S-esc> <Plug>OpenPad
+		catch /E227/
+			echom "[vim-pad] <S-esc> in normal mode is already mapped."
+		endtry
+		try
+			imap <unique> <S-esc> <Plug>OpenPad
+		catch
+			echom "[vim-pad] <S-esc> in insert mode is already mapped."
+		endtry
+	else " the previous mappings don't work in the terminal
+		try
+			nmap <unique> <leader><esc> <Plug>ListPads
+		catch /E227/
+			echom "[vim-pad] <leader><esc> in normal mode is already mapped."
+		endtry
+		try
+			imap <unique> <leader><esc> <Plug>ListPads
+		catch /E227/
+			echom "[vim-pad] <leader><esc> in insert mode is already mapped."
+		endtry
+		try
+			nmap <unique> <leader>n <Plug>OpenPad
+		catch /E227/
+			echom "[vim-pad] <leader>n in normal mode is already mapped."
+		endtry
+		try
+			imap <unique> <leader>n <Plug>OpenPad
+		catch
+			echom "[vim-pad] <leader>n in insert mode is already mapped."
+		endtry
+	endif
+	try
+		nmap <unique> <leader>s  <Plug>SearchPads
+	catch /E227/
+		echom "[vim-pad] <leader>s in normal mode is already mapped"
+	endtry
 endif
-sil! noremap <silent> <unique> <leader>s  :py pad.search_pads()<cr>
 
 " To update the date when files are modified
 execute "au! BufEnter" printf("%s*", g:pad_dir) ":let b:pad_modified = 0"
 execute "au! BufWritePre" printf("%s*", g:pad_dir) ":let b:pad_modified = eval(&modified)"
 execute "au! BufLeave" printf("%s*", g:pad_dir) ":py pad.pad_update()"
 
-" Load the plugin
+" Load the plugin code proper
 pyfile <sfile>:p:h/pad.py
+" the python object pad represents the plugin state
 python pad=Pad()
