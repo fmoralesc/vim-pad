@@ -117,7 +117,11 @@ class Pad(object):
 			vim.command("set filetype=" + self.filetype)
 		
 		# map the local commands
-		vim.command("noremap <silent> <buffer> <localleader><delete> :py pad.pad_delete()<cr>")
+		if vim.eval('has("gui_running")') == "1":
+			vim.command("noremap <silent> <buffer> <localleader><delete> :py pad.pad_delete()<cr>")
+		else:
+			vim.command("noremap <silent> <buffer> <localleader>dd :py pad.pad_delete()<cr>")
+
 		vim.command("noremap <silent> <buffer> <localleader>+m :py pad.pad_add_modeline()<cr>")
 		
 		# insert the text in first_line to the buffer, if provided

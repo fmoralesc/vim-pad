@@ -41,15 +41,16 @@ Giving an empty query is equivalent to calling `ListPads` without arguments.
 # *vim-pad-local-commands*
 
 When in the notes list, you can open a note pressing `<Enter>` and delete it
-using `<Del>`. `<Escape>` closes the buffer.
+using `<Del>` (`dd` in the terminal ). `<Escape>` closes the buffer.
 
 You can start a search among your notes pressing <Shift-F> in the list. This
 will update the buffer in real time. If the query doesn't match any of the
 existing files, pressing `Enter` will create a new note with the query inserted
 in the first line.
 
-When in a note, `<localleader><Del>` will delete it. `<localleader>+m` will ask
-for a filetype and insert a modeline in the file accordingly.
+When in a note, `<localleader><Del>` (`<localleader>dd` in the terminal) will
+delete it. `<localleader>+m` will ask for a filetype and insert a modeline in
+the file accordingly.
 
 # *vim-pad-configuration*
 
