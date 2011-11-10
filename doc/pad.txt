@@ -14,7 +14,7 @@ and searching of notes can be done using the same interface.
 - Rationale |vim-pad-design-rationale|
 
 
-GLOBAL COMMANDS										 *vim-pad-global-commands*
+GLOBAL COMMANDS                                      *vim-pad-global-commands*
 ---------------
 
 - *:ListPads* (`<Control><Escape>`, <leader><Escape> for the terminal, global:
@@ -41,7 +41,7 @@ Giving an empty query is equivalent to calling `ListPads` without arguments.
   <Plug>PadOpenPad) creates a new note.
 
 
-LOCAL COMMANDS										 *vim-pad-local-commands*
+LOCAL COMMANDS                                       *vim-pad-local-commands*
 --------------
 
 When in the notes list, you can open a note pressing `<Enter>` and delete it
@@ -57,7 +57,7 @@ delete it. `<localleader>+m` will ask for a filetype and insert a modeline in
 the file accordingly.
 
 
-CONFIGURATION										 *vim-pad-configuration*
+CONFIGURATION                                         *vim-pad-configuration*
 -------------
 
 IMPORTANT 1: set the *g:pad_dir* variable in your .vimrc, to indicate where the
@@ -82,7 +82,7 @@ should add the followings lines to your vimrc:
 
 replacing USERMAP with your desired mappings.
 
-NOTES FORMAT										 *vim-pad-notes-format*
+NOTES FORMAT                                           *vim-pad-notes-format*
 
 The default format for new notes is `markdown`. To change this to another
 format, `pandoc` for example, put
@@ -98,7 +98,7 @@ at the beggining of a file will tell vim to open the file as a VimOutliner file.
 The modeline won't be shown in the list view.
 
 
-MISC												 *vim-pad-misc-config*
+MISC                                                   *vim-pad-misc-config*
 
 The height of the split windows this plugin uses can be set with
 `*g:pad_window_height*`.
@@ -115,7 +115,7 @@ files, in order to show a summary of the file. You can adjust how many chars
 you want vim-pad to read by setting the *g:pad_read_nchars_from_files* variable.
 
 
-RATIONALE											 *vim-pad-design-rationale*
+RATIONALE                                               *vim-pad-design-rationale*
 ---------
 
 vim-pad has two goals:
