@@ -66,57 +66,30 @@ noremap <silent> <unique> <Plug>SearchPads :py pad.search_pads()<cr>
 " If you want disable the default_mappings, set
 " g:pad_use_default_mappings to 0
 
+function s:CreateMapping(key, action, modename)
+  let mode = a:modename == "normal" ? "nmap" : "imap"
 
-" TODO: make this ugly thing cleaner
+  try
+    execute mode . " <unique> " . a:key . " <Plug>" . a:action
+  catch /E227/
+    echom "[vim-pad] " . a:key . " in " . a:modename . " mode is already mapped."
+  endtry
+endfunction
+
 if g:pad_use_default_mappings == 1
 	if has("gui_running")
-		try
-			nmap <unique> <C-esc> <Plug>ListPads
-		catch /E227/
-			echom "[vim-pad] <C-esc> in normal mode is already mapped."
-		endtry
-		try
-			imap <unique> <C-esc> <Plug>ListPads
-		catch /E227/
-			echom "[vim-pad] <C-esc> in insert mode is already mapped."
-		endtry
-		try
-			nmap <unique> <S-esc> <Plug>OpenPad
-		catch /E227/
-			echom "[vim-pad] <S-esc> in normal mode is already mapped."
-		endtry
-		try
-			imap <unique> <S-esc> <Plug>OpenPad
-		catch
-			echom "[vim-pad] <S-esc> in insert mode is already mapped."
-		endtry
+    call s:CreateMapping("<C-esc>", "ListPads", "normal")
+    call s:CreateMapping("<C-esc>", "ListPads", "insert")
+    call s:CreateMapping("<S-esc>", "OpenPad", "normal")
+    call s:CreateMapping("<S-esc>", "OpenPad", "insert")
 	else " the previous mappings don't work in the terminal
-		try
-			nmap <unique> <leader><esc> <Plug>ListPads
-		catch /E227/
-			echom "[vim-pad] <leader><esc> in normal mode is already mapped."
-		endtry
-		try
-			imap <unique> <leader><esc> <Plug>ListPads
-		catch /E227/
-			echom "[vim-pad] <leader><esc> in insert mode is already mapped."
-		endtry
-		try
-			nmap <unique> <leader>n <Plug>OpenPad
-		catch /E227/
-			echom "[vim-pad] <leader>n in normal mode is already mapped."
-		endtry
-		try
-			imap <unique> <leader>n <Plug>OpenPad
-		catch
-			echom "[vim-pad] <leader>n in insert mode is already mapped."
-		endtry
+    call s:CreateMapping("<leader><esc>", "ListPads", "normal")
+    call s:CreateMapping("<leader><esc>", "ListPads", "insert")
+    call s:CreateMapping("<leader>n", "OpenPad", "normal")
+    call s:CreateMapping("<leader>n", "OpenPad", "insert")
 	endif
-	try
-		nmap <unique> <leader>s  <Plug>SearchPads
-	catch /E227/
-		echom "[vim-pad] <leader>s in normal mode is already mapped"
-	endtry
+
+  call s:CreateMapping("<leader>s", "SearchPads", "normal")
 endif
 
 " To update the date when files are modified
