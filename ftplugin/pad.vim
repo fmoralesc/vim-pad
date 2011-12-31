@@ -2,7 +2,7 @@ setlocal cursorline
 setlocal buftype=nofile
 setlocal noswapfile
 setlocal nowrap
-setlocal listchars=extends:…,precedes:…
+setlocal listchars+=extends:…,precedes:…
 setlocal nomodified
 setlocal conceallevel=2
 setlocal concealcursor=nc
