@@ -115,6 +115,9 @@ vim-pad can search using either `grep` or `ack` (grep is the default). You can
 set this using the *g:pad_search_backend* variable. By default, the search
 ignores case (adjust *g:pad_search_ignore_case* as desired).
 
+NOTE FOR WINDOWS USERS: You will need a GNU grep compatible executable
+in your $PATH in order to search. Cygwin's version has been tested succesfully.
+
 When showing the list of notes, vim-pad reads by default 200 chars from the
 files, in order to show a summary of the file. You can adjust how many chars
 you want vim-pad to read by setting the *g:pad_read_nchars_from_files* variable.
