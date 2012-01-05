@@ -68,6 +68,11 @@ notes will be saved. The default is:
 If the path is invalid (is not writeable or doesn't exist), vim-pad will nag
 you to set a valid one.
 
+NOTE FOR WINDOWS USERS: The pathname escaping is different in Windows. You
+might need to escape backward slashes, like so:
+
+    let g:pad_dir = "C:\\Users\\Foo\\Documents\\Notes"
+
 IMPORTANT 2: Please check the mappings before using the plugin. The default
 mappings are quite ergonomic, but you might want to change them. Also, if the
 default mappings have conflicts, vim-pad will let you know. You can disable the
