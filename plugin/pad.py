@@ -109,9 +109,9 @@ class Pad(object):
 				vim.command("set listchars+=precedes:«")
 		else:
 			if "extends" not in tmp:
-				vim.command("set listchars+=extends:<bb>")
+				vim.command("set listchars+=extends:»")
 			if "precedes" not in tmp:
-				vim.command("set listchars+=precedes:<ab>")
+				vim.command("set listchars+=precedes:«")
 		del tmp
 	
 
