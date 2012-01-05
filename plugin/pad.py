@@ -102,10 +102,16 @@ class Pad(object):
 		# we set listchars, for formatting purposes
 		tmp=[i.split(":")[0] for i in vim.eval("&listchars").split(",")]
 		# we won't touch listchars if the values we want to change are already set
-		if "extends" not in tmp:
-			vim.command("set listchars+=extends:»")
-		if "precedes" not in tmp:
-			vim.command("set listchars+=precedes:«")
+		if vim.eval('has("multi_byte_encoding")') == "1":
+			if "extends" not in tmp:
+				vim.command("set listchars+=extends:»")
+			if "precedes" not in tmp:
+				vim.command("set listchars+=precedes:«")
+		else:
+			if "extends" not in tmp:
+				vim.command("set listchars+=extends:<bb>")
+			if "precedes" not in tmp:
+				vim.command("set listchars+=precedes:<ab>")
 		del tmp
 	
 
