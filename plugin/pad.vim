@@ -1,7 +1,7 @@
 " File:			pad.vim
 " Description:	Quick-notetaking for vim.
 " Author:		Felipe Morales
-" Version:		0.5
+" Version:		0.6
 
 if (exists("g:loaded_pad") && g:loaded_pad) || &cp
     finish
