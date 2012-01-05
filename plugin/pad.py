@@ -256,7 +256,6 @@ class Pad(object):
 		del vim.current.buffer[:] # clear the buffer
 		vim.current.buffer.append(list(reversed(sorted(lines))))
 		vim.command("normal! dd")
-		vim.command("setlocal nomodifiable")
 	
 	def list_pads(self, query):
 		""" Shows a list of notes.
@@ -276,6 +275,7 @@ class Pad(object):
 			vim.command("silent! botright " + self.window_height + "new __pad__")
 			self.__fill_list(pad_files, query != "")
 			vim.command("set filetype=pad")
+			vim.command("setlocal nomodifiable")
 		else:
 			print "no pads"
 
