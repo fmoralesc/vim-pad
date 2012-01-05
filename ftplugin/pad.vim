@@ -1,3 +1,4 @@
+setlocal fileencoding=utf-8
 setlocal cursorline
 setlocal buftype=nofile
 setlocal noswapfile
