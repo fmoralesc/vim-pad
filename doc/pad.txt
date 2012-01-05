@@ -60,8 +60,9 @@ the file accordingly.
 CONFIGURATION                                         *vim-pad-configuration*
 -------------
 
-NOTE FOR WINDOWS USERS: The plugin might not work correctly unless `encoding`
-is set to `utf-8` in your vimrc.
+NOTE FOR WINDOWS USERS: The plugin will not work correctly unless `encoding` is
+set to `utf-8` in your vimrc. Minimal compatibility for latin1 has been
+provided, though (the plugin will load, but render incorrectly).
 
 IMPORTANT 1: set the *g:pad_dir* variable in your .vimrc, to indicate where the
 notes will be saved. The default is:
