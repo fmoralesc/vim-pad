@@ -90,6 +90,15 @@ class Pad(object):
 		self.cached_data = []
 		self.cached_timestamps = []
 		self.cached_filenames = []
+		
+		# we set listchars, for formatting purposes
+		tmp=[i.split(":")[0] for i in vim.eval("&listchars").split(",")]
+		# we won't touch listchars if the values we want to change are already set
+		if "extends" not in tmp:
+			vim.command("set listchars+=extends:…")
+		if "precedes" not in tmp:
+			vim.command("set listchars+=precedes:…")
+		del tmp
 
 	# Pads
 
