@@ -71,6 +71,17 @@ class Pad(object):
 		self.ignore_case = bool(int(vim.eval("g:pad_search_ignorecase")))
 		self.read_chars = int(vim.eval("g:pad_read_nchars_from_files"))
 
+		# create the caches
+		self.cached_data = []
+		self.cached_timestamps = []
+		self.cached_filenames = []
+
+		# Under windows, we need the path to be in a certain format 
+		if vim.eval('has("win32")') == "1":
+			save_dir = self.save_dir.replace("\\", "\\\\")
+		else:
+			save_dir = self.save_dir
+
 		# vim-pad pollutes the MRU.vim list quite a lot, if let alone.
 		# This should fix that.
 		if vim.eval('exists(":MRU")') == "2":
@@ -80,12 +91,13 @@ class Pad(object):
 			else:
 				tail = ''
 			vim.command("let MRU_Exclude_Files = '^" + 
-					join(self.save_dir, "*") + tail + "'")
+					join(save_dir, ".*") + tail + "'")
 
 		# we forbid writing backups of the notes
 		orig_backupskip = vim.eval("&backupskip")
 		vim.command("set backupskip=" + 
-				",".join([orig_backupskip, join(self.save_dir, "*")]))
+				",".join([orig_backupskip, join(save_dir, "*")]))
+
 
 		# we set listchars, for formatting purposes
 		tmp=[i.split(":")[0] for i in vim.eval("&listchars").split(",")]
@@ -96,11 +108,6 @@ class Pad(object):
 			vim.command("set listchars+=precedes:«")
 		del tmp
 	
-		# create the caches
-		self.cached_data = []
-		self.cached_timestamps = []
-		self.cached_filenames = []
-		
 
 	# Pads
 
