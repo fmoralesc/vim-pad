@@ -57,6 +57,15 @@ class Pad(object):
 			else:
 				return str(hours) + "h ago"
 
+	def get_title(self):
+		title = vim.current.line.decode("utf-8").replace(u'\u21b2', "\n")\
+				.split("\n")[0].\
+				split(u' \u2502 ')[1]
+		try:
+			vim.command('return "' + title + '"')
+		except:
+			vim.command('return "' + vim.current.line.split()[0] + '"')
+
 	def __init__(self):
 		"""
 		Updates the internal variables and initializes the caches.
@@ -109,9 +118,9 @@ class Pad(object):
 				vim.command("set listchars+=precedes:Â«")
 		else:
 			if "extends" not in tmp:
-				vim.command("set listchars+=extends:»")
+				vim.command("set listchars+=extends:Â»")
 			if "precedes" not in tmp:
-				vim.command("set listchars+=precedes:«")
+				vim.command("set listchars+=precedes:Â«")
 		del tmp
 	
 

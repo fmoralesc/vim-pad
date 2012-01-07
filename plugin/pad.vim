@@ -101,3 +101,7 @@ execute "au! BufLeave" printf("%s*", g:pad_dir) ":py pad.pad_update()"
 pyfile <sfile>:p:h/pad.py
 " the python object pad represents the plugin state
 python pad=Pad()
+
+function! Pad_getTitle()
+	py pad.get_title()
+endfunction
