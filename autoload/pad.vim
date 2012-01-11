@@ -61,6 +61,7 @@ function! pad#Sort()
 	if s:sort_type != ""
 		execute "python padlib.list_local.sort('".s:sort_type."')"
 	endif
+	redraw!
 endfunction
 
 endif

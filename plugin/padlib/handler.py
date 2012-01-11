@@ -1,5 +1,7 @@
+# vim: set fdm=marker fdc=2 :
 # coding=utf-8
 
+# imports {{{1
 import vim
 import re
 from os import listdir
@@ -8,11 +10,12 @@ from subprocess import Popen, PIPE
 from padlib.utils import get_save_dir
 from padlib.timestamps import timestamp, natural_timestamp
 
+# globals (caches) {{{1
 cached_data = []
 cached_timestamps = []
 cached_filenames = []
 
-def open_pad(path=None, first_line=None):
+def open_pad(path=None, first_line=None): #{{{1
 	"""Creates or opens a note.
 
 	path: a valid path for a note.
@@ -49,7 +52,7 @@ def open_pad(path=None, first_line=None):
 		vim.command("normal! j")
 
 
-def get_filelist(query=None):
+def get_filelist(query=None): # {{{1
 	""" __get_filelist(query) -> list_of_notes
 
 	Returns a list of notes. If no query is provided, all the valid filenames in
@@ -85,7 +88,7 @@ def get_filelist(query=None):
 	return filter(lambda p: basename(p).isdigit() == True, files)
 
 
-def fill_list(files, queried=False, custom_order=False):
+def fill_list(files, queried=False, custom_order=False): # {{{1
 	""" Writes the list of notes to the __pad__ buffer.
 
 	files: a list of files to process.
@@ -155,7 +158,7 @@ def fill_list(files, queried=False, custom_order=False):
 		vim.current.buffer.append(list(lines))
 	vim.command("normal! dd")
 
-def display(query):
+def display(query): # {{{1
 	""" Shows a list of notes.
 
 	query: a string representing a regex search. Can be "".
@@ -177,7 +180,7 @@ def display(query):
 	else:
 		print "no pads"
 
-def search_pads():
+def search_pads(): # {{{1
 	""" Aks for a query and lists the matching notes.
 	"""
 	if get_save_dir() == "":

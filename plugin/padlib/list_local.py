@@ -67,7 +67,6 @@ def incremental_search(): #{{{1
 		vim.command("redraw")
 		vim.command('echo ">> ' + info + query + '"')
 # }}}1
-
 # sort types {{{1
 SORT_TYPES = {
 		"1": "title",

@@ -14,3 +14,4 @@ else
 endif
 noremap <buffer> <silent> <esc> :bw<cr>
 noremap <buffer> <silent> <S-f> :call pad#IncrementalSearch()<cr>
+noremap <buffer> <silent> <S-s> :call pad#Sort()<cr>
