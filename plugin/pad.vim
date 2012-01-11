@@ -1,36 +1,41 @@
+" vim: set fdm=marker fdc=2:
+
 " File:			pad.vim
 " Description:	Quick-notetaking for vim.
 " Author:		Felipe Morales
-" Version:		0.6
+" Version:		0.7pre
 
-if (exists("g:loaded_pad") && g:loaded_pad) || &cp
-    finish
-endif
-let g:loaded_pad = 1
+	" Must we load? {{{1
+	if (exists("g:loaded_pad") && g:loaded_pad)
+		|| &cp 
+		|| has("python") == 0
+		finish
+	endif
+	let g:loaded_pad = 1 "}}}
 
-" Default Settings:
-"
-if !exists('g:pad_dir')
-	if filewritable(expand("~/notes")) == 2
-		let g:pad_dir = "~/notes"
+	" Default Settings: {{{1
+	"
+	if !exists('g:pad_dir')
+		if filewritable(expand("~/notes")) == 2
+			let g:pad_dir = "~/notes"
+		else
+			let g:pad_dir = ""
+		endif
 	else
-		let g:pad_dir = ""
+		if filewritable(expand(eval("g:pad_dir"))) != 2
+			let g:pad_dir = ""
+		endif
 	endif
-else
-	if filewritable(expand(eval("g:pad_dir"))) != 2
-		let g:pad_dir = ""
+	if !exists('g:pad_default_format')
+		let g:pad_default_format = "markdown"
 	endif
-endif
-if !exists('g:pad_format')
-	let g:pad_format = "markdown"
-endif
-if !exists('g:pad_window_height')
-	let g:pad_window_height = 5
-endif
-if !exists('g:pad_search_backend')
-	let g:pad_search_backend = "grep"
-endif
-if !exists('g:pad_search_ignorecase')
+	if !exists('g:pad_window_height')
+		let g:pad_window_height = 5
+	endif
+	if !exists('g:pad_search_backend')
+		let g:pad_search_backend = "grep"
+	endif
+	if !exists('g:pad_search_ignorecase')
 	let g:pad_search_ignorecase = 1
 endif
 if !exists('g:pad_read_nchars_from_files')
@@ -43,20 +48,36 @@ if !exists('g:pad_use_default_mappings')
 	let g:pad_use_default_mappings = 1
 endif
 
-" Commands:
+" Base: {{{1
+"
+let s:pad_plugin_path=expand('<sfile>:p:h')
+python<<EOF
+import vim
+import sys
+sys.path.append(vim.eval('s:pad_plugin_path'))
+ # this in turn imports padlib.handler, padlib.list_local, padlib.pad_local
+import padlib
+EOF
+
+" To update the date when files are modified
+execute "au! BufEnter" printf("%s*", g:pad_dir) ":let b:pad_modified = 0"
+execute "au! BufWritePre" printf("%s*", g:pad_dir) ":let b:pad_modified = eval(&modified)"
+execute "au! BufLeave" printf("%s*", g:pad_dir) ":call pad#UpdatePad()"
+
+" Commands: {{{1
 "
 " Creates a new note
-command! OpenPad exec 'py pad.pad_open()'
+command! OpenPad call pad#OpenPad()
 " Shows a list of the existing notes
-command! -nargs=? ListPads exec "py pad.list_pads('<args>')"
+command! -nargs=? ListPads call pad#ListPads('<args>')
 
-" Key Mappings:
+" Key Mappings: {{{1
 "
 noremap <silent> <unique> <Plug>ListPads <esc>:ListPads<CR>
 inoremap <silent> <unique> <Plug>ListPads <esc>:ListPads<CR>
 noremap <silent> <unique>  <Plug>OpenPad <esc>:OpenPad<CR>
 inoremap <silent> <unique> <Plug>OpenPad <esc>:OpenPad<CR>
-noremap <silent> <unique> <Plug>SearchPads :py pad.search_pads()<cr>
+noremap <silent> <unique> <Plug>SearchPads :call pad#SearchPads()<cr>
 
 " You can set custom bindings by re-mapping the previous ones.
 " For example, you can add the following to your vimrc:
@@ -91,17 +112,3 @@ if g:pad_use_default_mappings == 1
 
   call s:CreateMapping("<leader>s", "SearchPads", "normal")
 endif
-
-" To update the date when files are modified
-execute "au! BufEnter" printf("%s*", g:pad_dir) ":let b:pad_modified = 0"
-execute "au! BufWritePre" printf("%s*", g:pad_dir) ":let b:pad_modified = eval(&modified)"
-execute "au! BufLeave" printf("%s*", g:pad_dir) ":py pad.pad_update()"
-
-" Load the plugin code proper
-pyfile <sfile>:p:h/pad.py
-" the python object pad represents the plugin state
-python pad=Pad()
-
-function! Pad_getTitle()
-	py pad.get_title()
-endfunction
