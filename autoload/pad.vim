@@ -56,4 +56,11 @@ function! pad#IncrementalSearch()
 	python padlib.list_local.incremental_search()
 endfunction
 
+function! pad#Sort()
+	let s:sort_type = input("[pad] sort list by (title=1, tags=2, date=3): ", "1")
+	if s:sort_type != ""
+		execute "python padlib.list_local.sort('".s:sort_type."')"
+	endif
+endfunction
+
 endif

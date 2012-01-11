@@ -85,16 +85,23 @@ def get_filelist(query=None):
 	return filter(lambda p: basename(p).isdigit() == True, files)
 
 
-def fill_list(files, queried=False):
+def fill_list(files, queried=False, custom_order=False):
 	""" Writes the list of notes to the __pad__ buffer.
 
 	files: a list of files to process.
 
 	queried: whether files is the result of a query or not.
 
+	custom_order: whether we should keep the order of the list given (implies queried=True).
+
 	Keeps a cache so we only read the notes when the files have been modified.
 	"""
 	global cached_filenames, cached_timestamps, cached_data
+	
+	# we won't want to touch the cache
+	if custom_order:
+		queried = True
+	
 	timestamps = [getmtime(join(get_save_dir(), f)) for f in files]
 	
 	# we will have a new list only on the following cases
@@ -142,7 +149,10 @@ def fill_list(files, queried=False):
 
 	# we now show the list
 	del vim.current.buffer[:] # clear the buffer
-	vim.current.buffer.append(list(reversed(sorted(lines))))
+	if not custom_order:
+		vim.current.buffer.append(list(reversed(sorted(lines))))
+	else:
+		vim.current.buffer.append(list(lines))
 	vim.command("normal! dd")
 
 def display(query):
