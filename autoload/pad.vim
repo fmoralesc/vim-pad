@@ -52,7 +52,7 @@ function! pad#DeletePad()
 	python padlib.list_local.delete_pad()
 endfunction
 
-function!pad#IncrementalSearch()
+function! pad#IncrementalSearch()
 	python padlib.list_local.incremental_search()
 endfunction
 

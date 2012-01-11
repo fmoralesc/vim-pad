@@ -13,30 +13,30 @@
 	endif
 	let g:loaded_pad = 1 "}}}
 
-	" Default Settings: {{{1
-	"
-	if !exists('g:pad_dir')
-		if filewritable(expand("~/notes")) == 2
-			let g:pad_dir = "~/notes"
-		else
-			let g:pad_dir = ""
-		endif
+" Default Settings: {{{1
+"
+if !exists('g:pad_dir')
+	if filewritable(expand("~/notes")) == 2
+		let g:pad_dir = "~/notes"
 	else
-		if filewritable(expand(eval("g:pad_dir"))) != 2
-			let g:pad_dir = ""
-		endif
+		let g:pad_dir = ""
 	endif
-	if !exists('g:pad_default_format')
-		let g:pad_default_format = "markdown"
+else
+	if filewritable(expand(eval("g:pad_dir"))) != 2
+		let g:pad_dir = ""
 	endif
-	if !exists('g:pad_window_height')
-		let g:pad_window_height = 5
-	endif
-	if !exists('g:pad_search_backend')
-		let g:pad_search_backend = "grep"
-	endif
-	if !exists('g:pad_search_ignorecase')
-	let g:pad_search_ignorecase = 1
+endif
+if !exists('g:pad_default_format')
+	let g:pad_default_format = "markdown"
+endif
+if !exists('g:pad_window_height')
+	let g:pad_window_height = 5
+endif
+if !exists('g:pad_search_backend')
+	let g:pad_search_backend = "grep"
+endif
+if !exists('g:pad_search_ignorecase')
+let g:pad_search_ignorecase = 1
 endif
 if !exists('g:pad_read_nchars_from_files')
 	let g:pad_read_nchars_from_files = 200
@@ -50,11 +50,9 @@ endif
 
 " Base: {{{1
 "
-let s:pad_plugin_path=expand('<sfile>:p:h')
 python<<EOF
-import vim
-import sys
-sys.path.append(vim.eval('s:pad_plugin_path'))
+import vim, sys
+sys.path.append(vim.eval("expand('<sfile>:p:h')"))
  # this in turn imports padlib.handler, padlib.list_local, padlib.pad_local
 import padlib
 EOF
