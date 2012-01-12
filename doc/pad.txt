@@ -1,4 +1,4 @@
-*vim-pad*                     for vim 7.3               Last change: 5 jan 2012
+*vim-pad*                     for vim 7.3               Last change: 11 jan 2012
 
 vim-pad is a quick notetaking plugin for vim.
 
@@ -11,6 +11,7 @@ and searching of notes can be done using the same interface.
 - Configuration |vim-pad-configuration|
 	- Notes Format |vim-pad-notes-format|
 	- Misc |vim-pad-misc-config|
+- Functions |vim-pad-functions|
 - Rationale |vim-pad-design-rationale|
 
 
@@ -55,6 +56,9 @@ in the first line.
 When in a note, `<localleader><Del>` (`<localleader>dd` in the terminal) will
 delete it. `<localleader>+m` will ask for a filetype and insert a modeline in
 the file accordingly.
+
+You can sort the notes in the current view by title, tags or date by pressing
+<Shift-S> and selecting the mode.
 
 
 CONFIGURATION                                         *vim-pad-configuration*
@@ -126,6 +130,22 @@ When showing the list of notes, vim-pad reads by default 200 chars from the
 files, in order to show a summary of the file. You can adjust how many chars
 you want vim-pad to read by setting the *g:pad_read_nchars_from_files* variable.
 
+FUNCTIONS                                              *vim-pad-functions*
+---------
+
+- *pad#OpenPad()*           creates a new note.
+- *pad#ListPads()*          displays the list of notes.
+- *pad#SearchPads(query)*   shows the search note prompt
+- *pad#UpdatePad()*         updates the pad file (internal)
+- *pad#DeleteThis()*        deletes the currently open note
+- *pad#AddModeline()*       adds a modeline
+- *pad#EditPad()*           edit selected note
+- *pad#DeletePad()*         delete selected note
+- *pad#IncrementalSearch()* search incrementally
+- *pad#Sort()*              sort the displayed entries
+- *pad#GetPadTitle()*       retrieve the selected note title
+- *pad#GetHumanDate()*      retrieve the selected note data
+- *pad#GetPadId()*          retrieve the selected note id
 
 RATIONALE                                               *vim-pad-design-rationale*
 ---------
