@@ -49,19 +49,12 @@ if !exists('g:pad_use_default_mappings')
 endif
 
 " Base: {{{1
-"
 python<<EOF
 import vim, sys
 sys.path.append(vim.eval("expand('<sfile>:p:h')"))
  # this in turn imports padlib.handler, padlib.list_local, padlib.pad_local
 import padlib
 EOF
-
-" To update the date when files are modified
-execute "au! BufEnter" printf("%s*", g:pad_dir) ":let b:pad_modified = 0"
-execute "au! BufWritePre" printf("%s*", g:pad_dir) ":let b:pad_modified = eval(&modified)"
-execute "au! BufLeave" printf("%s*", g:pad_dir) ":call pad#UpdatePad()"
-
 " Commands: {{{1
 "
 " Creates a new note

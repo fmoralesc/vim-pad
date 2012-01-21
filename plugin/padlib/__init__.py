@@ -1,6 +1,6 @@
 import padlib.handler
 import padlib.list_local
 import padlib.pad_local
-import padlib.external
+import padlib.vim_globals
 
-padlib.external.set_external()
+padlib.vim_globals.set_vim_globals()

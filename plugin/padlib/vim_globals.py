@@ -3,7 +3,14 @@ import vim
 from os.path import join
 from padlib.utils import get_save_dir
 
-def set_external():
+def set_vim_globals():
+	""" Sets global vim preferences and commands.
+	"""
+	# To update the date when files are modified
+	vim.command('execute "au! BufEnter" printf("%s*", g:pad_dir) ":let b:pad_modified = 0"')
+	vim.command('execute "au! BufWritePre" printf("%s*", g:pad_dir) ":let b:pad_modified = eval(&modified)"')
+	vim.command('execute "au! BufLeave" printf("%s*", g:pad_dir) ":call pad#UpdatePad()"')
+
 	# vim-pad pollutes the MRU.vim list quite a lot, if let alone.
 	# This should fix that.
 	if vim.eval('exists(":MRU")') == "2":
@@ -19,19 +26,4 @@ def set_external():
 	orig_backupskip = vim.eval("&backupskip")
 	vim.command("set backupskip=" + 
 			",".join([orig_backupskip, join(get_save_dir(), "*")]))
-
-
-	# we set listchars, for formatting purposes
-	tmp=[i.split(":")[0] for i in vim.eval("&listchars").split(",")]
-	# we won't touch listchars if the values we want to change are already set
-	if vim.eval('has("multi_byte_encoding")') == "1":
-		if "extends" not in tmp:
-			vim.command("set listchars+=extends:»")
-		if "precedes" not in tmp:
-			vim.command("set listchars+=precedes:«")
-	else:
-		if "extends" not in tmp:
-			vim.command("set listchars+=extends:»")
-		if "precedes" not in tmp:
-			vim.command("set listchars+=precedes:«")
 
