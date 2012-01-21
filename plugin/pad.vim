@@ -47,12 +47,14 @@ endif
 if !exists('g:pad_use_default_mappings')
 	let g:pad_use_default_mappings = 1
 endif
+if !exists('g:pad_modeline_position')
+	let g:pad_modeline_position = 'bottom'
+endif
 
 " Base: {{{1
 python<<EOF
 import vim, sys
 sys.path.append(vim.eval("expand('<sfile>:p:h')"))
- # this in turn imports padlib.handler, padlib.list_local, padlib.pad_local
 import padlib
 EOF
 " Commands: {{{1

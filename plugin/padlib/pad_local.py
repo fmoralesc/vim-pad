@@ -4,6 +4,7 @@ from os import remove
 from os.path import expanduser, exists, join
 from padlib.timestamps import timestamp
 from padlib.utils import get_save_dir
+from padlib.modelines import format_modeline
 
 def update():
 	""" Moves a note to a new location if its contents are modified.
@@ -34,7 +35,10 @@ def add_modeline():
 	"""
 	mode = vim.eval('input("filetype: ", "", "filetype")')
 	if mode:
-		vim.current.buffer.append("<!-- vim: set ft=" + mode + ": -->", 0)
+		args = [format_modeline(mode)]
+		if vim.eval('g:pad_modeline_position') == 'top':
+			args.append(0)
+		vim.current.buffer.append(*args)
 		vim.command("set filetype=" + mode)
 		vim.command("set nomodified")
 

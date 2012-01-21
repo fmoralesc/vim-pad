@@ -1,4 +1,4 @@
-*vim-pad*                     for vim 7.3               Last change: 11 jan 2012
+*vim-pad*                     for vim 7.3               Last change: 21 jan 2012
 
 vim-pad is a quick notetaking plugin for vim.
 
@@ -102,13 +102,18 @@ format, `pandoc` for example, put
 
     let *g:pad_format* = "pandoc"
 
-in your `.vimrc`. You can also set the individual format of a note by turning
-the first line in the note into a modeline:
+in your `.vimrc`. You can also set the individual format of a note by adding
+the corresponding modeline. For example,
 
 	<!-- vim: set ft=vo_base: -->
 
-at the beggining of a file will tell vim to open the file as a VimOutliner file.
-The modeline won't be shown in the list view.
+at the beggining or the end of a file will tell vim to open the file as a
+VimOutliner file. The modeline won't be shown in the list view. 
+
+The position modelines are inserted in a file when using pad#AddModeline is
+determined by the value of `*g:pad_modeline_position*`. The default is
+`bottom`, which means that it will be inserted at the end of the file. A value
+of `top` means that it will be inserted in the first line of the file.
 
 
 MISC                                                   *vim-pad-misc-config*
