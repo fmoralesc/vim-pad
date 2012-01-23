@@ -1,6 +1,6 @@
 import vim
 import re
-from padlib.timestamps import timestamp
+from padlib.timestamps import timestamp, base36encode
 
 class PadInfo(object):
 	__slots__ = "id", "summary", "body", "isEmpty"
@@ -33,6 +33,6 @@ class PadInfo(object):
 			self.isEmpty = False
 			self.id = "".join(i for i in self.summary \
 					if i.isalnum() or i.isspace() and ord(i)<128 ).\
-					replace(" ", "_").lower() + "." + timestamp()
+					replace(" ", "_").lower() + "." + base36encode(int(timestamp()))
 
 

@@ -78,12 +78,10 @@ def get_filelist(query=None): # {{{1
 			command.append("-i")
 		command.append("--max-count=1")
 		
-		search_results = [line.split(":")[0] 
+		files = [line.split(":")[0] 
 				for line in Popen(command, stdout=PIPE, stderr=PIPE).communicate()[0].\
 							replace(get_save_dir() + "/", "").\
 							split("\n")	if line != '']	
-		
-		files = list(reversed(sorted(search_results)))
 	
 	return files
 
@@ -103,7 +101,7 @@ def fill_list(files, queried=False, custom_order=False): # {{{1
 	# we won't want to touch the cache
 	if custom_order:
 		queried = True
-	
+
 	timestamps = [getmtime(join(get_save_dir(), f)) for f in files]
 	
 	# we will have a new list only on the following cases
