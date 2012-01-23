@@ -32,7 +32,7 @@ class PadInfo(object):
 		if self.summary != "":
 			self.isEmpty = False
 			self.id = "".join(i for i in self.summary \
-					if i.isalnum() or i.isspace() and ord(i)<128 ).\
+					if i.isalnum() or i.isspace()).\
 					replace(" ", "_").lower() + "." + base36encode(int(timestamp()))
 
 
