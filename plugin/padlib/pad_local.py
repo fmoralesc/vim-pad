@@ -2,7 +2,7 @@ import vim
 from shutil import move
 from os import remove
 from os.path import expanduser, exists, join
-from padlib.timestamps import timestamp
+from padlib.pad import PadInfo
 from padlib.utils import get_save_dir
 from padlib.modelines import format_modeline
 
@@ -15,9 +15,10 @@ def update():
 	modified = bool(int(vim.eval("b:pad_modified")))
 	if modified:
 		old_path = expanduser(vim.current.buffer.name)
-		new_path = expanduser(join(get_save_dir(), timestamp()))
-		vim.command("bw")
-		move(old_path, new_path)
+		new_path = expanduser(join(get_save_dir(), PadInfo(vim.current.buffer).id))
+		if old_path != new_path:
+			vim.command("bw")
+			move(old_path, new_path)
 
 def delete():
 	""" (Local command) Deletes the current note.

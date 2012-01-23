@@ -20,7 +20,7 @@ def natural_timestamp(timestamp):
 	24 hours, and the format %Y-%m-%d %H:%M:%S otherwise.
 	"""
 	timestamp = basename(timestamp)
-	f_timestamp = float(int(timestamp)) / 1000000
+	f_timestamp = float(timestamp) / 1000000
 	tmp_datetime = datetime.datetime.fromtimestamp(f_timestamp)
 	diff = datetime.datetime.now() - tmp_datetime
 	days = diff.days

@@ -5,9 +5,10 @@
 import vim
 import re
 from os import listdir
-from os.path import join, getmtime, basename
+from os.path import join, getmtime
 from subprocess import Popen, PIPE
 from padlib.utils import get_save_dir
+from padlib.pad import PadInfo
 from padlib.timestamps import timestamp, natural_timestamp
 
 # globals (caches) {{{1
@@ -84,9 +85,7 @@ def get_filelist(query=None): # {{{1
 		
 		files = list(reversed(sorted(search_results)))
 	
-	# we are interested only on the files whose name is a digit, because it means they are created by us
-	return filter(lambda p: basename(p).isdigit() == True, files)
-
+	return files
 
 def fill_list(files, queried=False, custom_order=False): # {{{1
 	""" Writes the list of notes to the __pad__ buffer.
@@ -112,28 +111,13 @@ def fill_list(files, queried=False, custom_order=False): # {{{1
 		lines = []
 		for pad in files:
 			with open(join(get_save_dir(), pad)) as pad_file:
-				data = [line for line in pad_file.read(int(vim.eval("g:pad_read_nchars_from_files"))).\
-						split("\n") if line != ""]
-			if data != []:
-				# we discard modelines
-				if re.match("^.* vim: set .*:.*$", data[0]):
-					data = data[1:]
-				
-				summary = data[0].strip()
-				if summary[0] in ("%", "#"): #pandoc and markdown titles
-					summary = "".join(summary[1:]).strip()
-				
-				body = "\n".join([line.strip() for line in data[1:]]).\
-						replace("\n", u'\u21b2 '.encode('utf-8'))
-				
-				tail = ''
-				if data[1:] not in ([''], []):
-					tail = u'\u21b2'.encode('utf-8') + ' ' +  body
+				info = PadInfo(pad_file)
+				if info.isEmpty:
+					tail = "[EMPTY]"
+				else:
+					tail = u'\u21b2'.encode('utf-8').join((info.summary, info.body))
+				lines.append(pad + " @ " + tail)
 
-				lines.append(pad + " @ " + summary + tail)
-			else:
-				lines.append(pad + " @ " + "[EMPTY]")
-		
 		# we only update the cache if we are not queried, to preserve the global cache
 		if not queried:
 			cached_data = lines
@@ -143,7 +127,8 @@ def fill_list(files, queried=False, custom_order=False): # {{{1
 	# update natural timestamps
 	def add_natural_timestamp(matchobj):
 		id_string = matchobj.group("id")
-		return id_string + " @ " + natural_timestamp(id_string).ljust(19) + " │"
+		mtime = str(int(getmtime(join(get_save_dir(), matchobj.group("id")))*1000000))
+		return id_string + " @ " + natural_timestamp(mtime).ljust(19) + " │"
 	
 	if not queried: # we use the cache
 		lines = [re.sub("(?P<id>^.*?) @", add_natural_timestamp, line) for line in cached_data]
