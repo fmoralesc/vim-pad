@@ -24,6 +24,11 @@ def base36encode(number, alphabet='0123456789abcdefghijklmnopqrstuvxxyz'):
  
     return sign + base36
 
+def protect(id):
+	""" Prevent filename collisions
+	"""
+	return id + "." + base36encode(int(timestamp()))
+
 def timestamp():
 	"""timestamp() -> str:timestamp
 	
