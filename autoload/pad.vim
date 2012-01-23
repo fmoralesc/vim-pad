@@ -4,17 +4,26 @@
  
 " Gets the title of the currently selected pad
 function! pad#GetPadTitle()
-	return split(split(substitute(getline('.'), '↲','\n', "g"), '\n')[0], ' │ ')[1]
+	if getline('.') != ""
+		return split(split(substitute(getline('.'), '↲','\n', "g"), '\n')[0], ' │ ')[1]
+	endif
+	return ""
 endfunction
 
 " Gets the human readable date of the currently selected pad
 function! pad#GetPadHumanDate()
-	return split(split(getline('.'), ' │')[0], '@')[1]
+	if getline('.') != ""
+		return split(split(getline('.'), ' │')[0], '@')[1]
+	endif
+	return ""
 endfunction
 
 " Gets the id of the currently selected pad
 function! pad#GetPadId()
-	return split(getline('.'))[0]
+	if getline('.') != ""
+		return split(getline('.'))[0]
+	endif
+	return ""
 endfunction
 
 " Operations: {{{1
