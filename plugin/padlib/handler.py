@@ -107,6 +107,8 @@ def fill_list(files, queried=False, custom_order=False): # {{{1
 	# we will have a new list only on the following cases
 	if queried or files != cached_filenames or timestamps != cached_timestamps:
 		lines = []
+		if not custom_order:
+			files = reversed(sorted(files, key=lambda i: getmtime(join(get_save_dir(), i))))
 		for pad in files:
 			with open(join(get_save_dir(), pad)) as pad_file:
 				info = PadInfo(pad_file)
@@ -115,7 +117,7 @@ def fill_list(files, queried=False, custom_order=False): # {{{1
 				else:
 					tail = u'\u21b2'.encode('utf-8').join((info.summary, info.body))
 				lines.append(pad + " @ " + tail)
-
+		
 		# we only update the cache if we are not queried, to preserve the global cache
 		if not queried:
 			cached_data = lines
@@ -135,10 +137,7 @@ def fill_list(files, queried=False, custom_order=False): # {{{1
 
 	# we now show the list
 	del vim.current.buffer[:] # clear the buffer
-	if not custom_order:
-		vim.current.buffer.append(list(reversed(sorted(lines))))
-	else:
-		vim.current.buffer.append(list(lines))
+	vim.current.buffer.append(list(lines))
 	vim.command("normal! dd")
 
 def display(query): # {{{1
