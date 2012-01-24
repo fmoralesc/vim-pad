@@ -1,11 +1,11 @@
 import vim
 from shutil import move
 from os import remove
-from os.path import expanduser, exists, join
+from os.path import expanduser, exists, join, splitext, isfile
 from padlib.pad import PadInfo
-from padlib.timestamps import protect
 from padlib.utils import get_save_dir
 from padlib.modelines import format_modeline
+from glob import glob
 
 def update():
 	""" Moves a note to a new location if its contents are modified.
@@ -15,9 +15,16 @@ def update():
 	"""
 	modified = bool(int(vim.eval("b:pad_modified")))
 	if modified:
+		id = PadInfo(vim.current.buffer).id
 		old_path = expanduser(vim.current.buffer.name)
-		new_path = protect(expanduser(join(get_save_dir(), PadInfo(vim.current.buffer).id)))
-		if old_path != new_path:
+
+		fs = filter(isfile, glob(expanduser(join(get_save_dir(), id))+"*"))
+		if old_path not in fs:
+			if fs == []:
+				new_path = expanduser(join(get_save_dir(), id))
+			else:
+				exts = map(lambda i: '0' if i == '' else i[1:], map(lambda i: splitext(i)[1], fs))
+				new_path = ".".join([expanduser(join(get_save_dir(), id)), str(int(max(exts)) + 1)])
 			vim.command("bw")
 			move(old_path, new_path)
 
