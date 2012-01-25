@@ -32,6 +32,4 @@ class PadInfo(object):
 
 		if self.summary != "":
 			self.isEmpty = False
-			self.id = "".join(i for i in self.summary \
-					if i.isalnum() or i.isspace()).\
-					replace(" ", "_").lower() 
+			self.id = self.summary.lower().replace(" ", "_")
