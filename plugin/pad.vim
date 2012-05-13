@@ -5,13 +5,11 @@
 " Author:		Felipe Morales
 " Version:		0.7pre
 
-	" Must we load? {{{1
-	if (exists("g:loaded_pad") && g:loaded_pad)
-		|| &cp 
-		|| has("python") == 0
-		finish
-	endif
-	let g:loaded_pad = 1 "}}}
+" Must we load? {{{1
+if (exists("g:loaded_pad") && g:loaded_pad)	|| &cp 	|| has("python") == 0
+	finish
+endif
+let g:loaded_pad = 1 "}}}
 
 " Default Settings: {{{1
 "
@@ -80,11 +78,11 @@ noremap <silent> <unique> <Plug>SearchPads :call pad#SearchPads()<cr>
 " If you want disable the default_mappings, set
 " g:pad_use_default_mappings to 0
 
-function s:CreateMapping(key, action, modename)
+function! s:CreateMapping(key, action, modename)
   let mode = a:modename == "normal" ? "nmap" : "imap"
 
   try
-    execute mode . " <unique> " . a:key . " <Plug>" . a:action
+    execute "silent " . mode . " <unique> " . a:key . " <Plug>" . a:action
   catch /E227/
     echom "[vim-pad] " . a:key . " in " . a:modename . " mode is already mapped."
   endtry
