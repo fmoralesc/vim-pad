@@ -2,13 +2,14 @@
 
 A quick notetaking plugin for vim.
 
-It offers a way of managing notes similar to the one in tools like Notational
-Velocity: file management is removed from the notetaking workflow, and creation
-and searching of notes can be done using the same interface. File management is
-abstracted and replaced by searching and sorting facilities. Notes handled by
-vim-pad are free-form: the plugin doesn't impose any format, and has utilities
-to handle notes in several formats. You can use it along other notetaking
-plugins for vim.
+It offers a way of managing notes similar to the one made popular by tools like
+Notational Velocity, where file management is removed from the notetaking
+workflow, replaced by searching and sorting facilities, and where the creation
+and searching of notes are integrated.
+
+Notes in vim-pad are free-form: the plugin doesn't impose any format, and in
+fact encourages the use of any format you want, so you can use it along other
+plugins like VimOutliner and quicktask.
 
 ![screen 1](http://i.minus.com/iOd0AOpCUXgu4.png)
 ![screen 2](http://i.minus.com/i86fzuBua28Ox.png)
