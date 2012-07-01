@@ -161,7 +161,10 @@ def display(query): # {{{1
     if len(pad_files) > 0:
         if vim.eval("bufexists('__pad__')") == "1":
             vim.command("bw __pad__")
-        vim.command("silent! botright " + str(vim.eval("g:pad_window_height")) + "new __pad__")
+        if vim.eval("exists('g:pad_open_right')") == "1" and vim.eval('g:pad_open_right') == "1":
+            vim.command("silent! rightbelow " + str(vim.eval('g:pad_window_height')) + "vnew __pad__")
+        else:
+            vim.command("silent! botright " + str(vim.eval("g:pad_window_height")) + "new __pad__")
         fill_list(pad_files, query != "")
         vim.command("set filetype=pad")
         vim.command("setlocal nomodifiable")

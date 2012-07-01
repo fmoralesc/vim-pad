@@ -1,0 +1,15 @@
+ vim: ft=vo_base: 
+State 0
+	User is editing a file, normal or insert mode
+		* Event:Key: <Control><Esc> - > State 1
+		* Event:Key: <Shift><Esc> - > State 2
+State 1
+	Notes list is displayed
+		* Event:Init
+			-> Get notes list -> Populate cache
+			-> Display from cache
+		* Event:VimResize 
+			- > Display from cache
+State 2
+	New list is displayed
+
