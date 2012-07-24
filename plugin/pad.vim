@@ -88,18 +88,22 @@ function! s:CreateMapping(key, action, modename)
   endtry
 endfunction
 
-if g:pad_use_default_mappings == 1
+if g:pad_use_default_mappings > 0
+	call s:CreateMapping("<leader>s", "SearchPads", "normal")
 	if has("gui_running")
-    call s:CreateMapping("<C-esc>", "ListPads", "normal")
-    call s:CreateMapping("<C-esc>", "ListPads", "insert")
-    call s:CreateMapping("<S-esc>", "OpenPad", "normal")
-    call s:CreateMapping("<S-esc>", "OpenPad", "insert")
+		call s:CreateMapping("<C-esc>", "ListPads", "normal")
+		call s:CreateMapping("<S-esc>", "OpenPad", "normal")
 	else " the previous mappings don't work in the terminal
-    call s:CreateMapping("<leader><esc>", "ListPads", "normal")
-    call s:CreateMapping("<leader><esc>", "ListPads", "insert")
-    call s:CreateMapping("<leader>n", "OpenPad", "normal")
-    call s:CreateMapping("<leader>n", "OpenPad", "insert")
+		call s:CreateMapping("<leader><esc>", "ListPads", "normal")
+		call s:CreateMapping("<leader>n", "OpenPad", "normal")
 	endif
-
-  call s:CreateMapping("<leader>s", "SearchPads", "normal")
+	if g:pad_use_default_mappings > 1
+		if has("gui_running")
+			call s:CreateMapping("<C-esc>", "ListPads", "insert")
+			call s:CreateMapping("<S-esc>", "OpenPad", "insert")
+		else
+			call s:CreateMapping("<leader><esc>", "ListPads", "insert")
+			call s:CreateMapping("<leader>n", "OpenPad", "insert")
+		endif
+	endif
 endif

@@ -82,18 +82,15 @@ might need to escape backward slashes, like so:
     let g:pad_dir = "C:\\Users\\Foo\\Documents\\Notes"
 
 IMPORTANT 2: Please check the mappings before using the plugin. The default
-mappings are quite ergonomic, but you might want to change them. Also, if the
-default mappings have conflicts, vim-pad will let you know. You can disable the
-default mappings by setting g:pad_use_default_mappings to 0. If you do so, you
-should add the followings lines to your vimrc:
+mappings are quite ergonomic, but you might want to change them. If the
+default mappings have conflicts, vim-pad will let you know. 
 
-	nmap USERMAP <Plug>ListPads
-	imap USERMAP <Plug>ListPads
-	nmap USERMAP <Plug>OpenPad
-	imap USERMAP <Plug>OpenPad
-	nmap USERMAP <Plug>SearchPads
-
-replacing USERMAP with your desired mappings.
+You can configure the default mappings by setting *g:pad_use_default_mappings*
+to a value between 0 and 2.  0 disables the default mappings (you'll have to
+add your own mappings for `<Plug>ListPads`, `<Plug>OpenPad` and
+`<Plug>SearchPads` to your vimrc). 1 enables mappings for normal mode. 2
+enables mappings for both normal and insert mode. The default value for
+g:pad_use_default_mappings is 1.
 
 NOTES FORMAT                                           *vim-pad-notes-format*
 
