@@ -87,11 +87,11 @@ default mappings have conflicts, vim-pad will let you know. You can disable the
 default mappings by setting g:pad_use_default_mappings to 0. If you do so, you
 should add the followings lines to your vimrc:
 
-	nmap USERMAP <Plug>PadListPads
-	imap USERMAP <Plug>PadListPads
-	nmap USERMAP <Plug>PadOpenPad
-	imap USERMAP <Plug>PadOpenPad
-	nmap USERMAP <Plug>PadSearchPads
+	nmap USERMAP <Plug>ListPads
+	imap USERMAP <Plug>ListPads
+	nmap USERMAP <Plug>OpenPad
+	imap USERMAP <Plug>OpenPad
+	nmap USERMAP <Plug>SearchPads
 
 replacing USERMAP with your desired mappings.
 

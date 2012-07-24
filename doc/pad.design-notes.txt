@@ -11,5 +11,5 @@ State 1
 		* Event:VimResize 
 			- > Display from cache
 State 2
-	New list is displayed
+	New note is displayed
 
