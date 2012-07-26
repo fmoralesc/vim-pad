@@ -127,7 +127,7 @@ def fill_list(files, queried=False, custom_order=False): # {{{1
                         tail = "[EMPTY]"
                     else:
                         if bool(int(vim.eval("g:pad_show_dir"))):
-                            tail = u'\u21b2'.encode('utf-8').join((info.folder, info.summary, info.body))
+                            tail = info.folder + u'\u2e25 '.encode('utf-8') + u'\u21b2'.encode('utf-8').join((info.summary, info.body))
                         else:
                             tail = u'\u21b2'.encode('utf-8').join((info.summary, info.body))
                     lines.append(pad + " @ " + tail)
