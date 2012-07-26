@@ -118,9 +118,6 @@ MISC                                                   *vim-pad-misc-config*
 The height of the split windows this plugin uses can be set with
 `*g:pad_window_height*`.
 
-There is a variant highlighting scheme you can enable by setting
-`*g:pad_highlighting_variant*` to 1 in your vimrc.
-
 vim-pad can search using either `grep` or `ack` (grep is the default). You can
 set this using the *g:pad_search_backend* variable. By default, the search
 ignores case (adjust *g:pad_search_ignore_case* as desired).
