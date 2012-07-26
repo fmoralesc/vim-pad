@@ -33,3 +33,6 @@ class PadInfo(object):
 		if self.summary != "":
 			self.isEmpty = False
 			self.id = self.summary.lower().replace(" ", "_")
+
+		if self.id.startswith("."):
+			self.id = re.sub("^\.*", "", self.id)
