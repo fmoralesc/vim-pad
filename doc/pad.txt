@@ -2,12 +2,14 @@
 
 vim-pad is a quick notetaking plugin for vim.
 
-It offers a way of managing notes similar to the one in tools like Notational
-Velocity: file management is removed from the notetaking workflow, and creation
-and searching of notes can be done using the same interface.
+It offers a similar way of managing notes to the one made popular by tools like
+Notational Velocity, where file management is removed from the notetaking
+workflow, being replaced by searching and sorting facilities, and where the creation
+and searching of notes is integrated.
 
 - Global Commands |vim-pad-global-commands|
-- Local Commands |vim-pad-local-commands|
+- List Commands |vim-pad-list-commands|
+- In-Note Commands |vim-pad-note-commands|
 - Configuration |vim-pad-configuration|
 	- Notes Format |vim-pad-notes-format|
 	- Misc |vim-pad-misc-config|
@@ -42,24 +44,34 @@ Giving an empty query is equivalent to calling `ListPads` without arguments.
   <Plug>PadOpenPad) creates a new note.
 
 
-LOCAL COMMANDS                                       *vim-pad-local-commands*
---------------
+LIST COMMANDS                                         *vim-pad-list-commands*
+-------------
 
 When in the notes list, you can open a note pressing `<Enter>` and delete it
 using `<Del>` (`dd` in the terminal ). `<Escape>` closes the buffer.
 
-You can start a search among your notes pressing <Shift-F> in the list. This
+You can start a search among your notes pressing `<Shift-F>`in the list. This
 will update the buffer in real time. If the query doesn't match any of the
 existing files, pressing `Enter` will create a new note with the query inserted
 in the first line.
 
-When in a note, `<localleader><Del>` (`<localleader>dd` in the terminal) will
-delete it. `<localleader>+m` will ask for a filetype and insert a modeline in
-the file accordingly.
+You can move the selected note to a subfolder by pressing `<localleader>+f`.
+vim.pad will prompt you for the folder name. To move a note to the root
+directory (|g:pad_dir|), press `<localleader>-f`. Likewise, to move a note to
+the archive, press `<localleader>+a`, and `<localleader>-a` to move it back.
 
 You can sort the notes in the current view by title, tags or date by pressing
 <Shift-S> and selecting the mode.
 
+IN-NOTE COMMANDS                                         *vim-pad-note-commands*
+----------------
+
+From a note, you can press `<localleader><Del>` (`<localleader>dd` in the
+terminal) to delete it. `<localleader>+m` will ask for a filetype and insert a
+modeline in the file accordingly.
+
+The folder and archive mappings listed above (`<localleader>+f`and such) also
+work inside notes.
 
 CONFIGURATION                                         *vim-pad-configuration*
 -------------
@@ -135,13 +147,24 @@ FUNCTIONS                                              *vim-pad-functions*
 - *pad#OpenPad()*           creates a new note.
 - *pad#ListPads()*          displays the list of notes.
 - *pad#SearchPads(query)*   shows the search note prompt
+  
 - *pad#UpdatePad()*         updates the pad file (internal)
 - *pad#DeleteThis()*        deletes the currently open note
 - *pad#AddModeline()*       adds a modeline
-- *pad#EditPad()*           edit selected note
-- *pad#DeletePad()*         delete selected note
+- *pad#MoveToFolder()*      moves a note to a subfolder of |g:pad_dir|
+- *pad#MoveToSaveDir*       moves a note to |g:pad_dir|
+- *pad#Archive*             archives a note
+- *pad#Unarchive*           moves an archived note back to |g:pad_dir|
+
+- *pad#EditPad()*           edit the selected note
+- *pad#DeletePad()*         delete the selected note
+- *pad#MovePad()*           move the selected note to a subfolder of |g:pad_dir|
+- *pad#MovePadToSaveDir()*  move the selected note to |g:pad_dir|
+- *pad#ArchivePad()*        archive the selected note
+- *pad#UnarchivePad()*      move the selected note back to |g:pad_dir|
 - *pad#IncrementalSearch()* search incrementally
 - *pad#Sort()*              sort the displayed entries
+
 - *pad#GetPadTitle()*       retrieve the selected note title
 - *pad#GetHumanDate()*      retrieve the selected note data
 - *pad#GetPadId()*          retrieve the selected note id
@@ -149,34 +172,24 @@ FUNCTIONS                                              *vim-pad-functions*
 RATIONALE                                               *vim-pad-design-rationale*
 ---------
 
-vim-pad has two goals:
+vim-pad has as its goals:
 
-- Abstract file management for notes. You shouldn't have to think about where
-  to put your notes and how to name them.
+- Abstract file management away from notetaking. You shouldn't have to think
+  about where to put your notes and how to name them.
+- Make input and retrieval of notes as fast as possible. Searching for a note
+  should be easy.
+- Make notetaking as effortless as possible, trying never to disrupt your
+  workflow more than necessary.
 
-- Make input and retrieval of notes as fast as possible. Search should be easy.
-
-Or, in a sentence: to make note taking as effortless as possible, trying never
-to disrupt your workflow more than necessary.
-
-vim-pad tries to solve those issues, by enabling a definite workflow for note
-taking.  First, with it you can at any moment (in insert and normal mode):
-
-- list/search in your notes, and then retrieve them.
-- create a new note.
-
-It abstracts file management by:
-
-- keeping your notes in a single place.
-- naming your files after the time you created them. This makes them unique
-  and allows for easy historical sorting. The filenames are updated when
-  changes are made in old files, so the date is always equal to the last time
-  you modified your notes.
-- considering the first line of your document as its title. This is in tune
-  with the way most markup styles work (e.g., markdown)
+vim-pad tries to reach them by setting up a certain (opinionated) workflow for
+notetaking. Besides mapping itself so search, listing and creation of notes is
+never more than a few keypresses away, it abstracts file management by keeping
+your notes in a single place, renaming files when they changed (this way,
+filenames should reflect the note content).
 
 vim-pad doesn't specify a format for your notes. Instead, it uses a default,
-which you can configure, and allows the use of modelines (modelines aren't
-shown in the list of notes). This means that your notes can be free-form and
-adapt to your needs, and also, that you can use vim-pad as a complement for
-other note taking plugins.
+which you can configure, and incentives the use of modelines. This means that
+your notes can be free-form and adapt to your needs, and also, that you can use
+vim-pad as a complement for other note taking plugins (it works great along
+other plugins like [VimOutliner](https://github.com/vimoutliner/vimoutliner/)
+and [quicktask](https://github.com/aaronbieber/quicktask).)
