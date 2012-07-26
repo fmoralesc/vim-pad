@@ -4,7 +4,7 @@
 # imports {{{1
 import vim
 import re
-from os import listdir
+from os import walk
 from os.path import join, getmtime, isfile, isdir
 from subprocess import Popen, PIPE
 from padlib.utils import get_save_dir
@@ -52,10 +52,15 @@ def open_pad(path=None, first_line=None): #{{{1
         vim.current.buffer.append(first_line,0)
         vim.command("normal! j")
 
-def listdir_nohidden(path): # {{{1
-    for f in listdir(path):
-        if not f.startswith('.'):
-            yield f
+
+def listdir_recursive_nohidden(path): # {{{1
+    matches = []
+    for root, dirnames, filenames in walk(path, topdown = True):
+        for dirname in dirnames:
+            if dirname.startswith('.'):
+                dirnames.remove(dirname)
+        matches += [join(root, f) for f in filenames if not f.startswith('.')]
+    return matches
 
 def get_filelist(query=None): # {{{1
     """ __get_filelist(query) -> list_of_notes
@@ -65,7 +70,7 @@ def get_filelist(query=None): # {{{1
     or ack search for query in self.save_dir.
     """
     if not query or query == "":
-        files = listdir_nohidden(get_save_dir())
+        files = listdir_recursive_nohidden(get_save_dir())
     else:
         search_backend = vim.eval("g:pad_search_backend")
         if search_backend == "grep":
