@@ -46,6 +46,8 @@ def open_pad(path=None, first_line=None): #{{{1
         vim.command("noremap <silent> <buffer> <localleader>dd :call pad#DeleteThis()<cr>")
 
     vim.command("noremap <silent> <buffer> <localleader>+m :call pad#AddModeline()<cr>")
+    vim.command("noremap <silent> <buffer> <localleader>+a :call pad#Archive()<cr>")
+    vim.command("noremap <silent> <buffer> <localleader>-a :call pad#Unarchive()<cr>")
 
     # insert the text in first_line to the buffer, if provided
     if first_line:
@@ -53,16 +55,19 @@ def open_pad(path=None, first_line=None): #{{{1
         vim.command("normal! j")
 
 
-def listdir_recursive_nohidden(path): # {{{1
+def listdir_recursive_nohidden(path, archive): # {{{1
     matches = []
     for root, dirnames, filenames in walk(path, topdown = True):
         for dirname in dirnames:
             if dirname.startswith('.'):
                 dirnames.remove(dirname)
+            if archive != "!":
+                if dirname == "archive":
+                    dirnames.remove(dirname)
         matches += [join(root, f) for f in filenames if not f.startswith('.')]
     return matches
 
-def get_filelist(query=None): # {{{1
+def get_filelist(query=None, archive=None): # {{{1
     """ __get_filelist(query) -> list_of_notes
 
     Returns a list of notes. If no query is provided, all the valid filenames in
@@ -70,18 +75,22 @@ def get_filelist(query=None): # {{{1
     or ack search for query in self.save_dir.
     """
     if not query or query == "":
-        files = listdir_recursive_nohidden(get_save_dir())
+        files = listdir_recursive_nohidden(get_save_dir(), archive)
     else:
         search_backend = vim.eval("g:pad_search_backend")
         if search_backend == "grep":
             # we use Perl mode for grep (-P), because it is really fast
             command = ["grep", "-P", "-n", "-r", query, get_save_dir() + "/"]
+            if archive != "!":
+                command.append("--exclude-dir=archive")
         elif search_backend == "ack":
             if vim.eval("executable('ack')") == "1":
                 ack_path = "ack"
             else:
                 ack_path = "/usr/bin/vendor_perl/ack"
             command = [ack_path, query, get_save_dir() + "/", "--type=text"]
+            if archive != "!":
+                command.append("--ignore-dir=archive")
 
         if bool(int(vim.eval("g:pad_search_ignorecase"))):
             command.append("-i")
@@ -156,7 +165,7 @@ def fill_list(files, queried=False, custom_order=False): # {{{1
     vim.current.buffer.append(list(lines))
     vim.command("normal! dd")
 
-def display(query): # {{{1
+def display(query, archive): # {{{1
     """ Shows a list of notes.
 
     query: a string representing a regex search. Can be "".
@@ -167,7 +176,7 @@ def display(query): # {{{1
         vim.command('let tmp = confirm("IMPORTANT:\n'\
                 'Please set g:pad_dir to a valid path in your vimrc.", "OK", 1, "Error")')
         return
-    pad_files = get_filelist(query)
+    pad_files = get_filelist(query, archive)
     if len(pad_files) > 0:
         if vim.eval("bufexists('__pad__')") == "1":
             vim.command("bw __pad__")

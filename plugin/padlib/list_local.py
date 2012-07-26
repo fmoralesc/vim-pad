@@ -5,7 +5,8 @@
 import vim
 import re
 from os import remove
-from os.path import join
+from os.path import join, basename
+from shutil import move
 from padlib.handler import open_pad, get_filelist, fill_list
 from padlib.utils import get_save_dir
 
@@ -25,6 +26,21 @@ def delete_pad(): #{{{1
         remove(path)
         vim.command("bd")
         vim.command("redraw!")
+
+def archive_pad(): #{{{1
+    """ Archives the currently selected note
+    """
+    path = join(get_save_dir(), vim.current.line.split(" @")[0])
+    move(path, join(get_save_dir(), "archive", basename(path)))
+    vim.command("bd")
+
+def unarchive_pad(): #{{{1
+    """ Unarchives the currently selected note
+    """
+    path = join(get_save_dir(), vim.current.line.split(" @")[0])
+    move(path, join(get_save_dir(), basename(path)))
+    vim.command("bd")
+
 
 def incremental_search(): #{{{1
     """ Provides incremental search within the __pad__ buffer.

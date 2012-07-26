@@ -1,7 +1,7 @@
 import vim
 from shutil import move
 from os import remove
-from os.path import expanduser, exists, join, splitext, isfile
+from os.path import expanduser, exists, join, splitext, isfile, basename
 from padlib.pad import PadInfo
 from padlib.utils import get_save_dir
 from padlib.modelines import format_modeline
@@ -50,4 +50,14 @@ def add_modeline():
 		vim.current.buffer.append(*args)
 		vim.command("set filetype=" + mode)
 		vim.command("set nomodified")
+
+def archive():
+    new_path = join(get_save_dir(), "archive", basename(vim.current.buffer.name))
+    move(vim.current.buffer.name, new_path)
+    vim.command("q")
+
+def unarchive():
+    new_path = join(get_save_dir(), basename(vim.current.buffer.name))
+    move(vim.current.buffer.name, new_path)
+    vim.command("q")
 

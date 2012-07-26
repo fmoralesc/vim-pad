@@ -5,7 +5,12 @@
 " Gets the title of the currently selected pad
 function! pad#GetPadTitle()
 	if getline('.') != ""
-		return split(split(substitute(getline('.'), '↲','\n', "g"), '\n')[0], '\%u2e25 ')[1]
+		try
+			let retval = split(split(substitute(getline('.'), '↲','\n', "g"), '\n')[0], '\%u2e25 ')[1]
+		catch /E684/
+			let retval "EMPTY"
+		endtry
+		return retval
 	endif
 	return ""
 endfunction
@@ -33,8 +38,8 @@ function! pad#OpenPad()
 	python padlib.handler.open_pad()
 endfunction
 
-function! pad#ListPads(query)
-	execute "python padlib.handler.display('".a:query."')"
+function! pad#ListPads(query, archive)
+	execute "python padlib.handler.display('".a:query."', '".a:archive."')"
 endfunction
 
 function! pad#SearchPads()
@@ -53,12 +58,28 @@ function! pad#AddModeline()
 	python padlib.pad_local.add_modeline()
 endfunction
 
+function! pad#Archive()
+	python padlib.pad_local.archive()
+endfunction
+
+function! pad#Unarchive()
+	python padlib.pad_local.unarchive()
+endfunction
+
 function! pad#EditPad()
 	python padlib.list_local.edit_pad()
 endfunction
 
 function! pad#DeletePad()
 	python padlib.list_local.delete_pad()
+endfunction
+
+function! pad#ArchivePad()
+	python padlib.list_local.archive_pad()
+endfunction
+
+function! pad#UnarchivePad()
+	python padlib.list_local.unarchive_pad()
 endfunction
 
 function! pad#IncrementalSearch()
