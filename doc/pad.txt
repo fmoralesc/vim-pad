@@ -97,7 +97,7 @@ NOTES FORMAT                                           *vim-pad-notes-format*
 The default format for new notes is `markdown`. To change this to another
 format, `pandoc` for example, put
 
-    let *g:pad_format* = "pandoc"
+    let *g:pad_default_format* = "pandoc"
 
 in your `.vimrc`. You can also set the individual format of a note by adding
 the corresponding modeline. For example,
