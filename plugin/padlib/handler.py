@@ -52,6 +52,10 @@ def open_pad(path=None, first_line=None): #{{{1
         vim.current.buffer.append(first_line,0)
         vim.command("normal! j")
 
+def listdir_nohidden(path): # {{{1
+    for f in listdir(path):
+        if not f.startswith('.'):
+            yield f
 
 def get_filelist(query=None): # {{{1
     """ __get_filelist(query) -> list_of_notes
@@ -61,7 +65,7 @@ def get_filelist(query=None): # {{{1
     or ack search for query in self.save_dir.
     """
     if not query or query == "":
-        files = listdir(get_save_dir())
+        files = listdir_nohidden(get_save_dir())
     else:
         search_backend = vim.eval("g:pad_search_backend")
         if search_backend == "grep":
