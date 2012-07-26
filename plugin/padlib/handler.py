@@ -126,7 +126,10 @@ def fill_list(files, queried=False, custom_order=False): # {{{1
                     if info.isEmpty:
                         tail = "[EMPTY]"
                     else:
-                        tail = u'\u21b2'.encode('utf-8').join((info.summary, info.body))
+                        if bool(int(vim.eval("g:pad_show_dir"))):
+                            tail = u'\u21b2'.encode('utf-8').join((info.folder, info.summary, info.body))
+                        else:
+                            tail = u'\u21b2'.encode('utf-8').join((info.summary, info.body))
                     lines.append(pad + " @ " + tail)
             elif isdir(pad_path):
                 pass # TODO: set some behavior for directories (recurse?)

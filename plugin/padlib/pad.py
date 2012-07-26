@@ -1,20 +1,24 @@
 import vim
 import re
+from os.path import abspath, basename
 from padlib.timestamps import timestamp
+from padlib.utils import get_save_dir
 
 class PadInfo(object):
-	__slots__ = "id", "summary", "body", "isEmpty"
+	__slots__ = "id", "summary", "body", "isEmpty", "folder"
 
 	def __init__(self, source):
 		nchars = int(vim.eval("g:pad_read_nchars_from_files"))
 		self.summary = ""
 		self.body = ""
 		self.isEmpty = True
+		self.folder = ""
 		self.id = timestamp()
 
 		if source is vim.current.buffer:
 			source = source[:10]
 		elif source.__class__ == file:
+			self.folder = abspath(source.name)[len(get_save_dir()):-len(basename(source.name))]
 			source = source.read(nchars).split("\n")
 
 		data = [line.strip() for line in source if line != ""]
