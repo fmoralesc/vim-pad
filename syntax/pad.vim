@@ -13,7 +13,7 @@ syn region PadSummary start=/│\@<= /hs=s+1 end=/\(\%u21b2\|$\|[.,]\)\@=/ conta
 hi! link PadTimestamp Number
 hi! link PadTimestampTime Comment
 hi! link PadTimestampDelimiter Delimiter
-hi! link PadHashTag Label
+hi! link PadHashTag Identifier
 hi! link PadEmptyLabel Error
 hi! link PadSummary Title
 hi! link PadNewLine Comment
