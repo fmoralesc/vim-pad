@@ -5,7 +5,7 @@
 import vim
 import re
 from os import walk
-from os.path import join, getmtime, isfile, isdir
+from os.path import join, getmtime, isfile
 from subprocess import Popen, PIPE
 from padlib.utils import get_save_dir
 from padlib.pad import PadInfo
@@ -131,8 +131,6 @@ def fill_list(files, queried=False, custom_order=False): # {{{1
                         else:
                             tail = u'\u21b2'.encode('utf-8').join((info.summary, info.body))
                     lines.append(pad + " @ " + tail)
-            elif isdir(pad_path):
-                pass # TODO: set some behavior for directories (recurse?)
             else:
                 pass
 
