@@ -5,7 +5,7 @@
 " Gets the title of the currently selected pad
 function! pad#GetPadTitle()
 	if getline('.') != ""
-		return split(split(substitute(getline('.'), '↲','\n', "g"), '\n')[0], ' │ ')[1]
+		return split(split(substitute(getline('.'), '↲','\n', "g"), '\n')[0], '\%u2e25 ')[1]
 	endif
 	return ""
 endfunction
