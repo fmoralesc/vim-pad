@@ -56,13 +56,10 @@ def open_pad(path=None, first_line=None): #{{{1
 def listdir_recursive_nohidden(path): # {{{1
     matches = []
     for root, dirnames, filenames in walk(path, topdown = True):
-        for dir in dirnames:
-            if dir.startswith('.'):
-                dirnames.remove(dir)
-        for file in filenames:
-            if file.startswith('.'):
-                filenames.remove(file)
-            matches += filenames
+        for dirname in dirnames:
+            if dirname.startswith('.'):
+                dirnames.remove(dirname)
+        matches += [join(root, f) for f in filenames if not f.startswith('.')]
     return matches
 
 def get_filelist(query=None): # {{{1
