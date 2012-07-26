@@ -34,6 +34,8 @@ endfunction
 " Operations: {{{1
 if has("python")
 
+" Global {{{2
+
 function! pad#OpenPad()
 	python padlib.handler.open_pad()
 endfunction
@@ -45,6 +47,8 @@ endfunction
 function! pad#SearchPads()
 	python padlib.handler.search_pads()
 endfunction
+
+" Pad local {{{2
 
 function! pad#UpdatePad()
 	python padlib.pad_local.update()
@@ -58,6 +62,14 @@ function! pad#AddModeline()
 	python padlib.pad_local.add_modeline()
 endfunction
 
+function! pad#MoveToFolder()
+	python padlib.pad_local.move_to_folder()
+endfunction
+
+function! pad#MoveToSaveDir()
+	python padlib.pad_local.move_to_savedir()
+endfunction
+
 function! pad#Archive()
 	python padlib.pad_local.archive()
 endfunction
@@ -66,12 +78,22 @@ function! pad#Unarchive()
 	python padlib.pad_local.unarchive()
 endfunction
 
+" List local {{{2
+
 function! pad#EditPad()
 	python padlib.list_local.edit_pad()
 endfunction
 
 function! pad#DeletePad()
 	python padlib.list_local.delete_pad()
+endfunction
+
+function! pad#MovePad()
+	python padlib.list_local.move_to_folder()
+endfunction
+
+function! pad#MovePadToSaveDir()
+	python padlib.list_local.move_to_savedir()
 endfunction
 
 function! pad#ArchivePad()

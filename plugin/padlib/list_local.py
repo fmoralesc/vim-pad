@@ -8,10 +8,11 @@ from os import remove, mkdir
 from os.path import join, basename, exists
 from shutil import move
 from padlib.handler import open_pad, get_filelist, fill_list
-from padlib.utils import get_save_dir
+from padlib.utils import get_save_dir, make_sure_dir_is_empty
 
-def get_selected_path():
+def get_selected_path(): #{{{1
     return join(get_save_dir(), vim.current.line.split(" @")[0])
+
 
 def edit_pad(): #{{{1
     """ Opens the currently selected note in the __pad__ buffer.
@@ -27,25 +28,38 @@ def delete_pad(): #{{{1
     if confirm in ("y", "Y"):
         path = get_selected_path()
         remove(path)
-        vim.command("bd")
+        make_sure_dir_is_empty(path)
+        vim.command("ListPads")
         vim.command("redraw!")
+
+def move_to_folder(path=None): #{{{1
+    """ Moves the selected pad to a subfolder of g:pad_dir
+    """
+    selected_path = get_selected_path()
+    if path == None:
+        path = vim.eval('input("move to: ")')
+    if not exists(join(get_save_dir(), path)):
+        mkdir(join(get_save_dir(), path))
+    move(selected_path, join(get_save_dir(), path, basename(selected_path)))
+    make_sure_dir_is_empty(path)
+    vim.command("ListPads")
+    if path == None:
+        vim.command("redraw!")
+
+def move_to_savedir(): #{{{1
+    """ Moves a note to g:pad_dir
+    """
+    move_to_folder("")
 
 def archive_pad(): #{{{1
     """ Archives the currently selected note
     """
-    path = get_selected_path()
-    if not exists(join(get_save_dir(), "archive")):
-        mkdir(join(get_save_dir(), "archive"))
-    move(path, join(get_save_dir(), "archive", basename(path)))
-    vim.command("bd")
+    move_to_folder("archive")
 
 def unarchive_pad(): #{{{1
     """ Unarchives the currently selected note
     """
-    path = get_selected_path()
-    move(path, join(get_save_dir(), basename(path)))
-    vim.command("bd")
-
+    move_to_savedir()
 
 def incremental_search(): #{{{1
     """ Provides incremental search within the __pad__ buffer.

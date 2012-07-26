@@ -51,15 +51,20 @@ def add_modeline():
 		vim.command("set filetype=" + mode)
 		vim.command("set nomodified")
 
-def archive():
-    new_path = join(get_save_dir(), "archive", basename(vim.current.buffer.name))
-    if not exists(join(get_save_dir(), "archive")):
-        mkdir(join(get_save_dir(), "archive"))
+def move_to_folder(path=None):
+    if path == None:
+        path = vim.eval("input('move to: ')")
+    new_path = join(get_save_dir(), path, basename(vim.current.buffer.name))
+    if not exists(join(get_save_dir(), path)):
+        mkdir(join(get_save_dir(), path))
     move(vim.current.buffer.name, new_path)
-    vim.command("q")
+    vim.command("bd")
+
+def move_to_savedir():
+    move_to_folder("")
+
+def archive():
+    move_to_folder("archive")
 
 def unarchive():
-    new_path = join(get_save_dir(), basename(vim.current.buffer.name))
-    move(vim.current.buffer.name, new_path)
-    vim.command("q")
-
+    move_to_savedir()

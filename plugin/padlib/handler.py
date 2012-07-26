@@ -46,6 +46,8 @@ def open_pad(path=None, first_line=None): #{{{1
         vim.command("noremap <silent> <buffer> <localleader>dd :call pad#DeleteThis()<cr>")
 
     vim.command("noremap <silent> <buffer> <localleader>+m :call pad#AddModeline()<cr>")
+    vim.command("noremap <silent> <buffer> <localleader>+f :call pad#MoveToFolder()<cr>")
+    vim.command("noremap <silent> <buffer> <localleader>-f :call pad#MoveToSaveDir()<cr>")
     vim.command("noremap <silent> <buffer> <localleader>+a :call pad#Archive()<cr>")
     vim.command("noremap <silent> <buffer> <localleader>-a :call pad#Unarchive()<cr>")
 
