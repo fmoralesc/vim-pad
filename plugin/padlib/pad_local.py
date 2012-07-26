@@ -1,6 +1,6 @@
 import vim
 from shutil import move
-from os import remove
+from os import remove, mkdir
 from os.path import expanduser, exists, join, splitext, isfile, basename
 from padlib.pad import PadInfo
 from padlib.utils import get_save_dir
@@ -53,6 +53,8 @@ def add_modeline():
 
 def archive():
     new_path = join(get_save_dir(), "archive", basename(vim.current.buffer.name))
+    if not exists(join(get_save_dir(), "archive")):
+        mkdir(join(get_save_dir(), "archive"))
     move(vim.current.buffer.name, new_path)
     vim.command("q")
 

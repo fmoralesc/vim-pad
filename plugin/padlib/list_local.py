@@ -4,16 +4,19 @@
 # imports {{{1
 import vim
 import re
-from os import remove
-from os.path import join, basename
+from os import remove, mkdir
+from os.path import join, basename, exists
 from shutil import move
 from padlib.handler import open_pad, get_filelist, fill_list
 from padlib.utils import get_save_dir
 
+def get_selected_path():
+    return join(get_save_dir(), vim.current.line.split(" @")[0])
+
 def edit_pad(): #{{{1
     """ Opens the currently selected note in the __pad__ buffer.
     """
-    path = join(get_save_dir(), vim.current.line.split(" @")[0])
+    path = get_selected_path()
     vim.command("bd")
     open_pad(path=path)
 
@@ -22,7 +25,7 @@ def delete_pad(): #{{{1
     """
     confirm = vim.eval('input("really delete? (y/n): ")')
     if confirm in ("y", "Y"):
-        path = join(get_save_dir(), vim.current.line.split(" @")[0])
+        path = get_selected_path()
         remove(path)
         vim.command("bd")
         vim.command("redraw!")
@@ -30,14 +33,16 @@ def delete_pad(): #{{{1
 def archive_pad(): #{{{1
     """ Archives the currently selected note
     """
-    path = join(get_save_dir(), vim.current.line.split(" @")[0])
+    path = get_selected_path()
+    if not exists(join(get_save_dir(), "archive")):
+        mkdir(join(get_save_dir(), "archive"))
     move(path, join(get_save_dir(), "archive", basename(path)))
     vim.command("bd")
 
 def unarchive_pad(): #{{{1
     """ Unarchives the currently selected note
     """
-    path = join(get_save_dir(), vim.current.line.split(" @")[0])
+    path = get_selected_path()
     move(path, join(get_save_dir(), basename(path)))
     vim.command("bd")
 
