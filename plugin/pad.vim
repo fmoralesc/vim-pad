@@ -48,6 +48,9 @@ endif
 if !exists('g:pad_modeline_position')
 	let g:pad_modeline_position = 'bottom'
 endif
+if !exists('g:pad_show_dir')
+	let g:pad_show_dir = 1
+endif
 
 " Base: {{{1
 python<<EOF
