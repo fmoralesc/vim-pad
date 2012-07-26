@@ -133,7 +133,10 @@ def fill_list(files, queried=False, custom_order=False): # {{{1
                 with open(join(get_save_dir(), pad)) as pad_file:
                     info = PadInfo(pad_file)
                     if info.isEmpty:
-                        tail = "[EMPTY]"
+                        if bool(int(vim.eval("g:pad_show_dir"))):
+                            tail = info.folder + u'\u2e25 '.encode('utf-8') + "[EMPTY]"
+                        else:
+                            tail = "[EMPTY]"
                     else:
                         if bool(int(vim.eval("g:pad_show_dir"))):
                             tail = info.folder + u'\u2e25 '.encode('utf-8') + u'\u21b2'.encode('utf-8').join((info.summary, info.body))
