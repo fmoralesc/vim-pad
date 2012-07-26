@@ -201,6 +201,6 @@ def search_pads(): # {{{1
                 'Please set g:pad_dir to a valid path in your vimrc.", "OK", 1, "Error")')
         return
     query = vim.eval('input(">>> ")')
-    display(query)
+    display(query, "")
     vim.command("redraw!")
 
