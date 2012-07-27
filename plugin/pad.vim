@@ -30,6 +30,12 @@ endif
 if !exists('g:pad_window_height')
 	let g:pad_window_height = 5
 endif
+if !exists('g:pad_window_width')
+	let g:pad_window_width = 40
+endif
+if !exists('g:pad_position')
+	let g:pad_position = "bottom"
+endif
 if !exists('g:pad_search_backend')
 	let g:pad_search_backend = "grep"
 endif

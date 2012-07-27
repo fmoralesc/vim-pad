@@ -1,13 +1,20 @@
-syn match PadTimestamp /^.\{-}│/ contains=PadName,PadTimestampDelimiter,PadTimestampTime
+if g:pad_position == "right"
+	syn match PadTimestamp /^.\{-}│/ conceal
+else
+	syn match PadTimestamp /^.\{-}│/ contains=PadName,PadTimestampDelimiter,PadTimestampTime
+endif
 syn match PadTimestampTime /\d\d:\d\d:\d\d/ contained
 syn match PadTimestampDelimiter /│/ contained
 syn match PadName /^.\{-}@/ contained conceal
 syn match PadNewLine /\%u21b2/
 syn match PadHashTag /\(@\|#\)\a\+\(\s\|\n\|\%u21b2\)\@=/
 syn match PadEmptyLabel /\[EMPTY\]/ contained
-syn match PadFolder / .*\%u2e25/ms=s+1 contained
+syn match PadFolder / .*\%u2e25/ contained
 syn match PadFolderStop /\%u2e25/ containedin=PadFolder conceal
 syn match PadArchived /\/archive\// containedin=PadFolder
+if g:pad_position == "right"
+	syn match PadSummaryPad / \//me=e-1 containedin=PadFolder conceal
+endif
 syn region PadSummary start=/│\@<= /hs=s+1 end=/\(\%u21b2\|$\|[.,]\)\@=/ contains=PadHashTag,PadEmptyLabel,PadFolder
 
 hi! link PadTimestamp Number

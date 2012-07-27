@@ -120,7 +120,7 @@ at the beggining or the end of a file will tell vim to open the file as a
 VimOutliner file. The modeline won't be shown in the list view. 
 
 The position modelines are inserted in a file when using pad#AddModeline is
-determined by the value of `*g:pad_modeline_position*`. The default is
+determined by the value of *g:pad_modeline_position* . The default is
 `bottom`, which means that it will be inserted at the end of the file. A value
 of `top` means that it will be inserted in the first line of the file.
 
@@ -128,7 +128,12 @@ of `top` means that it will be inserted in the first line of the file.
 MISC                                                   *vim-pad-misc-config*
 
 The height of the split windows this plugin uses can be set with
-`*g:pad_window_height*`.
+*g:pad_window_height* (the default is 8).
+
+vim-pad's window is opened at the bottom by default. If you want to open it
+right, you must change the value fo *g:pad_position* to "right" (the default
+is "bottom"). You can set the window width with *g:pad_window_width* (default:
+40). When vim-pad is opened this way, the timestamp is hidden.
 
 vim-pad can search using either `grep` or `ack` (grep is the default). You can
 set this using the *g:pad_search_backend* variable. By default, the search
