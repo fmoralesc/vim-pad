@@ -22,8 +22,8 @@ GLOBAL COMMANDS                                      *vim-pad-global-commands*
 
 - *:ListPads* (`<Control><Escape>`, <leader><Escape> for the terminal, global:
   <Plug>PadListPads) lists the notes. You can pass a string to this command if
-  you want to filter the notes.
-
+  you want to filter the notes. 
+  
 The list of notes should display a series of lines like:
 
 2 mins ago      | vim-pad is cool.↲ if you let me just say it.
@@ -39,6 +39,11 @@ the title instead. Line breaks are displayed as ↲.
 `<leader>s` in normal mode (default, global: <Plug>PadSearchPads) also calls
 ListPads, but asks for a query to filter the notes before presenting the list.
 Giving an empty query is equivalent to calling `ListPads` without arguments.
+
+By default, ListPads won't show notes from the archive. To list them, you must
+pass a bang to the command:
+
+     :ListPads!
 
 - *:OpenPad* (`<Shift><Escape>`, <leader>n in the terminal, global:
   <Plug>PadOpenPad) creates a new note.
