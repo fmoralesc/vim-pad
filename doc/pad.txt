@@ -135,6 +135,10 @@ MISC                                                   *vim-pad-misc-config*
 The height of the split windows this plugin uses can be set with
 *g:pad_window_height* (the default is 8).
 
+Notes are opened by default in a split window the same height as the __Pad__
+buffer. If you want to open the notes in the main window, set
+*g:pad_open_in_split* to 0.
+
 vim-pad's window is opened at the bottom by default. If you want to open it
 right, you must change the value fo *g:pad_position* to "right" (the default
 is "bottom"). You can set the window width with *g:pad_window_width* (default:

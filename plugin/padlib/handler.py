@@ -33,7 +33,10 @@ def open_pad(path=None, first_line=None): #{{{1
     if not path:
         path = join(get_save_dir(), timestamp())
 
-    vim.command("silent! botright" + str(vim.eval("g:pad_window_height")) + "split " + path)
+    if bool(int(vim.eval("g:pad_open_in_split"))):
+        vim.command("silent! botright" + str(vim.eval("g:pad_window_height")) + "split " + path)
+    else:
+        vim.command("silent! edit " + path)
 
     # set the filetype to our default
     if vim.eval('&filetype') in ('', 'conf'):

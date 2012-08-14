@@ -36,6 +36,9 @@ endif
 if !exists('g:pad_position')
 	let g:pad_position = "bottom"
 endif
+if !exists('g:pad_open_in_split')
+	let g:pad_open_in_split = 1
+endif
 if !exists('g:pad_search_backend')
 	let g:pad_search_backend = "grep"
 endif
