@@ -38,6 +38,9 @@ def open_pad(path=None, first_line=None): #{{{1
     else:
         vim.command("silent! edit " + path)
 
+    # we don't keep the buffer when we hide it
+    vim.command("set bufhidden=wipe")
+
     # set the filetype to our default
     if vim.eval('&filetype') in ('', 'conf'):
         vim.command("set filetype=" + vim.eval("g:pad_default_format"))
