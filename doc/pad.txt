@@ -139,10 +139,13 @@ Notes are opened by default in a split window the same height as the __Pad__
 buffer. If you want to open the notes in the main window, set
 *g:pad_open_in_split* to 0.
 
-vim-pad's window is opened at the bottom by default. If you want to open it
-right, you must change the value fo *g:pad_position* to "right" (the default
-is "bottom"). You can set the window width with *g:pad_window_width* (default:
-40). When vim-pad is opened this way, the timestamp is hidden.
+vim-pad's list is opened at the bottom by default. If you want to open it at
+the right side of the window, you must change the value of
+*g:pad_position["list"]* to "right" (the default is "bottom"). You can set the
+window width with *g:pad_window_width* (default: 40). When vim-pad is opened
+this way, the timestamp is hidden.  Likewise, you can tell vim-pad to open the
+notes at the right side of the window by setting the value of
+*g:pad_position["pads"]* to "right".
 
 vim-pad can search using either `grep` or `ack` (grep is the default). You can
 set this using the *g:pad_search_backend* variable. By default, the search

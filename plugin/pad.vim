@@ -34,7 +34,7 @@ if !exists('g:pad_window_width')
 	let g:pad_window_width = 40
 endif
 if !exists('g:pad_position')
-	let g:pad_position = "bottom"
+	let g:pad_position = { "list" : "bottom", "pads": "bottom" }
 endif
 if !exists('g:pad_open_in_split')
 	let g:pad_open_in_split = 1

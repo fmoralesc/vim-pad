@@ -34,7 +34,7 @@ def open_pad(path=None, first_line=None): #{{{1
         path = join(get_save_dir(), timestamp())
 
     if bool(int(vim.eval("g:pad_open_in_split"))):
-        if vim.eval('g:pad_position') == 'right':
+        if vim.eval('g:pad_position["pads"]') == 'right':
             vim.command("silent! rightbelow" + str(vim.eval("g:pad_window_width")) + "vsplit " + path)
         else:
             vim.command("silent! botright" + str(vim.eval("g:pad_window_height")) + "split " + path)
@@ -194,7 +194,7 @@ def display(query, archive): # {{{1
     if len(pad_files) > 0:
         if vim.eval("bufexists('__pad__')") == "1":
             vim.command("bw __pad__")
-        if vim.eval('g:pad_position') == "right":
+        if vim.eval('g:pad_position["list"]') == "right":
             vim.command("silent! rightbelow " + str(vim.eval('g:pad_window_width')) + "vnew __pad__")
         else:
             vim.command("silent! botright " + str(vim.eval("g:pad_window_height")) + "new __pad__")
