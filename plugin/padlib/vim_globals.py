@@ -28,6 +28,6 @@ def set_vim_globals():
 
         # we forbid writing backups of the notes
     orig_backupskip = vim.eval("&backupskip")
-    vim.command("set backupskip=" +
-            ",".join([orig_backupskip, join(get_save_dir(), "*")]))
+    vim.command("let &backupskip='" +
+            ",".join([orig_backupskip, join(get_save_dir(), "*")])+"'")
 

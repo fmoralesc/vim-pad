@@ -34,7 +34,10 @@ def open_pad(path=None, first_line=None): #{{{1
         path = join(get_save_dir(), timestamp())
 
     if bool(int(vim.eval("g:pad_open_in_split"))):
-        vim.command("silent! botright" + str(vim.eval("g:pad_window_height")) + "split " + path)
+        if vim.eval('g:pad_position') == 'right':
+            vim.command("silent! rightbelow" + str(vim.eval("g:pad_window_width")) + "vsplit " + path)
+        else:
+            vim.command("silent! botright" + str(vim.eval("g:pad_window_height")) + "split " + path)
     else:
         vim.command("silent! edit " + path)
 
