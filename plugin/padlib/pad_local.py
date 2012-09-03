@@ -25,6 +25,7 @@ def update():
 			else:
 				exts = map(lambda i: '0' if i == '' else i[1:], map(lambda i: splitext(i)[1], fs))
 				new_path = ".".join([expanduser(join(get_save_dir(), id)), str(int(max(exts)) + 1)])
+			new_path = new_path + vim.eval("g:pad_default_file_extension")
 			vim.command("bw")
 			move(old_path, new_path)
 

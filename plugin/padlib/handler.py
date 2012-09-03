@@ -31,7 +31,7 @@ def open_pad(path=None, first_line=None): #{{{1
 
     # if no path is provided, we create one using the current time
     if not path:
-        path = join(get_save_dir(), timestamp())
+        path = join(get_save_dir(), timestamp() + vim.eval("g:pad_default_file_extension"))
 
     if bool(int(vim.eval("g:pad_open_in_split"))):
         if vim.eval('g:pad_position["pads"]') == 'right':

@@ -22,8 +22,8 @@ GLOBAL COMMANDS                                      *vim-pad-global-commands*
 
 - *:ListPads* (`<Control><Escape>`, <leader><Escape> for the terminal, global:
   <Plug>PadListPads) lists the notes. You can pass a string to this command if
-  you want to filter the notes. 
-  
+  you want to filter the notes.
+
 The list of notes should display a series of lines like:
 
 2 mins ago      | vim-pad is cool.↲ if you let me just say it.
@@ -100,7 +100,7 @@ might need to escape backward slashes, like so:
 
 IMPORTANT 2: Please check the mappings before using the plugin. The default
 mappings are quite ergonomic, but you might want to change them. If the
-default mappings have conflicts, vim-pad will let you know. 
+default mappings have conflicts, vim-pad will let you know.
 
 You can configure the default mappings by setting *g:pad_use_default_mappings*
 to a value between 0 and 2.  0 disables the default mappings (you'll have to
@@ -122,13 +122,18 @@ the corresponding modeline. For example,
 	<!-- vim: set ft=vo_base: -->
 
 at the beggining or the end of a file will tell vim to open the file as a
-VimOutliner file. The modeline won't be shown in the list view. 
+VimOutliner file. The modeline won't be shown in the list view.
 
 The position modelines are inserted in a file when using pad#AddModeline is
 determined by the value of *g:pad_modeline_position* . The default is
 `bottom`, which means that it will be inserted at the end of the file. A value
 of `top` means that it will be inserted in the first line of the file.
 
+Further, this can be furhter improved by use of the
+*g:pad_default_file_extension* variable. Setting this variable will give
+all newly saved notes a file extension. The default is as follows
+
+    let g:pad_default_file_extension = ".mkd"
 
 MISC                                                   *vim-pad-misc-config*
 
@@ -164,7 +169,7 @@ FUNCTIONS                                              *vim-pad-functions*
 - *pad#OpenPad()*           creates a new note.
 - *pad#ListPads()*          displays the list of notes.
 - *pad#SearchPads(query)*   shows the search note prompt
-  
+
 - *pad#UpdatePad()*         updates the pad file (internal)
 - *pad#DeleteThis()*        deletes the currently open note
 - *pad#AddModeline()*       adds a modeline
