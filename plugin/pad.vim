@@ -61,7 +61,7 @@ if !exists('g:pad_show_dir')
 	let g:pad_show_dir = 1
 endif
 if !exists('g:pad_default_file_extension')
-    let g:pad_default_file_extension = '.mkd'
+    let g:pad_default_file_extension = ''
 endif
 
 " Base: {{{1

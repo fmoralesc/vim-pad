@@ -129,11 +129,9 @@ determined by the value of *g:pad_modeline_position* . The default is
 `bottom`, which means that it will be inserted at the end of the file. A value
 of `top` means that it will be inserted in the first line of the file.
 
-Further, this can be furhter improved by use of the
-*g:pad_default_file_extension* variable. Setting this variable will give
-all newly saved notes a file extension. The default is as follows
-
-    let g:pad_default_file_extension = ".mkd"
+You can also set the *g:pad_default_file_extension* variable. This will give
+all newly saved notes the given file extension (can be useful when
+interoperating with apps that don't recognize modelines).
 
 MISC                                                   *vim-pad-misc-config*
 
