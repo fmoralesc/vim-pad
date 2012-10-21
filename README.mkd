@@ -12,6 +12,9 @@ format you want. It works great along other plugins like
 [VimOutliner](https://github.com/vimoutliner/vimoutliner/) and
 [quicktask](https://github.com/aaronbieber/quicktask).
 
+**IMPORTANT**: `vim-pad` requires python support.
+
+
 ![screen 1](http://i.minus.com/idY6u5JQmWPxv.png)
 ![screen 2](http://i.minus.com/iDIssgARMkBex.png)
 ![screen 3](http://i.minus.com/i2PXru1c0N5bW.png)
