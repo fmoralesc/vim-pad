@@ -4,8 +4,9 @@
 # imports {{{1
 import vim
 import re
+from glob import glob
 from os import walk
-from os.path import join, getmtime, isfile
+from os.path import join, getmtime, isfile, isdir
 from subprocess import Popen, PIPE
 from padlib.utils import get_save_dir
 from padlib.pad import PadInfo
@@ -109,8 +110,12 @@ def get_filelist(query=None, archive=None): # {{{1
 
         files = [line.split(":")[0]
                 for line in Popen(command, stdout=PIPE, stderr=PIPE).communicate()[0].\
-                        replace(get_save_dir() + "/", "").\
                         split("\n")	if line != '']
+
+        if bool(int(vim.eval("g:pad_query_dirnames"))):
+            matching_dirs = filter(isdir, glob(join(get_save_dir(), "*"+ query+"*")))
+            for mdir in matching_dirs:
+                files.extend(filter(lambda x: x not in files, listdir_recursive_nohidden(mdir, archive)))
 
     return files
 

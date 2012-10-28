@@ -43,7 +43,10 @@ if !exists('g:pad_search_backend')
 	let g:pad_search_backend = "grep"
 endif
 if !exists('g:pad_search_ignorecase')
-let g:pad_search_ignorecase = 1
+	let g:pad_search_ignorecase = 1
+endif
+if !exists('g:pad_query_dirnames')
+	let g:pad_query_dirnames = 1
 endif
 if !exists('g:pad_read_nchars_from_files')
 	let g:pad_read_nchars_from_files = 200
