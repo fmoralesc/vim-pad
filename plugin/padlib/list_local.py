@@ -111,6 +111,10 @@ SORT_TYPES = {
         }
 
 def sort(key="1"): #{{{1
+
+    if key not in SORT_TYPES:
+        return
+
     key = SORT_TYPES[key]
     if key=="date":
         vim.command("call pad#ListPads('')")
