@@ -124,7 +124,7 @@ def sort(key="1"): #{{{1
     if key=="tags":
         view_files = [line.split()[0] for line in vim.current.buffer]
         for pad_id in view_files:
-            with open(get_save_dir() + "/" + pad_id) as fi:
+            with open(pad_id) as fi:
                 tags = sorted([tag.lower().replace("@", "") for tag in re.findall("@\w*", fi.read(200))])
             tuples.append((pad_id, tags))
         tuples = sorted(tuples, key=lambda f: f[1])
