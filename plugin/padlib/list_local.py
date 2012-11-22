@@ -117,7 +117,7 @@ def sort(key="1"): #{{{1
 
     key = SORT_TYPES[key]
     if key=="date":
-        vim.command("call pad#ListPads('')")
+        vim.command("ListPads")
         return
 
     tuples = []
