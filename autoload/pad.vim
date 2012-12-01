@@ -36,8 +36,8 @@ if has("python")
 
 " Global {{{2
 
-function! pad#OpenPad()
-	python padlib.handler.open_pad()
+function! pad#OpenPad(title)
+	execute "python padlib.handler.open_pad(first_line='".a:title."')"
 endfunction
 
 function! pad#ListPads(query, archive)

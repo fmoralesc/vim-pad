@@ -51,6 +51,9 @@ pass a bang to the command:
 - *:OpenPad* (`<Shift><Escape>`, <leader>n in the terminal, global:
   <Plug>PadOpenPad) creates a new note.
 
+If a string is given as its argument, it will insert the text as the first
+line in the file.
+
 
 LIST COMMANDS                                         *vim-pad-list-commands*
 -------------

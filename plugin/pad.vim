@@ -76,7 +76,7 @@ EOF
 " Commands: {{{1
 "
 " Creates a new note
-command! OpenPad call pad#OpenPad()
+command! -nargs=? OpenPad call pad#OpenPad('<args>')
 " Shows a list of the existing notes
 command! -nargs=? -bang ListPads call pad#ListPads('<args>', '<bang>')
 
