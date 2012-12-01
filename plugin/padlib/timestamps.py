@@ -2,6 +2,7 @@ import time
 import datetime
 from os.path import basename
 
+
 def base36encode(number, alphabet='0123456789abcdefghijklmnopqrstuvxxyz'):
     """Convert positive integer to a base36 string."""
     if not isinstance(number, (int, long)):
@@ -24,10 +25,12 @@ def base36encode(number, alphabet='0123456789abcdefghijklmnopqrstuvxxyz'):
 
     return sign + base36
 
+
 def protect(id):
     """ Prevent filename collisions
     """
     return id + "." + base36encode(int(timestamp()))
+
 
 def timestamp():
     """timestamp() -> str:timestamp
@@ -35,6 +38,7 @@ def timestamp():
     Returns a string of digits representing the current time.
     """
     return str(int(time.time() * 1000000))
+
 
 def natural_timestamp(timestamp):
     """natural_timestamp(str:timestamp) -> str:natural_timestamp
@@ -52,8 +56,8 @@ def natural_timestamp(timestamp):
     diff = datetime.datetime.now() - tmp_datetime
     days = diff.days
     seconds = diff.seconds
-    minutes = seconds/60
-    hours = minutes/60
+    minutes = seconds / 60
+    hours = minutes / 60
 
     if days > 0:
         return tmp_datetime.strftime("%Y-%m-%d %H:%M:%S")

@@ -17,7 +17,8 @@ cached_data = []
 cached_timestamps = []
 cached_filenames = []
 
-def open_pad(path=None, first_line=None): #{{{1
+
+def open_pad(path=None, first_line=None):  # {{{1
     """Creates or opens a note.
 
     path: a valid path for a note.
@@ -26,19 +27,24 @@ def open_pad(path=None, first_line=None): #{{{1
     """
     # we require self.save_dir_set to be set to a valid path
     if get_save_dir() == "":
-        vim.command('let tmp = confirm("IMPORTANT:\n'\
-                'Please set g:pad_dir to a valid path in your vimrc.", "OK", 1, "Error")')
+        vim.command('let tmp = confirm("IMPORTANT:\n'
+                'Please set g:pad_dir to a valid path in your vimrc.",'
+                ' "OK", 1, "Error")')
         return
 
     # if no path is provided, we create one using the current time
     if not path:
-        path = join(get_save_dir(), timestamp() + vim.eval("g:pad_default_file_extension"))
+        path = join(get_save_dir(),
+                    timestamp() + vim.eval("g:pad_default_file_extension"))
+    path = path.replace(" ", "\ ")
 
     if bool(int(vim.eval("g:pad_open_in_split"))):
         if vim.eval('g:pad_position["pads"]') == 'right':
-            vim.command("silent! rightbelow" + str(vim.eval("g:pad_window_width")) + "vsplit " + path)
+            vim.command("silent! rightbelow"
+                    + str(vim.eval("g:pad_window_width")) + "vsplit " + path)
         else:
-            vim.command("silent! botright" + str(vim.eval("g:pad_window_height")) + "split " + path)
+            vim.command("silent! botright"
+                    + str(vim.eval("g:pad_window_height")) + "split " + path)
     else:
         vim.command("silent! edit " + path)
 
@@ -63,13 +69,13 @@ def open_pad(path=None, first_line=None): #{{{1
 
     # insert the text in first_line to the buffer, if provided
     if first_line:
-        vim.current.buffer.append(first_line,0)
+        vim.current.buffer.append(first_line, 0)
         vim.command("normal! j")
 
 
-def listdir_recursive_nohidden(path, archive): # {{{1
+def listdir_recursive_nohidden(path, archive):  # {{{1
     matches = []
-    for root, dirnames, filenames in walk(path, topdown = True):
+    for root, dirnames, filenames in walk(path, topdown=True):
         for dirname in dirnames:
             if dirname.startswith('.'):
                 dirnames.remove(dirname)
@@ -79,12 +85,13 @@ def listdir_recursive_nohidden(path, archive): # {{{1
         matches += [join(root, f) for f in filenames if not f.startswith('.')]
     return matches
 
-def get_filelist(query=None, archive=None): # {{{1
+
+def get_filelist(query=None, archive=None):  # {{{1
     """ __get_filelist(query) -> list_of_notes
 
-    Returns a list of notes. If no query is provided, all the valid filenames in
-    self.save_dir are returned in a list, otherwise, return the results of grep
-    or ack search for query in self.save_dir.
+    Returns a list of notes. If no query is provided, all the valid filenames
+    in self.save_dir are returned in a list, otherwise, return the results of
+    grep or ack search for query in self.save_dir.
     """
     if not query or query == "":
         files = listdir_recursive_nohidden(get_save_dir(), archive)
@@ -109,8 +116,8 @@ def get_filelist(query=None, archive=None): # {{{1
         command.append("--max-count=1")
 
         files = [line.split(":")[0]
-                for line in Popen(command, stdout=PIPE, stderr=PIPE).communicate()[0].\
-                        split("\n")	if line != '']
+                for line in Popen(command, stdout=PIPE, stderr=PIPE).
+                            communicate()[0].split("\n") if line != '']
 
         if bool(int(vim.eval("g:pad_query_dirnames"))):
             matching_dirs = filter(isdir, glob(join(get_save_dir(), "*"+ query+"*")))

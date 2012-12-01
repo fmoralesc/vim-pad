@@ -4,6 +4,7 @@ from os.path import abspath, basename
 from padlib.timestamps import timestamp
 from padlib.utils import get_save_dir
 
+
 class PadInfo(object):
     __slots__ = "id", "summary", "body", "isEmpty", "folder"
 
@@ -18,7 +19,8 @@ class PadInfo(object):
         if source is vim.current.buffer:
             source = source[:10]
         elif source.__class__ == file:
-            self.folder = abspath(source.name)[len(get_save_dir()):-len(basename(source.name))]
+            pos = len(get_save_dir()), len(basename(source.name))
+            self.folder = abspath(source.name)[pos[0]:-pos[1]]
             source = source.read(nchars).split("\n")
 
         data = [line.strip() for line in source if line != ""]
@@ -29,7 +31,7 @@ class PadInfo(object):
                 data = data[1:]
 
             self.summary = data[0].strip()
-            if self.summary[0] in ("%", "#"): #pandoc and markdown titles
+            if self.summary[0] in ("%", "#"):  # pandoc and markdown titles
                 self.summary = str(self.summary[1:]).strip()
 
             self.body = u'\u21b2'.encode('utf-8').join(data[1:]).strip()

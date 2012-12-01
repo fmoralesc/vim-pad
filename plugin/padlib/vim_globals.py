@@ -8,8 +8,9 @@ def set_vim_globals():
     """
     # To update the date when files are modified
     if get_save_dir() == "":
-        vim.command('let tmp = confirm("IMPORTANT:\n'\
-                'Please set g:pad_dir to a valid path in your vimrc.", "OK", 1, "Error")')
+        vim.command('let tmp = confirm("IMPORTANT:\n'
+                'Please set g:pad_dir to a valid path in your vimrc.",'
+                ' "OK", 1, "Error")')
     else:
         vim.command('execute "au! BufEnter" printf("%s*", g:pad_dir) ":let b:pad_modified = 0"')
         vim.command('execute "au! BufWritePre" printf("%s*", g:pad_dir) ":let b:pad_modified = eval(&modified)"')
@@ -26,8 +27,8 @@ def set_vim_globals():
         vim.command("let MRU_Exclude_Files = '^" +
                 join(get_save_dir(), ".*") + tail + "'")
 
-        # we forbid writing backups of the notes
+    # we forbid writing backups of the notes
     orig_backupskip = vim.eval("&backupskip")
     vim.command("let &backupskip='" +
-            ",".join([orig_backupskip, join(get_save_dir(), "*")])+"'")
+            ",".join([orig_backupskip, join(get_save_dir(), "*")]) + "'")
 
