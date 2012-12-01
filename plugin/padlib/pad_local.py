@@ -1,7 +1,7 @@
 import vim
 from shutil import move
 from os import remove, mkdir
-from os.path import expanduser, exists, join, splitext, isfile, basename
+from os.path import expanduser, exists, join, splitext, isfile, basename, dirname
 from padlib.pad import PadInfo
 from padlib.utils import get_save_dir
 from padlib.modelines import format_modeline
@@ -19,7 +19,7 @@ def update():
         _id = PadInfo(vim.current.buffer).id
         old_path = expanduser(vim.current.buffer.name)
 
-        fs = filter(isfile, glob(expanduser(join(get_save_dir(), _id)) + "*"))
+        fs = filter(isfile, glob(expanduser(join(dirname(vim.current.buffer.name), _id)) + "*"))
         if old_path not in fs:
             if fs == []:
                 new_path = expanduser(join(get_save_dir(), _id))
