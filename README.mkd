@@ -12,7 +12,8 @@ format you want. It works great along other plugins like
 [VimOutliner](https://github.com/vimoutliner/vimoutliner/) and
 [quicktask](https://github.com/aaronbieber/quicktask).
 
-**IMPORTANT**: `vim-pad` requires python support.
+**IMPORTANT**: `vim-pad` requires `+python` and `+conceal` support from vim.
+Check if the flags are enabled in `:version`.
 
 
 ![screen 1](http://i.minus.com/idY6u5JQmWPxv.png)

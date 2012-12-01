@@ -7,7 +7,8 @@ Notational Velocity, where file management is removed from the notetaking
 workflow, being replaced by searching and sorting facilities, and where the creation
 and searching of notes is integrated.
 
-IMPORTANT: vim-pad requires python support.
+**IMPORTANT**: `vim-pad` requires `+python` and `+conceal` support from vim.
+Check if the flags are enabled in `:version`.
 
 - Global Commands |vim-pad-global-commands|
 - List Commands |vim-pad-list-commands|
