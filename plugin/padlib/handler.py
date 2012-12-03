@@ -227,3 +227,43 @@ def search_pads(): # {{{1
     display(query, "")
     vim.command("redraw!")
 
+def global_incremental_search():  # {{{1
+    """ Provides incremental search in normal mode without opening the list.
+    """
+    query = ""
+    should_create_on_enter = False
+
+    vim.command("echohl None")
+    vim.command('echo ">> "')
+    while True:
+        raw_char = vim.eval("getchar()")
+        if raw_char in ("13", "27"):
+            if raw_char == "13":
+                if should_create_on_enter:
+                    open_pad(first_line=query)
+                    vim.command("echohl None")
+                else:
+                    display(query, True)
+            vim.command("redraw!")
+            break
+        else:
+            try:   # if we can convert to an int, we have a regular key
+                int(raw_char)   # we bring up an error on nr2char
+                last_char = vim.eval("nr2char(" + raw_char + ")")
+                query = query + last_char
+            except:  # if we don't, we have some special key
+                keycode = unicode(raw_char, errors="ignore")
+                if keycode == "kb":  # backspace
+                    query = query[:-len(last_char)]
+        pad_files = get_filelist(query)
+        if pad_files != []:
+            info = ""
+            vim.command("echohl None")
+            should_create_on_enter = False
+        else:  # we will create a new pad
+            info = "[NEW] "
+            vim.command("echohl WarningMsg")
+            should_create_on_enter = True
+        vim.command("redraw")
+        vim.command('echo ">> ' + info + query + '"')
+

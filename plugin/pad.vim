@@ -87,6 +87,7 @@ inoremap <silent> <unique> <Plug>ListPads <esc>:ListPads<CR>
 noremap <silent> <unique>  <Plug>OpenPad <esc>:OpenPad<CR>
 inoremap <silent> <unique> <Plug>OpenPad <esc>:OpenPad<CR>
 noremap <silent> <unique> <Plug>SearchPads :call pad#SearchPads()<cr>
+noremap <silent> <unique> <Plug>IncrementalSearch :call pad#GlobalIncrementalSearch()<cr>
 
 " You can set custom bindings by re-mapping the previous ones.
 " For example, you can add the following to your vimrc:
@@ -108,6 +109,7 @@ endfunction
 
 if g:pad_use_default_mappings > 0
 	call s:CreateMapping("<leader>s", "SearchPads", "normal")
+	call s:CreateMapping("<leader>ss", "IncrementalSearch", "normal")
 	if has("gui_running")
 		call s:CreateMapping("<C-esc>", "ListPads", "normal")
 		call s:CreateMapping("<S-esc>", "OpenPad", "normal")

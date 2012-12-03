@@ -48,6 +48,10 @@ function! pad#SearchPads()
 	python padlib.handler.search_pads()
 endfunction
 
+function! pad#GlobalIncrementalSearch()
+	python padlib.handler.global_incremental_search()
+endfunction
+
 " Pad local {{{2
 
 function! pad#UpdatePad()
