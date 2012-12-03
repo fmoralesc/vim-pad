@@ -13,7 +13,9 @@ format you want. It works great along other plugins like
 [quicktask](https://github.com/aaronbieber/quicktask).
 
 **IMPORTANT**: `vim-pad` requires `+python` and `+conceal` support from vim.
-Check if the flags are enabled in `:version`.
+Check if the flags are enabled in `:version`. Currently, it also requires
+either a `grep` with perl regexes support or `ack`, which might not be the case
+under OSX. Windows is not supported.
 
 
 ![screen 1](http://i.minus.com/idY6u5JQmWPxv.png)

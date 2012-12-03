@@ -8,7 +8,9 @@ workflow, being replaced by searching and sorting facilities, and where the crea
 and searching of notes is integrated.
 
 **IMPORTANT**: `vim-pad` requires `+python` and `+conceal` support from vim.
-Check if the flags are enabled in `:version`.
+Check if the flags are enabled in `:version`. Currently, it also requires
+either a `grep` with perl regexes support or `ack`, which might not be the case
+under OSX. Windows is not supported.
 
 - Global Commands |vim-pad-global-commands|
 - List Commands |vim-pad-list-commands|
