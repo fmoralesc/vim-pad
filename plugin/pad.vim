@@ -66,6 +66,9 @@ endif
 if !exists('g:pad_default_file_extension')
     let g:pad_default_file_extension = ''
 endif
+if !exists('g:pad_rename_files')
+    let g:pad_rename_files = 1
+endif
 
 " Base: {{{1
 python<<EOF
