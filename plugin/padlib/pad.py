@@ -9,6 +9,15 @@ class PadInfo(object):
     __slots__ = "id", "summary", "body", "isEmpty", "folder"
 
     def __init__(self, source):
+        """
+
+        source can be:
+
+        * a vim buffer
+        * a file object
+        * a list of strings, one per line
+        """
+
         nchars = int(vim.eval("g:pad_read_nchars_from_files"))
         self.summary = ""
         self.body = ""
