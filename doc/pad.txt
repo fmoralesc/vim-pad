@@ -169,6 +169,11 @@ When showing the list of notes, vim-pad reads by default 200 chars from the
 files, in order to show a summary of the file. You can adjust how many chars
 you want vim-pad to read by setting the *g:pad_read_nchars_from_files* variable.
 
+vim-pad renames files to reflect their contents, using a file name similar to
+the note title. The renames are done automatically when you leave/close a note.
+If you do not want vim-pad to rename the files you can set *g:pad_rename_files*
+to 0.
+
 FUNCTIONS                                              *vim-pad-functions*
 ---------
 

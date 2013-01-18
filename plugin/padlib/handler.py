@@ -10,7 +10,7 @@ from os.path import join, getmtime, isfile, isdir
 from subprocess import Popen, PIPE
 from padlib.utils import get_save_dir
 from padlib.pad import PadInfo
-from padlib.timestamps import timestamp, natural_timestamp
+from padlib.timestamps import natural_timestamp
 
 # globals (caches) {{{1
 cached_data = []
@@ -18,7 +18,7 @@ cached_timestamps = []
 cached_filenames = []
 
 
-def open_pad(path=None, first_line=None):  # {{{1
+def open_pad(path=None, first_line=""):  # {{{1
     """Creates or opens a note.
 
     path: a valid path for a note.
@@ -35,7 +35,7 @@ def open_pad(path=None, first_line=None):  # {{{1
     # if no path is provided, we create one using the current time
     if not path:
         path = join(get_save_dir(),
-                    timestamp() + vim.eval("g:pad_default_file_extension"))
+                    PadInfo([first_line]).id + vim.eval("g:pad_default_file_extension"))
     path = path.replace(" ", "\ ")
 
     if bool(int(vim.eval("g:pad_open_in_split"))):
