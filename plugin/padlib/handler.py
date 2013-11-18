@@ -6,7 +6,7 @@ import vim
 import re
 from glob import glob
 from os import walk
-from os.path import join, getmtime, isfile, isdir
+from os.path import join, getmtime, isfile, isdir, exists
 from subprocess import Popen, PIPE
 from padlib.utils import get_save_dir
 from padlib.pad import PadInfo
@@ -142,6 +142,8 @@ def fill_list(files, queried=False, custom_order=False): # {{{1
     # we won't want to touch the cache
     if custom_order:
         queried = True
+
+    files = filter(exists, [join(get_save_dir(), f) for f in files])
 
     timestamps = [getmtime(join(get_save_dir(), f)) for f in files]
 
