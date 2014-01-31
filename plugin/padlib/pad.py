@@ -40,10 +40,22 @@ class PadInfo(object):
                 data = data[1:]
 
             self.summary = data[0].strip()
+            # vim-orgmode adds tags after whitespace
+            org_tags_data = re.search("\s+(?P<tags>:.*$)", self.summary)
+            if org_tags_data:
+                self.summary = re.sub("\s+:.*$", "", self.summary)
             if self.summary[0] in ("%", "#"):  # pandoc and markdown titles
                 self.summary = str(self.summary[1:]).strip()
 
             self.body = u'\u21b2'.encode('utf-8').join(data[1:]).strip()
+            # if we have orgmode tag data, add it to the body
+            if org_tags_data:
+                self.body = u'\u21b2'.encode('utf-8').join(\
+                    [" ".join(\
+                              map(lambda a: "@" + a, \
+                                  filter(lambda a: a != "", \
+                                         org_tags_data.group("tags").split(":")))), \
+                     self.body])
 
         if self.summary != "":
             self.isEmpty = False
