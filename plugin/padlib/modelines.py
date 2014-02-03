@@ -12,6 +12,9 @@ comment_style_map = {
 
 
 def format_modeline(filetype):
-    style = comment_style_map[filetype]
+    try:
+        style = comment_style_map[filetype]
+    except KeyError:
+        style = vim_style
     return style[0] + "vim: set ft=" + filetype + ":" + style[1]
 
