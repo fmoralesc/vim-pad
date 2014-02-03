@@ -50,12 +50,14 @@ class PadInfo(object):
             self.body = u'\u21b2'.encode('utf-8').join(data[1:]).strip()
             # if we have orgmode tag data, add it to the body
             if org_tags_data:
-                self.body = u'\u21b2'.encode('utf-8').join(\
+                self.body = ' '.join(\
                     [" ".join(\
                               map(lambda a: "@" + a, \
                                   filter(lambda a: a != "", \
                                          org_tags_data.group("tags").split(":")))), \
                      self.body])
+            # remove extra spaces in bodies
+            self.body = re.sub("\s{2,}", "", self.body)
 
         if self.summary != "":
             self.isEmpty = False
