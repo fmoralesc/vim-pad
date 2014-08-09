@@ -102,6 +102,7 @@ def get_filelist(query=None, archive=None):  # {{{1
             command = ["grep", "-P", "-n", "-r", query, get_save_dir() + "/"]
             if archive != "!":
                 command.append("--exclude-dir=archive")
+            command.append('--exclude=.*')
             command.append("--exclude-dir=.git")
         elif search_backend == "ack":
             if vim.eval("executable('ack')") == "1":
@@ -115,6 +116,7 @@ def get_filelist(query=None, archive=None):  # {{{1
         if bool(int(vim.eval("g:pad_search_ignorecase"))):
             command.append("-i")
         command.append("--max-count=1")
+        print " ".join(command)
 
         cmd_output = Popen(command, stdout=PIPE, stderr=PIPE).communicate()[0].split("\n")
 
