@@ -102,12 +102,13 @@ def get_filelist(query=None, archive=None):  # {{{1
             command = ["grep", "-P", "-n", "-r", query, get_save_dir() + "/"]
             if archive != "!":
                 command.append("--exclude-dir=archive")
+            command.append("--exclude-dir=.git")
         elif search_backend == "ack":
             if vim.eval("executable('ack')") == "1":
                 ack_path = "ack"
             else:
                 ack_path = "/usr/bin/vendor_perl/ack"
-            command = [ack_path, query, get_save_dir() + "/", "--type=text"]
+            command = [ack_path, query, get_save_dir() + "/", "--noheading"]
             if archive != "!":
                 command.append("--ignore-dir=archive")
 
@@ -115,9 +116,9 @@ def get_filelist(query=None, archive=None):  # {{{1
             command.append("-i")
         command.append("--max-count=1")
 
-        files = [line.split(":")[0]
-                for line in Popen(command, stdout=PIPE, stderr=PIPE).
-                            communicate()[0].split("\n") if line != '']
+        cmd_output = Popen(command, stdout=PIPE, stderr=PIPE).communicate()[0].split("\n")
+
+        files = [line.split(":")[0] for line in cmd_output if line != '']
 
         if bool(int(vim.eval("g:pad_query_dirnames"))):
             matching_dirs = filter(isdir, glob(join(get_save_dir(), "*"+ query+"*")))
