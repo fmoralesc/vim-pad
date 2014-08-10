@@ -8,9 +8,8 @@ def set_vim_globals():
     """
     # To update the date when files are modified
     if get_save_dir() == "":
-        vim.command('let tmp = confirm("IMPORTANT:\n'
-                'Please set g:pad_dir to a valid path in your vimrc.",'
-                ' "OK", 1, "Error")')
+        vim.command('echom "vim-pad: IMPORTANT: please set g:pad_dir to a valid path in your vimrc."')
+        vim.command("redraw")
     else:
         vim.command('execute "au! BufEnter" printf("%s*", g:pad_dir) ":let b:pad_modified = 0"')
         vim.command('execute "au! BufWritePre" printf("%s*", g:pad_dir) ":let b:pad_modified = eval(&modified)"')

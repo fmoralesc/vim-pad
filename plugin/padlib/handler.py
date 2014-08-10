@@ -27,9 +27,7 @@ def open_pad(path=None, first_line=""):  # {{{1
     """
     # we require self.save_dir_set to be set to a valid path
     if get_save_dir() == "":
-        vim.command('let tmp = confirm("IMPORTANT:\n'
-                'Please set g:pad_dir to a valid path in your vimrc.",'
-                ' "OK", 1, "Error")')
+        vim.command('echom "vim-pad: IMPORTANT: please set g:pad_dir to a valid path in your vimrc."')
         return
 
     # if no path is provided, we create one using the current time
