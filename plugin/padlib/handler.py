@@ -218,6 +218,10 @@ def display(query, archive): # {{{1
         fill_list(pad_files, query != "")
         vim.command("set filetype=pad")
         vim.command("setlocal nomodifiable")
+        vim.command("setlocal statusline=%#PreCondit#\ vim-pad%=%#Comment#" + \
+                    "%#Special#q%#Comment#:close\ %#Special#dd%#Comment#:delete\ " + \
+                    "%#Special#[-+]a%#Comment#:[un]archive\ %#Special#[-+]f%#Comment#:move\ [from\|to]\ " + \
+                    "%#Special#<s-f>%#Comment#:search\ %#Special#<s-s>%#Comment#:sort\ ")
     else:
         print "no pads"
 
