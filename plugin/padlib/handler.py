@@ -112,11 +112,11 @@ def get_filelist(query=None, archive=None):  # {{{1
             command = [ack_path, query, get_save_dir() + "/", "--noheading"]
             if archive != "!":
                 command.append("--ignore-dir=archive")
+                command.append('--ignore-file=match:/\./')
 
         if bool(int(vim.eval("g:pad_search_ignorecase"))):
             command.append("-i")
         command.append("--max-count=1")
-        print " ".join(command)
 
         cmd_output = Popen(command, stdout=PIPE, stderr=PIPE).communicate()[0].split("\n")
 
