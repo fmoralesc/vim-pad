@@ -19,8 +19,9 @@ def edit_pad():  # {{{1
     """ Opens the currently selected note in the __pad__ buffer.
     """
     path = get_selected_path()
+    query=vim.eval('b:pad_query')
     vim.command("bd")
-    open_pad(path=path)
+    open_pad(path=path, query=query)
 
 
 def delete_pad():  # {{{1
@@ -97,6 +98,7 @@ def incremental_search():  # {{{1
         vim.command("setlocal modifiable")
         pad_files = get_filelist(query)
         if pad_files != []:
+            vim.command("let b:pad_query = '"+query+"'")
             fill_list(pad_files, query != "")
             vim.command("setlocal nomodifiable")
             info = ""

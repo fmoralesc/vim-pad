@@ -18,7 +18,7 @@ cached_timestamps = []
 cached_filenames = []
 
 
-def open_pad(path=None, first_line=""):  # {{{1
+def open_pad(path=None, first_line="", query=''):  # {{{1
     """Creates or opens a note.
 
     path: a valid path for a note.
@@ -69,6 +69,13 @@ def open_pad(path=None, first_line=""):  # {{{1
     if first_line:
         vim.current.buffer.append(first_line, 0)
         vim.command("normal! j")
+
+    # highlight query and jump to it?
+    if query != '':
+        if vim.eval('g:pad_highlight_query') == '1':
+            vim.command("call matchadd('PadQuery', '\c"+query+"')")
+        if vim.eval('g:pad_jumpto_query') == '1':
+            vim.command("call search('\c"+query+"')")
 
 
 def listdir_recursive_nohidden(path, archive):  # {{{1
@@ -214,6 +221,8 @@ def display(query, archive): # {{{1
         else:
             vim.command("silent! botright " + str(vim.eval("g:pad_window_height")) + "new __pad__")
         fill_list(pad_files, query != "")
+        if query != "":
+            vim.command("let b:pad_query = '" + query + "'")
         vim.command("set filetype=pad")
         vim.command("setlocal nomodifiable")
         vim.command("setlocal statusline=%#PreCondit#\ vim-pad%=%#Comment#" + \

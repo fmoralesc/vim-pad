@@ -60,6 +60,12 @@ endif
 if !exists('g:pad_modeline_position')
 	let g:pad_modeline_position = 'bottom'
 endif
+if !exists('g:pad_highlight_query')
+        let g:pad_highlight_query = 1
+endif
+if !exists('g:pad_jumpto_query')
+        let g:pad_jumpto_query = 1
+endif
 if !exists('g:pad_show_dir')
 	let g:pad_show_dir = 1
 endif

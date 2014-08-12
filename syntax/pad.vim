@@ -26,5 +26,6 @@ hi! link PadSummary Title
 hi! link PadNewLine Comment
 hi! link PadFolder Directory
 hi! link PadArchived Special
+hi! link PadQuery Search
 
 let b:buffer_syntax = "pad"

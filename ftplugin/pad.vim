@@ -15,3 +15,6 @@ noremap <buffer> <silent> -f :call pad#MovePadToSaveDir()<cr>
 noremap <buffer> <silent> q :bw<cr>
 noremap <buffer> <silent> <S-f> :call pad#IncrementalSearch()<cr>
 noremap <buffer> <silent> <S-s> :call pad#Sort()<cr>
+if !exists("b:pad_query")
+    let b:pad_query = ''
+endif
