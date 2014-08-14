@@ -14,7 +14,10 @@ def update():
     Called on the BufLeave event for the notes.
 
     """
-    modified = bool(int(vim.eval("b:pad_modified")))
+    try:
+        modified = bool(int(vim.eval("b:pad_modified")))
+    except:
+        return
     can_rename = bool(int(vim.eval("g:pad_rename_files")))
     if modified and can_rename:
         _id = PadInfo(vim.current.buffer).id
