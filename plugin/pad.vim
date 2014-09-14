@@ -1,9 +1,9 @@
 " vim: set fdm=marker fdc=2:
 
 " File:			pad.vim
-" Description:	Quick-notetaking for vim.
+" Description:	        Quick-notetaking for vim.
 " Author:		Felipe Morales
-" Version:		0.7pre
+" Version:		0.8
 
 " Must we load? {{{1
 if (exists("g:loaded_pad") && g:loaded_pad)	|| &cp 	|| has("python") == 0
@@ -13,90 +13,87 @@ let g:loaded_pad = 1 "}}}
 
 " Default Settings: {{{1
 "
-if !exists('g:pad_dir')
-	if filewritable(expand("~/notes")) == 2
-		let g:pad_dir = "~/notes"
-	else
-		let g:pad_dir = ""
-	endif
+if !exists('g:pad#dir')
+    if exists('g:pad_dir')
+        let g:pad#dir = g:pad_dir
+        echom "vim-pad: g:pad_dir was used for g:pad#dir. Please update your configuration."
+    elseif filewritable(expand("~/notes")) == 2
+        let g:pad#dir = "~/notes"
+    else
+        let g:pad#dir = ""
+    endif
 else
-	if filewritable(expand(eval("g:pad_dir"))) != 2
-		let g:pad_dir = ""
-	endif
+    if filewritable(expand(eval("g:pad#dir"))) != 2
+        let g:pad#dir = ""
+    endif
 endif
-if !exists('g:pad_default_format')
-	let g:pad_default_format = "markdown"
+if !exists('g:pad#default_format')
+    let g:pad#default_format = "markdown"
 endif
-if !exists('g:pad_window_height')
-	let g:pad_window_height = 5
+if !exists('g:pad#window_height')
+    let g:pad#window_height = 5
 endif
-if !exists('g:pad_window_width')
-	let g:pad_window_width = 40
+if !exists('g:pad#window_width')
+    let g:pad#window_width = 40
 endif
-if !exists('g:pad_position')
-	let g:pad_position = { "list" : "bottom", "pads": "bottom" }
+if !exists('g:pad#position')
+    let g:pad#position = { "list" : "bottom", "pads": "bottom" }
 endif
-if !exists('g:pad_open_in_split')
-	let g:pad_open_in_split = 1
+if !exists('g:pad#open_in_split')
+    let g:pad#open_in_split = 1
 endif
-if !exists('g:pad_search_backend')
-	let g:pad_search_backend = "grep"
+if !exists('g:pad#search_backend')
+    let g:pad#search_backend = "grep"
 endif
-if !exists('g:pad_search_ignorecase')
-	let g:pad_search_ignorecase = 1
+if !exists('g:pad#search_ignorecase')
+    let g:pad#search_ignorecase = 1
 endif
-if !exists('g:pad_query_dirnames')
-	let g:pad_query_dirnames = 1
+if !exists('g:pad#query_dirnames')
+    let g:pad#query_dirnames = 1
 endif
-if !exists('g:pad_read_nchars_from_files')
-	let g:pad_read_nchars_from_files = 200
+if !exists('g:pad#read_nchars_from_files')
+    let g:pad#read_nchars_from_files = 200
 endif
-if !exists('g:pad_highlighting_variant')
-	let g:pad_highlighting_variant = 0
+if !exists('g:pad#highlighting_variant')
+    let g:pad#highlighting_variant = 0
 endif
-if !exists('g:pad_use_default_mappings')
-	let g:pad_use_default_mappings = 1
+if !exists('g:pad#use_default_mappings')
+    let g:pad#use_default_mappings = 1
 endif
-if !exists('g:pad_modeline_position')
-	let g:pad_modeline_position = 'bottom'
+if !exists('g:pad#modeline_position')
+    let g:pad#modeline_position = 'bottom'
 endif
-if !exists('g:pad_highlight_query')
-        let g:pad_highlight_query = 1
+if !exists('g:pad#highlight_query')
+    let g:pad#highlight_query = 1
 endif
-if !exists('g:pad_jumpto_query')
-        let g:pad_jumpto_query = 1
+if !exists('g:pad#jumpto_query')
+    let g:pad#jumpto_query = 1
 endif
-if !exists('g:pad_show_dir')
-	let g:pad_show_dir = 1
+if !exists('g:pad#show_dir')
+    let g:pad#show_dir = 1
 endif
-if !exists('g:pad_default_file_extension')
-    let g:pad_default_file_extension = ''
+if !exists('g:pad#default_file_extension')
+    let g:pad#default_file_extension = ''
 endif
-if !exists('g:pad_rename_files')
-    let g:pad_rename_files = 1
+if !exists('g:pad#rename_files')
+    let g:pad#rename_files = 1
 endif
 
-" Base: {{{1
-python<<EOF
-import vim, sys
-sys.path.append(vim.eval("expand('<sfile>:p:h')"))
-import padlib
-EOF
 " Commands: {{{1
 "
 " Creates a new note
-command! -nargs=? OpenPad call pad#OpenPad('<args>')
-" Shows a list of the existing notes
-command! -nargs=? -bang ListPads call pad#ListPads('<args>', '<bang>')
+command! -nargs=? -bang -complete=custom,pad#PadCmdComplete Pad call pad#PadCmd('<args>', '<bang>')
+command! -nargs=? -bang ListPads call pad#PadCmd('ls <args>', '<bang>')
+command! -nargs=? OpenPad call pad#PadCmd('new <args>', '')
 
 " Key Mappings: {{{1
 "
-noremap <silent> <unique> <Plug>ListPads <esc>:ListPads<CR>
-inoremap <silent> <unique> <Plug>ListPads <esc>:ListPads<CR>
-noremap <silent> <unique>  <Plug>OpenPad <esc>:OpenPad<CR>
-inoremap <silent> <unique> <Plug>OpenPad <esc>:OpenPad<CR>
-noremap <silent> <unique> <Plug>SearchPads :call pad#SearchPads()<cr>
-noremap <silent> <unique> <Plug>IncrementalSearch :call pad#GlobalIncrementalSearch()<cr>
+noremap <silent> <unique> <Plug>(pad-list) <esc>:Pad ls<CR>
+inoremap <silent> <unique> <Plug>(pad-list) <esc>:Pad ls<CR>
+noremap <silent> <unique>  <Plug>(pad-new) <esc>:Pad new<CR>
+inoremap <silent> <unique> <Plug>(pad-new) <esc>:Pad new<CR>
+noremap <silent> <unique> <Plug>(pad-search) :call pad#SearchPads()<cr>
+noremap <silent> <unique> <Plug>(pad-incremental-search) :call pad#GlobalIncrementalSearch()<cr>
 
 " You can set custom bindings by re-mapping the previous ones.
 " For example, you can add the following to your vimrc:
@@ -104,35 +101,36 @@ noremap <silent> <unique> <Plug>IncrementalSearch :call pad#GlobalIncrementalSea
 "     nmap ,pl <Plug>ListPads
 "
 " If you want disable the default_mappings, set
-" g:pad_use_default_mappings to 0
+" g:pad#use_default_mappings to 0
 
 function! s:CreateMapping(key, action, modename)
-  let mode = a:modename == "normal" ? "nmap" : "imap"
+    let mode = a:modename == "normal" ? "nmap" : "imap"
 
-  try
-    execute "silent " . mode . " <unique> " . a:key . " <Plug>" . a:action
-  catch /E227/
-    echom "[vim-pad] " . a:key . " in " . a:modename . " mode is already mapped."
-  endtry
+    try
+        execute "silent " . mode . " <unique> " . a:key . " <Plug>(" . a:action . ")"
+    catch /E227/
+        echom "[vim-pad] " . a:key . " in " . a:modename . " mode is already mapped."
+    endtry
 endfunction
 
-if g:pad_use_default_mappings > 0
-	call s:CreateMapping("<leader>s", "SearchPads", "normal")
-	call s:CreateMapping("<leader>ss", "IncrementalSearch", "normal")
-	if has("gui_running")
-		call s:CreateMapping("<C-esc>", "ListPads", "normal")
-		call s:CreateMapping("<S-esc>", "OpenPad", "normal")
-	else " the previous mappings don't work in the terminal
-		call s:CreateMapping("<leader><esc>", "ListPads", "normal")
-		call s:CreateMapping("<leader>n", "OpenPad", "normal")
-	endif
-	if g:pad_use_default_mappings > 1
-		if has("gui_running")
-			call s:CreateMapping("<C-esc>", "ListPads", "insert")
-			call s:CreateMapping("<S-esc>", "OpenPad", "insert")
-		else
-			call s:CreateMapping("<leader><esc>", "ListPads", "insert")
-			call s:CreateMapping("<leader>n", "OpenPad", "insert")
-		endif
-	endif
+if g:pad#use_default_mappings > 0
+    call s:CreateMapping("<leader>s", "pad-search", "normal")
+    call s:CreateMapping("<leader>ss", "pad-incremental-search", "normal")
+    if has("gui_running")
+        call s:CreateMapping("<C-esc>", "pad-list", "normal")
+        call s:CreateMapping("<S-esc>", "pad-new", "normal")
+    else " the previous mappings don't work in the terminal
+        call s:CreateMapping("<leader><esc>", "pad-list", "normal")
+        call s:CreateMapping("<leader>n", "pad-new", "normal")
+    endif
+
+    if g:pad#use_default_mappings > 1
+        if has("gui_running")
+            call s:CreateMapping("<C-esc>", "pad-list", "insert")
+            call s:CreateMapping("<S-esc>", "pad-new", "insert")
+        else
+            call s:CreateMapping("<leader><esc>", "pad-list", "insert")
+            call s:CreateMapping("<leader>n", "pad-new", "insert")
+        endif
+    endif
 endif

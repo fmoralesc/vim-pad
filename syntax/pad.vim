@@ -1,4 +1,4 @@
-if g:pad_position["list"] == "right"
+if g:pad#position["list"] == "right"
 	syn match PadTimestamp /^.\{-}│/ conceal
 else
 	syn match PadTimestamp /^.\{-}│/ contains=PadName,PadTimestampDelimiter,PadTimestampTime
@@ -12,7 +12,7 @@ syn match PadEmptyLabel /\[EMPTY\]/ contained
 syn match PadFolder / .*\%u2e25/ contained
 syn match PadFolderStop /\%u2e25/ containedin=PadFolder conceal
 syn match PadArchived /\/archive\// containedin=PadFolder
-if g:pad_position["list"] == "right"
+if g:pad#position["list"] == "right"
 	syn match PadSummaryPad / \//me=e-1 containedin=PadFolder conceal
 endif
 syn region PadSummary start=/│\@<= /hs=s+1 end=/\(\%u21b2\|$\|[.,]\)\@=/ contains=PadHashTag,PadEmptyLabel,PadFolder

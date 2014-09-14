@@ -4,7 +4,7 @@ from os.path import expanduser, split
 
 
 def get_save_dir():
-    return expanduser(vim.eval("g:pad_dir")).replace("\\", "\\\\")
+    return expanduser(vim.eval("g:pad#dir")).replace("\\", "\\\\")
 
 
 def make_sure_dir_is_empty(path):  # {{{1

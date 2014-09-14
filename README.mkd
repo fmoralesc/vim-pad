@@ -33,7 +33,7 @@ the affected versions.
 
 ## Configuration and Usage
 
-**IMPORTANT**: you must set the g:pad_dir variable to a valid path. It is
+**IMPORTANT**: you must set the g:pad#dir variable to a valid path. It is
 recommended to use an empty folder for this.
 
 For the full documentation, please consult

@@ -1,19 +1,19 @@
 # coding=utf-8
 import vim
 from os.path import join
-from padlib.utils import get_save_dir
+from vim_pad.utils import get_save_dir
 
 def set_vim_globals():
     """ Sets global vim preferences and commands.
     """
     # To update the date when files are modified
     if get_save_dir() == "":
-        vim.command('echom "vim-pad: IMPORTANT: please set g:pad_dir to a valid path in your vimrc."')
+        vim.command('echom "vim-pad: IMPORTANT: please set g:pad#dir to a valid path in your vimrc."')
         vim.command("redraw")
     else:
-        vim.command('execute "au! BufEnter" printf("%s*", g:pad_dir) ":let b:pad_modified = 0"')
-        vim.command('execute "au! BufWritePre" printf("%s*", g:pad_dir) ":let b:pad_modified = eval(&modified)"')
-        vim.command('execute "au! BufLeave" printf("%s*", g:pad_dir) ":call pad#UpdatePad()"')
+        vim.command('execute "au! BufEnter" printf("%s*", g:pad#dir) ":let b:pad_modified = 0"')
+        vim.command('execute "au! BufWritePre" printf("%s*", g:pad#dir) ":let b:pad_modified = eval(&modified)"')
+        vim.command('execute "au! BufLeave" printf("%s*", g:pad#dir) ":call pad#UpdatePad()"')
 
     # vim-pad pollutes the MRU.vim list quite a lot, if let alone.
     # This should fix that.

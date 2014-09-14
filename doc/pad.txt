@@ -1,4 +1,4 @@
-*vim-pad*                     for vim 7.3               Last change: 21 jan 2012
+*vim-pad*                     for vim 7.4               Last change: 21 jan 2012
 
 vim-pad is a quick notetaking plugin for vim.
 
@@ -25,8 +25,12 @@ under OSX. Windows is not supported.
 GLOBAL COMMANDS                                      *vim-pad-global-commands*
 ---------------
 
-- *:ListPads* (`<Control><Escape>`, <leader><Escape> for the terminal, global:
-  <Plug>PadListPads) lists the notes. You can pass a string to this command if
+- *:Pad* is the main entry to using vim-pad. It can take two forms, as
+
+                                                                     *:Pad-ls*
+
+- `:Pad ls` (`<Control><Escape>`, <leader><Escape> for the terminal, global:
+  <Plug>(pad-list)) which lists the notes. You can pass a string to it if
   you want to filter the notes.
 
 The list of notes should display a series of lines like:
@@ -41,21 +45,28 @@ The first line of the file is taken as a title, and highlighted accordingly.
 If the note only spans one line, the text before a dot or a comma is taken as
 the title instead. Line breaks are displayed as ↲.
 
-`<leader>s` in normal mode (default, global: <Plug>PadSearchPads) also calls
-ListPads, but asks for a query to filter the notes before presenting the list.
-Giving an empty query is equivalent to calling `ListPads` without arguments.
+`<leader>s` in normal mode (default, global: <Plug>(pad-search)) also calls
+`Pad ls`, but asks for a query to filter the notes before presenting the list.
+Giving an empty query is equivalent to calling `Pad ls` without arguments.
 
-By default, ListPads won't show notes from the archive. To list them, you must
+By default, `Pad ls` won't show notes from the archive. To list them, you must
 pass a bang to the command:
 
-     :ListPads!
+     :Pad! ls
 
-- *:OpenPad* (`<Shift><Escape>`, <leader>n in the terminal, global:
+                                                                    *:Pad-new*
+
+- `:Pad new` (`<Shift><Escape>`, <leader>n in the terminal, global:
   <Plug>PadOpenPad) creates a new note.
 
 If a string is given as its argument, it will insert the text as the first
 line in the file.
 
+                                                     *vim-pad-legacy-commands*
+
+There are two extra commands, which are now considered legacy and will be
+removed in the future, *:ListPads* (equivalent to :Pad ls), and *:OpenPad*
+(equivalent to `Pad new`).
 
 LIST COMMANDS                                         *vim-pad-list-commands*
 -------------
@@ -70,13 +81,13 @@ in the first line.
 
 You can move the selected note to a subfolder by pressing `<localleader>+f`.
 vim.pad will prompt you for the folder name. To move a note to the root
-directory (|g:pad_dir|), press `<localleader>-f`. Likewise, to move a note to
+directory (|g:pad#dir|), press `<localleader>-f`. Likewise, to move a note to
 the archive, press `<localleader>+a`, and `<localleader>-a` to move it back.
 
 You can sort the notes in the current view by title, tags or date by pressing
 <Shift-S> and selecting the mode.
 
-IN-NOTE COMMANDS                                         *vim-pad-note-commands*
+IN-NOTE COMMANDS                                      *vim-pad-note-commands*
 ----------------
 
 From a note, you can press `<localleader><Del>` (`<localleader>dd` in the
@@ -93,10 +104,10 @@ NOTE FOR WINDOWS USERS: The plugin will not work correctly unless `encoding` is
 set to `utf-8` in your vimrc. Minimal compatibility for latin1 has been
 provided, though (the plugin will load, but render incorrectly).
 
-IMPORTANT 1: set the *g:pad_dir* variable in your .vimrc, to indicate where the
+IMPORTANT 1: set the *g:pad#dir* variable in your .vimrc, to indicate where the
 notes will be saved. The default is:
 
-    let g:pad_dir = "~/notes/"
+    let g:pad#dir = "~/notes/"
 
 If the path is invalid (is not writeable or doesn't exist), vim-pad will nag
 you to set a valid one.
@@ -104,25 +115,25 @@ you to set a valid one.
 NOTE FOR WINDOWS USERS: The pathname escaping is different in Windows. You
 might need to escape backward slashes, like so:
 
-    let g:pad_dir = "C:\\Users\\Foo\\Documents\\Notes"
+    let g:pad#dir = "C:\\Users\\Foo\\Documents\\Notes"
 
 IMPORTANT 2: Please check the mappings before using the plugin. The default
 mappings are quite ergonomic, but you might want to change them. If the
 default mappings have conflicts, vim-pad will let you know.
 
-You can configure the default mappings by setting *g:pad_use_default_mappings*
+You can configure the default mappings by setting *g:pad#use_default_mappings*
 to a value between 0 and 2.  0 disables the default mappings (you'll have to
 add your own mappings for `<Plug>ListPads`, `<Plug>OpenPad` and
 `<Plug>SearchPads` to your vimrc). 1 enables mappings for normal mode. 2
 enables mappings for both normal and insert mode. The default value for
-g:pad_use_default_mappings is 1.
+g:pad#use_default_mappings is 1.
 
 NOTES FORMAT                                           *vim-pad-notes-format*
 
 The default format for new notes is `markdown`. To change this to another
 format, `pandoc` for example, put
 
-    let *g:pad_default_format* = "pandoc"
+    let *g:pad#default_format* = "pandoc"
 
 in your `.vimrc`. You can also set the individual format of a note by adding
 the corresponding modeline. For example,
@@ -133,68 +144,69 @@ at the beggining or the end of a file will tell vim to open the file as a
 VimOutliner file. The modeline won't be shown in the list view.
 
 The position modelines are inserted in a file when using pad#AddModeline is
-determined by the value of *g:pad_modeline_position* . The default is
+determined by the value of *g:pad#modeline_position* . The default is
 `bottom`, which means that it will be inserted at the end of the file. A value
 of `top` means that it will be inserted in the first line of the file.
 
-You can also set the *g:pad_default_file_extension* variable. This will give
+You can also set the *g:pad#default_file_extension* variable. This will give
 all newly saved notes the given file extension (can be useful when
 interoperating with apps that don't recognize modelines).
 
 MISC                                                   *vim-pad-misc-config*
 
 The height of the split windows this plugin uses can be set with
-*g:pad_window_height* (the default is 8).
+*g:pad#window_height* (the default is 8).
 
 Notes are opened by default in a split window the same height as the __Pad__
 buffer. If you want to open the notes in the main window, set
-*g:pad_open_in_split* to 0.
+*g:pad#open_in_split* to 0.
 
 vim-pad's list is opened at the bottom by default. If you want to open it at
 the right side of the window, you must change the value of
-*g:pad_position["list"]* to "right" (the default is "bottom"). You can set the
-window width with *g:pad_window_width* (default: 40). When vim-pad is opened
+*g:pad#position["list"]* to "right" (the default is "bottom"). You can set the
+window width with *g:pad#window_width* (default: 40). When vim-pad is opened
 this way, the timestamp is hidden.  Likewise, you can tell vim-pad to open the
 notes at the right side of the window by setting the value of
-*g:pad_position["pads"]* to "right".
+*g:pad#position["pads"]* to "right".
 
 vim-pad can search using either `grep` or `ack` (grep is the default). You can
-set this using the *g:pad_search_backend* variable. By default, the search
-ignores case (adjust *g:pad_search_ignore_case* as desired).
+set this using the *g:pad#search_backend* variable. By default, the search
+ignores case (adjust *g:pad#search_ignore_case* as desired).
 
 NOTE FOR WINDOWS USERS: You will need a GNU grep compatible executable
 in your $PATH in order to search. Cygwin's version has been tested succesfully.
 
 When showing the list of notes, vim-pad reads by default 200 chars from the
 files, in order to show a summary of the file. You can adjust how many chars
-you want vim-pad to read by setting the *g:pad_read_nchars_from_files* variable.
+you want vim-pad to read by setting the *g:pad#read_nchars_from_files* variable.
 
 vim-pad renames files to reflect their contents, using a file name similar to
 the note title. The renames are done automatically when you leave/close a note.
-If you do not want vim-pad to rename the files you can set *g:pad_rename_files*
+If you do not want vim-pad to rename the files you can set *g:pad#rename_files*
 to 0.
 
 FUNCTIONS                                              *vim-pad-functions*
 ---------
 
-- *pad#OpenPad()*           creates a new note.
-- *pad#ListPads()*          displays the list of notes.
+- *pad#PadCmd(args, bang)*       main entry      
+- *pad#OpenPad(title)*           creates a new note.
+- *pad#ListPads(query, bang)*    displays the list of notes.
 - *pad#SearchPads(query)*   shows the search note prompt
 
 - *pad#UpdatePad()*         updates the pad file (internal)
 - *pad#DeleteThis()*        deletes the currently open note
 - *pad#AddModeline()*       adds a modeline
-- *pad#MoveToFolder()*      moves a note to a subfolder of |g:pad_dir|
-- *pad#MoveToSaveDir*       moves a note to |g:pad_dir|
+- *pad#MoveToFolder()*      moves a note to a subfolder of |g:pad#dir|
+- *pad#MoveToSaveDir*       moves a note to |g:pad#dir|
 - *pad#Archive*             archives a note
-- *pad#Unarchive*           moves an archived note back to |g:pad_dir|
+- *pad#Unarchive*           moves an archived note back to |g:pad#dir|
 
 - *pad#EditPad()*           edit the selected note
 - *pad#DeletePad()*         delete the selected note
-- *pad#MovePad()*           move the selected note to a subfolder of |g:pad_dir|
-- *pad#MovePadToSaveDir()*  move the selected note to |g:pad_dir|
+- *pad#MovePad()*           move the selected note to a subfolder of |g:pad#dir|
+- *pad#MovePadToSaveDir()*  move the selected note to |g:pad#dir|
 - *pad#ArchivePad()*        archive the selected note
-- *pad#UnarchivePad()*      move the selected note back to |g:pad_dir|
+- *pad#UnarchivePad()*      move the selected note back to |g:pad#dir|
 - *pad#IncrementalSearch()* search incrementally
 - *pad#Sort()*              sort the displayed entries
 

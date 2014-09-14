@@ -1,8 +1,8 @@
 import vim
 import re
 from os.path import abspath, basename
-from padlib.timestamps import timestamp
-from padlib.utils import get_save_dir
+from vim_pad.timestamps import timestamp
+from vim_pad.utils import get_save_dir
 
 
 class PadInfo(object):
@@ -18,7 +18,7 @@ class PadInfo(object):
         * a list of strings, one per line
         """
 
-        nchars = int(vim.eval("g:pad_read_nchars_from_files"))
+        nchars = int(vim.eval("g:pad#read_nchars_from_files"))
         self.summary = ""
         self.body = ""
         self.isEmpty = True

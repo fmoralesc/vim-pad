@@ -2,9 +2,9 @@ import vim
 from shutil import move
 from os import remove, mkdir
 from os.path import expanduser, exists, join, splitext, isfile, basename, dirname
-from padlib.pad import PadInfo
-from padlib.utils import get_save_dir
-from padlib.modelines import format_modeline
+from vim_pad.pad import PadInfo
+from vim_pad.utils import get_save_dir
+from vim_pad.modelines import format_modeline
 from glob import glob
 
 
@@ -18,7 +18,7 @@ def update():
         return
 
     modified = bool(int(vim.eval("b:pad_modified")))
-    can_rename = bool(int(vim.eval("g:pad_rename_files")))
+    can_rename = bool(int(vim.eval("g:pad#rename_files")))
     if modified and can_rename:
         _id = PadInfo(vim.current.buffer).id
         old_path = expanduser(vim.current.buffer.name)
@@ -33,7 +33,7 @@ def update():
                 new_path = ".".join([
                                     expanduser(join(get_save_dir(), _id)),
                                     str(int(max(exts)) + 1)])
-            new_path = new_path + vim.eval("g:pad_default_file_extension")
+            new_path = new_path + vim.eval("g:pad#default_file_extension")
             vim.command("bw")
             move(old_path, new_path)
 
@@ -56,7 +56,7 @@ def add_modeline():
     mode = vim.eval('input("filetype: ", "", "filetype")')
     if mode:
         args = [format_modeline(mode)]
-        if vim.eval('g:pad_modeline_position') == 'top':
+        if vim.eval('g:pad#modeline_position') == 'top':
             args.append(0)
         vim.current.buffer.append(*args)
         vim.command("set filetype=" + mode)

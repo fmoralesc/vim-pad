@@ -8,9 +8,9 @@ from glob import glob
 from os import walk
 from os.path import join, getmtime, isfile, isdir, exists
 from subprocess import Popen, PIPE
-from padlib.utils import get_save_dir
-from padlib.pad import PadInfo
-from padlib.timestamps import natural_timestamp
+from vim_pad.utils import get_save_dir
+from vim_pad.pad import PadInfo
+from vim_pad.timestamps import natural_timestamp
 
 # globals (caches) {{{1
 cached_data = []
@@ -27,22 +27,22 @@ def open_pad(path=None, first_line="", query=''):  # {{{1
     """
     # we require self.save_dir_set to be set to a valid path
     if get_save_dir() == "":
-        vim.command('echom "vim-pad: IMPORTANT: please set g:pad_dir to a valid path in your vimrc."')
+        vim.command('echom "vim-pad: IMPORTANT: please set g:pad#dir to a valid path in your vimrc."')
         return
 
     # if no path is provided, we create one using the current time
     if not path:
         path = join(get_save_dir(),
-                    PadInfo([first_line]).id + vim.eval("g:pad_default_file_extension"))
+                    PadInfo([first_line]).id + vim.eval("g:pad#default_file_extension"))
     path = path.replace(" ", "\ ")
 
-    if bool(int(vim.eval("g:pad_open_in_split"))):
-        if vim.eval('g:pad_position["pads"]') == 'right':
+    if bool(int(vim.eval("g:pad#open_in_split"))):
+        if vim.eval('g:pad#position["pads"]') == 'right':
             vim.command("silent! rightbelow"
-                    + str(vim.eval("g:pad_window_width")) + "vsplit " + path)
+                    + str(vim.eval("g:pad#window_width")) + "vsplit " + path)
         else:
             vim.command("silent! botright"
-                    + str(vim.eval("g:pad_window_height")) + "split " + path)
+                    + str(vim.eval("g:pad#window_height")) + "split " + path)
     else:
         vim.command("silent! edit " + path)
 
@@ -51,7 +51,7 @@ def open_pad(path=None, first_line="", query=''):  # {{{1
 
     # set the filetype to our default
     if vim.eval('&filetype') in ('', 'conf'):
-        vim.command("set filetype=" + vim.eval("g:pad_default_format"))
+        vim.command("set filetype=" + vim.eval("g:pad#default_format"))
 
     # map the local commands
     if bool(int(vim.eval('has("gui_running")'))):
@@ -72,9 +72,9 @@ def open_pad(path=None, first_line="", query=''):  # {{{1
 
     # highlight query and jump to it?
     if query != '':
-        if vim.eval('g:pad_highlight_query') == '1':
+        if vim.eval('g:pad#highlight_query') == '1':
             vim.command("call matchadd('PadQuery', '\c"+query+"')")
-        if vim.eval('g:pad_jumpto_query') == '1':
+        if vim.eval('g:pad#jumpto_query') == '1':
             vim.command("call search('\c"+query+"')")
 
 
@@ -101,7 +101,7 @@ def get_filelist(query=None, archive=None):  # {{{1
     if not query or query == "":
         files = listdir_recursive_nohidden(get_save_dir(), archive)
     else:
-        search_backend = vim.eval("g:pad_search_backend")
+        search_backend = vim.eval("g:pad#search_backend")
         if search_backend == "grep":
             # we use Perl mode for grep (-P), because it is really fast
             command = ["grep", "-P", "-n", "-r", query, get_save_dir() + "/"]
@@ -119,7 +119,7 @@ def get_filelist(query=None, archive=None):  # {{{1
                 command.append("--ignore-dir=archive")
                 command.append('--ignore-file=match:/\./')
 
-        if bool(int(vim.eval("g:pad_search_ignorecase"))):
+        if bool(int(vim.eval("g:pad#search_ignorecase"))):
             command.append("-i")
         command.append("--max-count=1")
 
@@ -127,7 +127,7 @@ def get_filelist(query=None, archive=None):  # {{{1
 
         files = [line.split(":")[0] for line in cmd_output if line != '']
 
-        if bool(int(vim.eval("g:pad_query_dirnames"))):
+        if bool(int(vim.eval("g:pad#query_dirnames"))):
             matching_dirs = filter(isdir, glob(join(get_save_dir(), "*"+ query+"*")))
             for mdir in matching_dirs:
                 files.extend(filter(lambda x: x not in files, listdir_recursive_nohidden(mdir, archive)))
@@ -166,12 +166,12 @@ def fill_list(files, queried=False, custom_order=False): # {{{1
                 with open(join(get_save_dir(), pad)) as pad_file:
                     info = PadInfo(pad_file)
                     if info.isEmpty:
-                        if bool(int(vim.eval("g:pad_show_dir"))):
+                        if bool(int(vim.eval("g:pad#show_dir"))):
                             tail = info.folder + u'\u2e25 '.encode('utf-8') + "[EMPTY]"
                         else:
                             tail = "[EMPTY]"
                     else:
-                        if bool(int(vim.eval("g:pad_show_dir"))):
+                        if bool(int(vim.eval("g:pad#show_dir"))):
                             tail = info.folder + u'\u2e25 '.encode('utf-8') + u'\u21b2'.encode('utf-8').join((info.summary, info.body))
                         else:
                             tail = u'\u21b2'.encode('utf-8').join((info.summary, info.body))
@@ -210,16 +210,16 @@ def display(query, archive): # {{{1
     """
     if get_save_dir() == "":
         vim.command('let tmp = confirm("IMPORTANT:\n'\
-                'Please set g:pad_dir to a valid path in your vimrc.", "OK", 1, "Error")')
+                'Please set g:pad#dir to a valid path in your vimrc.", "OK", 1, "Error")')
         return
     pad_files = get_filelist(query, archive)
     if len(pad_files) > 0:
         if vim.eval("bufexists('__pad__')") == "1":
             vim.command("bw __pad__")
-        if vim.eval('g:pad_position["list"]') == "right":
-            vim.command("silent! rightbelow " + str(vim.eval('g:pad_window_width')) + "vnew __pad__")
+        if vim.eval('g:pad#position["list"]') == "right":
+            vim.command("silent! rightbelow " + str(vim.eval('g:pad#window_width')) + "vnew __pad__")
         else:
-            vim.command("silent! botright " + str(vim.eval("g:pad_window_height")) + "new __pad__")
+            vim.command("silent! botright " + str(vim.eval("g:pad#window_height")) + "new __pad__")
         fill_list(pad_files, query != "")
         if query != "":
             vim.command("let b:pad_query = '" + query + "'")
@@ -237,7 +237,7 @@ def search_pads(): # {{{1
     """
     if get_save_dir() == "":
         vim.command('let tmp = confirm("IMPORTANT:\n'\
-                'Please set g:pad_dir to a valid path in your vimrc.", "OK", 1, "Error")')
+                'Please set g:pad#dir to a valid path in your vimrc.", "OK", 1, "Error")')
         return
     query = vim.eval('input(">>> ")')
     display(query, "")

@@ -4,120 +4,143 @@
  
 " Gets the title of the currently selected pad
 function! pad#GetPadTitle()
-	if getline('.') != ""
-		try
-			let retval = split(split(substitute(getline('.'), '↲','\n', "g"), '\n')[0], '\%u2e25 ')[1]
-		catch /E684/
-			let retval "EMPTY"
-		endtry
-		return retval
-	endif
-	return ""
+    if getline('.') != ""
+        try
+            let retval = split(split(substitute(getline('.'), '↲','\n', "g"), '\n')[0], '\%u2e25 ')[1]
+        catch /E684/
+            let retval "EMPTY"
+        endtry
+        return retval
+    endif
+    return ""
 endfunction
 
 " Gets the human readable date of the currently selected pad
 function! pad#GetPadHumanDate()
-	if getline('.') != ""
-		return split(split(getline('.'), ' │')[0], '@')[1]
-	endif
-	return ""
+    if getline('.') != ""
+        return split(split(getline('.'), ' │')[0], '@')[1]
+    endif
+    return ""
 endfunction
 
 " Gets the id of the currently selected pad
 function! pad#GetPadId()
-	if getline('.') != ""
-		return split(getline('.'))[0]
-	endif
-	return ""
+    if getline('.') != ""
+        return split(getline('.'))[0]
+    endif
+    return ""
 endfunction
 
 " Operations: {{{1
 if has("python")
+    python import vim
+    python import vim_pad
 
 " Global {{{2
 
+function! pad#PadCmd(args, bang)
+    let arg_data = split(a:args, ' ')
+    if arg_data[0] =~ '\(new\|ls\)'
+        let l:args = join(arg_data[1:], ' ')
+        if arg_data[0] == 'ls'
+            execute "python vim_pad.handler.display('".l:args."', '".a:bang."')"
+        else
+            execute "python vim_pad.handler.open_pad(first_line='".l:args."')"
+        endif
+    endif
+endfunction
+
+function! pad#PadCmdComplete(A,L,P)
+    let cmd_args = split(a:L, ' ', 1)[1:]
+    if len(cmd_args) == 1 && (cmd_args[0] == '')
+        return "ls\nnew"
+    else
+        return ""
+    endif
+endfunction
+
 function! pad#OpenPad(title)
-	execute "python padlib.handler.open_pad(first_line='".a:title."')"
+    call pad#PadCmd('new '.a:title, '')
 endfunction
 
 function! pad#ListPads(query, archive)
-	execute "python padlib.handler.display('".a:query."', '".a:archive."')"
+    call pad#PadCmd('ls '.a:query, a:archive)
 endfunction
 
 function! pad#SearchPads()
-	python padlib.handler.search_pads()
+    python vim_pad.handler.search_pads()
 endfunction
 
 function! pad#GlobalIncrementalSearch()
-	python padlib.handler.global_incremental_search()
+    python vim_pad.handler.global_incremental_search()
 endfunction
 
 " Pad local {{{2
 
 function! pad#UpdatePad()
-	python padlib.pad_local.update()
+    python vim_pad.pad_local.update()
 endfunction
 
 function! pad#DeleteThis()
-	python padlib.pad_local.delete()
+    python vim_pad.pad_local.delete()
 endfunction
 
 function! pad#AddModeline()
-	python padlib.pad_local.add_modeline()
+    python vim_pad.pad_local.add_modeline()
 endfunction
 
 function! pad#MoveToFolder()
-	python padlib.pad_local.move_to_folder()
+    python vim_pad.pad_local.move_to_folder()
 endfunction
 
 function! pad#MoveToSaveDir()
-	python padlib.pad_local.move_to_savedir()
+    python vim_pad.pad_local.move_to_savedir()
 endfunction
 
 function! pad#Archive()
-	python padlib.pad_local.archive()
+    python vim_pad.pad_local.archive()
 endfunction
 
 function! pad#Unarchive()
-	python padlib.pad_local.unarchive()
+    python vim_pad.pad_local.unarchive()
 endfunction
 
 " List local {{{2
 
 function! pad#EditPad()
-	python padlib.list_local.edit_pad()
+    python vim_pad.list_local.edit_pad()
 endfunction
 
 function! pad#DeletePad()
-	python padlib.list_local.delete_pad()
+    python vim_pad.list_local.delete_pad()
 endfunction
 
 function! pad#MovePad()
-	python padlib.list_local.move_to_folder()
+    python vim_pad.list_local.move_to_folder()
 endfunction
 
 function! pad#MovePadToSaveDir()
-	python padlib.list_local.move_to_savedir()
+    python vim_pad.list_local.move_to_savedir()
 endfunction
 
 function! pad#ArchivePad()
-	python padlib.list_local.archive_pad()
+    python vim_pad.list_local.archive_pad()
 endfunction
 
 function! pad#UnarchivePad()
-	python padlib.list_local.unarchive_pad()
+    python vim_pad.list_local.unarchive_pad()
 endfunction
 
 function! pad#IncrementalSearch()
-	python padlib.list_local.incremental_search()
+    python vim_pad.list_local.incremental_search()
 endfunction
 
 function! pad#Sort()
-	let s:sort_type = input("[pad] sort list by (title=1, tags=2, date=3): ", "1")
-	if s:sort_type != ""
-		execute "python padlib.list_local.sort('".s:sort_type."')"
-	endif
-	redraw!
+    let s:sort_type = input("[pad] sort list by (title=1, tags=2, date=3): ", "1")
+    if s:sort_type != ""
+            execute "python vim_pad.list_local.sort('".s:sort_type."')"
+    endif
+    redraw!
 endfunction
 
 endif
