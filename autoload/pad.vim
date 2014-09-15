@@ -58,7 +58,7 @@ function! pad#PadCmdComplete(A,L,P)
     let cmd_args = split(a:L, ' ', 1)[1:]
     if len(cmd_args) == 1 && (cmd_args[0] == '')
         let options = "ls\nnew"
-        if g:pad#local_dir != '': "only complete 'this' is g:pad#local_dir is set
+        if g:pad#local_dir != '' "only complete 'this' is g:pad#local_dir is set
             let options .= "\nthis"
         endif
         return options
