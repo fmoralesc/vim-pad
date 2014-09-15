@@ -33,19 +33,23 @@ endfunction
 
 " Operations: {{{1
 if has("python")
-    python import vim
     python import vim_pad
 
 " Global {{{2
 
 function! pad#PadCmd(args, bang)
     let arg_data = split(a:args, ' ')
-    if arg_data[0] =~ '\(new\|ls\)'
+    if arg_data[0] =~ '\(new\|ls\|this\)'
         let l:args = join(arg_data[1:], ' ')
         if arg_data[0] == 'ls'
             execute "python vim_pad.handler.display('".l:args."', '".a:bang."')"
-        else
+        elseif arg_data[0] == 'new'
             execute "python vim_pad.handler.open_pad(first_line='".l:args."')"
+        elseif arg_data[0] == 'this' && g:pad#local_dir != '' "only allow this if g:pad#local_dir is set
+            let pth = expand('%:p:h'). '/' . g:pad#local_dir . "/" . expand('%:t'). '.txt' 
+            execute "python vim_pad.handler.open_pad(path='".pth."', first_line='".expand('%:t')."')"
+            " make sure the directory exists when we try to save
+            exe "au! BufWritePre,FileWritePre <buffer> call mkdir(fnamemodify('".pth."', ':h'), 'p')"
         endif
     endif
 endfunction
@@ -53,7 +57,11 @@ endfunction
 function! pad#PadCmdComplete(A,L,P)
     let cmd_args = split(a:L, ' ', 1)[1:]
     if len(cmd_args) == 1 && (cmd_args[0] == '')
-        return "ls\nnew"
+        let options = "ls\nnew"
+        if g:pad#local_dir != '': "only complete 'this' is g:pad#local_dir is set
+            let options .= "\nthis"
+        endif
+        return options
     else
         return ""
     endif

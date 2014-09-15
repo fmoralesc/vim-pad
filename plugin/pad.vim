@@ -27,6 +27,9 @@ else
         let g:pad#dir = ""
     endif
 endif
+if !exists('g:pad#local_dir')
+    let g:pad#local_dir = ''
+endif
 if !exists('g:pad#default_format')
     let g:pad#default_format = "markdown"
 endif

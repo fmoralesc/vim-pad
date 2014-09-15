@@ -90,6 +90,32 @@ def listdir_recursive_nohidden(path, archive):  # {{{1
         matches += [join(root, f) for f in filenames if not f.startswith('.')]
     return matches
 
+def listdir_external(path, archive, query): # {{{1
+    search_backend = vim.eval("g:pad#search_backend")
+    if search_backend == "grep":
+        # we use Perl mode for grep (-P), because it is really fast
+        command = ["grep", "-P", "-n", "-r", query, path + "/"]
+        if archive != "!":
+            command.append("--exclude-dir=archive")
+        command.append('--exclude=.*')
+        command.append("--exclude-dir=.git")
+    elif search_backend == "ack":
+        if vim.eval("executable('ack')") == "1":
+            ack_path = "ack"
+        else:
+            ack_path = "/usr/bin/vendor_perl/ack"
+        command = [ack_path, query, get_save_dir() + "/", "--noheading"]
+        if archive != "!":
+            command.append("--ignore-dir=archive")
+            command.append('--ignore-file=match:/\./')
+
+    if bool(int(vim.eval("g:pad#search_ignorecase"))):
+        command.append("-i")
+    command.append("--max-count=1")
+
+    cmd_output = Popen(command, stdout=PIPE, stderr=PIPE).communicate()[0].split("\n")
+
+    return [line.split(":")[0] for line in cmd_output if line != '']
 
 def get_filelist(query=None, archive=None):  # {{{1
     """ __get_filelist(query) -> list_of_notes
@@ -98,39 +124,22 @@ def get_filelist(query=None, archive=None):  # {{{1
     in self.save_dir are returned in a list, otherwise, return the results of
     grep or ack search for query in self.save_dir.
     """
+    local_path = vim.eval("getcwd(). '/'. g:pad#local_dir")
     if not query or query == "":
         files = listdir_recursive_nohidden(get_save_dir(), archive)
+        # add notes in local dir
+        if vim.eval('g:pad#local_dir') != '':
+            files.extend(listdir_recursive_nohidden(local_path, archive))
     else:
-        search_backend = vim.eval("g:pad#search_backend")
-        if search_backend == "grep":
-            # we use Perl mode for grep (-P), because it is really fast
-            command = ["grep", "-P", "-n", "-r", query, get_save_dir() + "/"]
-            if archive != "!":
-                command.append("--exclude-dir=archive")
-            command.append('--exclude=.*')
-            command.append("--exclude-dir=.git")
-        elif search_backend == "ack":
-            if vim.eval("executable('ack')") == "1":
-                ack_path = "ack"
-            else:
-                ack_path = "/usr/bin/vendor_perl/ack"
-            command = [ack_path, query, get_save_dir() + "/", "--noheading"]
-            if archive != "!":
-                command.append("--ignore-dir=archive")
-                command.append('--ignore-file=match:/\./')
-
-        if bool(int(vim.eval("g:pad#search_ignorecase"))):
-            command.append("-i")
-        command.append("--max-count=1")
-
-        cmd_output = Popen(command, stdout=PIPE, stderr=PIPE).communicate()[0].split("\n")
-
-        files = [line.split(":")[0] for line in cmd_output if line != '']
+        files = listdir_external(get_save_dir(), archive, query)
 
         if bool(int(vim.eval("g:pad#query_dirnames"))):
             matching_dirs = filter(isdir, glob(join(get_save_dir(), "*"+ query+"*")))
             for mdir in matching_dirs:
                 files.extend(filter(lambda x: x not in files, listdir_recursive_nohidden(mdir, archive)))
+        # add notes in local dir
+        if vim.eval('g:pad#local_dir') != '':
+            files.extend(listdir_external(local_path, archive, query))
 
     return files
 
@@ -163,7 +172,8 @@ def fill_list(files, queried=False, custom_order=False): # {{{1
         for pad in files:
             pad_path = join(get_save_dir(), pad)
             if isfile(pad_path):
-                with open(join(get_save_dir(), pad)) as pad_file:
+                pad_path = join(get_save_dir(), pad)
+                with open(pad_path) as pad_file:
                     info = PadInfo(pad_file)
                     if info.isEmpty:
                         if bool(int(vim.eval("g:pad#show_dir"))):

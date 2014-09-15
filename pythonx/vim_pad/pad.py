@@ -1,6 +1,6 @@
 import vim
 import re
-from os.path import abspath, basename
+from os.path import abspath, basename, dirname, relpath
 from vim_pad.timestamps import timestamp
 from vim_pad.utils import get_save_dir
 
@@ -28,8 +28,12 @@ class PadInfo(object):
         if source is vim.current.buffer:
             source = source[:10]
         elif source.__class__ == file:
-            pos = len(get_save_dir()), len(basename(source.name))
-            self.folder = abspath(source.name)[pos[0]:-pos[1]]
+            save_dir = get_save_dir()
+            if abspath(source.name).startswith(save_dir):
+                pos = len(get_save_dir()), len(basename(source.name))
+                self.folder = abspath(source.name)[pos[0]:-pos[1]]
+            else:
+                self.folder = dirname(relpath(source.name, vim.eval('getcwd()')))
             source = source.read(nchars).split("\n")
 
         data = [line.strip() for line in source if line != ""]

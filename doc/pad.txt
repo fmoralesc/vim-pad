@@ -25,7 +25,7 @@ under OSX. Windows is not supported.
 GLOBAL COMMANDS                                      *vim-pad-global-commands*
 ---------------
 
-- *:Pad* is the main entry to using vim-pad. It can take two forms, as
+- *:Pad* is the main entry to using vim-pad. It can take three forms, as
 
                                                                      *:Pad-ls*
 
@@ -61,6 +61,14 @@ pass a bang to the command:
 
 If a string is given as its argument, it will insert the text as the first
 line in the file.
+
+                                                                   *:Pad-this*
+
+- `:Pad this` creates a new note in a local dir (defined by *g:pad#local_dir* ),
+  based on the current file. The created file has a FNAME.txt name. For
+  example, if |g:pad#local_dir| is "notes", and the user is editing the file
+  "~/devel/awesome.vim", a note will be created on
+  "~/devel/notes/awesome.vim.txt".
 
                                                      *vim-pad-legacy-commands*
 
