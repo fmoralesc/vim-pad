@@ -125,10 +125,11 @@ def get_filelist(query=None, archive=None):  # {{{1
     grep or ack search for query in self.save_dir.
     """
     local_path = vim.eval("getcwd(). '/'. g:pad#local_dir")
+    use_local_dir = vim.eval('g:pad#local_dir') != '' and local_path != get_save_dir()
     if not query or query == "":
         files = listdir_recursive_nohidden(get_save_dir(), archive)
-        # add notes in local dir
-        if vim.eval('g:pad#local_dir') != '' and vim.eval('getcwd()."/".g:pad#local_dir') != get_save_dir():
+
+        if use_local_dir:
             files.extend(listdir_recursive_nohidden(local_path, archive))
     else:
         files = listdir_external(get_save_dir(), archive, query)
@@ -137,8 +138,8 @@ def get_filelist(query=None, archive=None):  # {{{1
             matching_dirs = filter(isdir, glob(join(get_save_dir(), "*"+ query+"*")))
             for mdir in matching_dirs:
                 files.extend(filter(lambda x: x not in files, listdir_recursive_nohidden(mdir, archive)))
-        # add notes in local dir
-        if vim.eval('g:pad#local_dir') != '' and vim.eval('getcwd()."/".g:pad#local_dir') != get_save_dir():
+
+        if use_local_dir:
             files.extend(listdir_external(local_path, archive, query))
 
     return files
