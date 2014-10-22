@@ -184,6 +184,12 @@ ignores case (adjust *g:pad#search_ignore_case* as desired).
 NOTE FOR WINDOWS USERS: You will need a GNU grep compatible executable
 in your $PATH in order to search. Cygwin's version has been tested succesfully.
 
+vim-pad can also query directory and filename queries. For the first, it will
+add all files in a folder matching the query. The second simply adds files
+that match the query; it can be useful when file renaming is disabled (see
+|g:pad#rename_files|. You can adjust these behaviors through the
+*g:pad#query_dirnames* (default=1) and *g:pad#query_filenames* (default=0).
+
 When showing the list of notes, vim-pad reads by default 200 chars from the
 files, in order to show a summary of the file. You can adjust how many chars
 you want vim-pad to read by setting the *g:pad#read_nchars_from_files* variable.

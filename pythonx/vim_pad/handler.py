@@ -134,6 +134,10 @@ def get_filelist(query=None, archive=None):  # {{{1
     else:
         files = listdir_external(get_save_dir(), archive, query)
 
+        if bool(int(vim.eval("g:pad#query_filenames"))):
+            matches = filter(lambda i: not isdir(i) and i not in files, glob(join(get_save_dir(), "*"+query+"*")))
+            files.extend(matches)
+
         if bool(int(vim.eval("g:pad#query_dirnames"))):
             matching_dirs = filter(isdir, glob(join(get_save_dir(), "*"+ query+"*")))
             for mdir in matching_dirs:
@@ -241,7 +245,7 @@ def display(query, archive): # {{{1
                     "%#Special#[-+]a%#Comment#:[un]archive\ %#Special#[-+]f%#Comment#:move\ [from\|to]\ " + \
                     "%#Special#<s-f>%#Comment#:search\ %#Special#<s-s>%#Comment#:sort\ ")
     else:
-        print "no pads"
+        print "vim-pad: no pads"
 
 def search_pads(): # {{{1
     """ Aks for a query and lists the matching notes.

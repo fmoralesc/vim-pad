@@ -51,6 +51,9 @@ endif
 if !exists('g:pad#search_ignorecase')
     let g:pad#search_ignorecase = 1
 endif
+if !exists('g:pad#query_filenames')
+    let g:pad#query_filenames = 0
+endif
 if !exists('g:pad#query_dirnames')
     let g:pad#query_dirnames = 1
 endif
