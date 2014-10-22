@@ -55,10 +55,10 @@ def open_pad(path=None, first_line="", query=''):  # {{{1
                 vim.command("silent! edit " + path)
                 if awa == 0:
                     vim.command("set noautowriteall")
-                vim.command("redraw")
             else:
                 vim.command('echom "vim-pad: will have to open pad in a split"')
                 split_for_pad()
+            vim.command("redraw!")
         else:
             vim.command("silent! edit " + path)
 
