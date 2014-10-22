@@ -36,15 +36,31 @@ def open_pad(path=None, first_line="", query=''):  # {{{1
                     PadInfo([first_line]).id + vim.eval("g:pad#default_file_extension"))
     path = path.replace(" ", "\ ")
 
-    if bool(int(vim.eval("g:pad#open_in_split"))):
+    def split_for_pad():
         if vim.eval('g:pad#position["pads"]') == 'right':
             vim.command("silent! rightbelow"
                     + str(vim.eval("g:pad#window_width")) + "vsplit " + path)
         else:
             vim.command("silent! botright"
                     + str(vim.eval("g:pad#window_height")) + "split " + path)
+
+    if bool(int(vim.eval("g:pad#open_in_split"))):
+        split_for_pad()
     else:
-        vim.command("silent! edit " + path)
+        awa = int(vim.eval("&autowriteall"))
+        if bool(int(vim.eval("&modified"))):
+            reply = vim.eval('input("vim-pad: the current file has unsaved changes. do you want to save? [Yn] ", "y")')
+            if reply == "y":
+                vim.command("set autowriteall")
+                vim.command("silent! edit " + path)
+                if awa == 0:
+                    vim.command("set noautowriteall")
+                vim.command("redraw")
+            else:
+                vim.command('echom "vim-pad: will have to open pad in a split"')
+                split_for_pad()
+        else:
+            vim.command("silent! edit " + path)
 
     # we don't keep the buffer when we hide it
     vim.command("set bufhidden=wipe")
