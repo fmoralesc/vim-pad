@@ -129,6 +129,13 @@ def listdir_external(path, archive, query): # {{{1
             command = ["ag", query, get_save_dir() + "/", "--noheading"]
             if archive != "!":
                 command.append("--ignore-dir=archive")
+    elif search_backend == "pt":
+        if vim.eval("executable('pt')") == "1":
+            command = ["pt", "--nogroup"]
+            if archive != "!":
+                command.append("--ignore=archive")
+            command.append(query)
+            command.append(get_save_dir() + "/")
 
     if bool(int(vim.eval("g:pad#search_ignorecase"))):
         command.append("-i")

@@ -177,9 +177,10 @@ this way, the timestamp is hidden.  Likewise, you can tell vim-pad to open the
 notes at the right side of the window by setting the value of
 *g:pad#position["pads"]* to "right".
 
-vim-pad can search using either `grep`,  `ack` or `ag` (grep is the default). You can
-set this using the *g:pad#search_backend* variable. By default, the search
-ignores case (adjust *g:pad#search_ignore_case* as desired).
+vim-pad can search using either `grep`,  `ack`, `ag` (the silver searcher), or
+`pt` (the platinum searcher). grep is the default. You can set this using the
+*g:pad#search_backend* variable. By default, the search ignores case (adjust
+*g:pad#search_ignore_case* as desired).
 
 NOTE FOR WINDOWS USERS: You will need a GNU grep compatible executable
 in your $PATH in order to search. Cygwin's version has been tested succesfully.
