@@ -84,6 +84,9 @@ endif
 if !exists('g:pad#rename_files')
     let g:pad#rename_files = 1
 endif
+if !exists('g:pad#title_first_line')
+    let g:pad#title_first_line = 0
+endif
 
 " Commands: {{{1
 "
