@@ -240,6 +240,8 @@ def fill_list(files, queried=False, custom_order=False): # {{{1
         lines = [re.sub("(?P<id>^.*?) @", add_natural_timestamp, line) for line in lines]
 
     # we now show the list
+    if vim.eval('&modifiable') != '1':
+        vim.current.buffer.options['modifiable'] = True
     del vim.current.buffer[:] # clear the buffer
     vim.current.buffer.append(list(lines))
     vim.command("normal! dd")
