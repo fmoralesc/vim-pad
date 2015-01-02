@@ -120,13 +120,13 @@ def listdir_external(path, archive, query): # {{{1
             ack_path = "ack"
         else:
             ack_path = "/usr/bin/vendor_perl/ack"
-        command = [ack_path, query, get_save_dir() + "/", "--noheading"]
+        command = [ack_path, query, path, "--noheading"]
         if archive != "!":
             command.append("--ignore-dir=archive")
         command.append('--ignore-file=match:/\./')
     elif search_backend == "ag":
         if vim.eval("executable('ag')") == "1":
-            command = ["ag", query, get_save_dir() + "/", "--noheading"]
+            command = ["ag", query, path, "--noheading"]
             if archive != "!":
                 command.append("--ignore-dir=archive")
     elif search_backend == "pt":
@@ -135,10 +135,11 @@ def listdir_external(path, archive, query): # {{{1
             if archive != "!":
                 command.append("--ignore=archive")
             command.append(query)
-            command.append(get_save_dir() + "/")
+            command.append(path)
 
     if bool(int(vim.eval("g:pad#search_ignorecase"))):
         command.append("-i")
+
     command.append("--max-count=1")
 
     cmd_output = Popen(command, stdout=PIPE, stderr=PIPE).communicate()[0].split("\n")
