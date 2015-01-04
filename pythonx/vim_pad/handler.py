@@ -110,7 +110,7 @@ def listdir_external(path, archive, query): # {{{1
     search_backend = vim.eval("g:pad#search_backend")
     if search_backend == "grep":
         # we use Perl mode for grep (-P), because it is really fast
-        command = ["grep", "-P", "-n", "-r", query, path + "/"]
+        command = ["grep", "-P", "-n", "-r", "-l", query, path + "/"]
         if archive != "!":
             command.append("--exclude-dir=archive")
         command.append('--exclude=.*')
@@ -120,18 +120,18 @@ def listdir_external(path, archive, query): # {{{1
             ack_path = "ack"
         else:
             ack_path = "/usr/bin/vendor_perl/ack"
-        command = [ack_path, query, path, "--noheading"]
+        command = [ack_path, query, path, "--noheading", "-l"]
         if archive != "!":
             command.append("--ignore-dir=archive")
         command.append('--ignore-file=match:/\./')
     elif search_backend == "ag":
         if vim.eval("executable('ag')") == "1":
-            command = ["ag", query, path, "--noheading"]
+            command = ["ag", query, path, "--noheading", "-l"]
             if archive != "!":
                 command.append("--ignore-dir=archive")
     elif search_backend == "pt":
         if vim.eval("executable('pt')") == "1":
-            command = ["pt", "--nogroup"]
+            command = ["pt", "-l", "--nogroup"]
             if archive != "!":
                 command.append("--ignore=archive")
             command.append(query)
@@ -144,7 +144,7 @@ def listdir_external(path, archive, query): # {{{1
 
     cmd_output = Popen(command, stdout=PIPE, stderr=PIPE).communicate()[0].split("\n")
 
-    return [line.split(":")[0] for line in cmd_output if line != '']
+    return list(filter(lambda i: i != "", cmd_output))
 
 def get_filelist(query=None, archive=None):  # {{{1
     """ __get_filelist(query) -> list_of_notes
