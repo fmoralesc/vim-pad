@@ -24,6 +24,9 @@ def open_pad(path=None, first_line="", query=''):  # {{{1
     path: a valid path for a note.
 
     first_line: a string to insert to a new note, if given.
+
+    query: the previous search, if any.
+
     """
     # we require self.save_dir_set to be set to a valid path
     if get_save_dir() == "":

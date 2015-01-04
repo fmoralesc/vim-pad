@@ -69,6 +69,8 @@ pass a bang to the command:
 If a string is given as its argument, it will insert the text as the first
 line in the file.
 
+If the :Pad command includes a bang (i.e. `:Pad! new`), a local note is created.
+
                                                                    *:Pad-this*
 
 - `:Pad this` creates a new note in a local dir (defined by *g:pad#local_dir* ),

@@ -44,7 +44,14 @@ function! pad#PadCmd(args, bang)
         if arg_data[0] == 'ls'
             execute "python vim_pad.handler.display('".l:args."', '".a:bang."')"
         elseif arg_data[0] == 'new'
-            execute "python vim_pad.handler.open_pad(first_line='".l:args."')"
+            if a:bang != '!'
+                execute "python vim_pad.handler.open_pad(first_line='".l:args."')"
+            else
+                let pth = expand('%:p:h'). '/' . g:pad#local_dir . "/" 
+                execute "python vim_pad.handler.open_pad(path='".pth."'+vim_pad.timestamps.timestamp())"
+                " make sure the directory exists when we try to save
+                exe "au! BufWritePre,FileWritePre <buffer> call mkdir(fnamemodify('".pth."', ':h'), 'p')"
+            endif
         elseif arg_data[0] == 'this' && g:pad#local_dir != '' "only allow this if g:pad#local_dir is set
             let pth = expand('%:p:h'). '/' . g:pad#local_dir . "/" . expand('%:t'). '.txt' 
             execute "python vim_pad.handler.open_pad(path='".pth."', first_line='".expand('%:t')."')"
