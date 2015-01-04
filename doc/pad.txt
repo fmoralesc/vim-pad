@@ -12,6 +12,13 @@ Check if the flags are enabled in `:version`. Currently, it also requires
 either a `grep` with perl regexes support or `ack`, which might not be the case
 under OSX. Windows is not supported.
 
+If you have vim-tutor-mode[1] installed, you might want to read vim-pad's tutorial:
+>
+    :Tutor vim-pad
+<
+
+[1]: https://github.com/fmoralesc/vim-tutor-mode
+
 - Global Commands |vim-pad-global-commands|
 - List Commands |vim-pad-list-commands|
 - In-Note Commands |vim-pad-note-commands|
@@ -57,7 +64,7 @@ pass a bang to the command:
                                                                     *:Pad-new*
 
 - `:Pad new` (`<Shift><Escape>`, <leader>n in the terminal, global:
-  <Plug>PadOpenPad) creates a new note.
+  <Plug>(pad-new)) creates a new note.
 
 If a string is given as its argument, it will insert the text as the first
 line in the file.
@@ -146,7 +153,7 @@ format, `pandoc` for example, put
 in your `.vimrc`. You can also set the individual format of a note by adding
 the corresponding modeline. For example,
 
-	<!-- vim: set ft=vo_base: -->
+	<!-- vim: set ft=votl: -->
 
 at the beggining or the end of a file will tell vim to open the file as a
 VimOutliner file. The modeline won't be shown in the list view.
@@ -226,8 +233,8 @@ FUNCTIONS                                              *vim-pad-functions*
 - *pad#ArchivePad()*            archive the selected note
 - *pad#UnarchivePad()*          move the selected note back to |g:pad#dir|
 - *pad#IncrementalSearch()*     search incrementally. takes an argument, if it is 1, it will create a 
-                                new note with the query if enter is pressed, it 0, it will save the 
-                                query as a note, but it will not open it.
+                              new note with the query if enter is pressed, it 0, it will save the 
+                              query as a note, but it will not open it.
 - *pad#Sort()*                  sort the displayed entries
 
 - *pad#GetPadTitle()*       retrieve the selected note title
