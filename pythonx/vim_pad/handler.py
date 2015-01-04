@@ -96,9 +96,8 @@ def open_pad(path=None, first_line="", query=''):  # {{{1
         if vim.eval('g:pad#jumpto_query') == '1':
             vim.command("call search('\c"+query+"')")
 
-def new_pad(text=None):
+def new_pad(text=None): #{{{1
     path = join(get_save_dir(), PadInfo([text]).id + vim.eval("g:pad#default_file_extension"))
-    path = path.replace(" ", "\ ")
     with open(path, 'w') as new_note:
         new_note.write(text)
 
