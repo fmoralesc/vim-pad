@@ -1,8 +1,8 @@
 # vim-pad: a tutorial
 
-vim-pad is a notetaking handy plugin. This document will lead you through its
+vim-pad is a handy note-taking plugin. This document will lead you through its
 features and give you some tips. It is also devised as a more hands-on refresher
-than [vim-pad's help file](vim-pad), so you can use it a quick reference.
+than [vim-pad's help file](vim-pad), so you can use it as a quick reference.
 
 To start using vim-pad, you need to point it to the place your notes will be
 saved. For this tutorial, we'll use a temp dir.  Place your cursor over the
