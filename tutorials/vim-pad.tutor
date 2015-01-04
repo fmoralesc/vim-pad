@@ -130,7 +130,7 @@ notes. Let's see what we can do about it...
 Nuke some! 
 
 From the notes list, select a note you want to delete and then press
-<localleader>dd. You'll be prompted to confirm.
+dd. You'll be prompted to confirm.
 
 EXERCISE: Delete the worst of notes.
 
@@ -147,9 +147,12 @@ you might not want that. Another option is to place your notes into topic
 folders. You can do it manually (and vim-pad will show you the folders when
 listing the notes), but there are better ways from within vim. 
 
-From the list, select a note and press <localleader>+f. You'll be prompted for a
+From the list, select a note and press «+f» . You'll be prompted for a
 folder name to put the note in. If the folder doesn't exist, vim-pad will create
-it. NOTE: Pressing the same combo within a note does the same.
+it. 
+
+NOTE: Pressing the same combo within a note, with <localleader> prepended, does
+the same.
 
 EXERCISE: Create a note and put it in the "test" folder.
 
@@ -158,7 +161,7 @@ NOTE: you can have subfolders to your subfolders.
 EXERCISE: Move the note in the test folder to the "test/again" folder.
 
 If you want to move notes back to the root notes dir, you can use
-<localleader>-f (works from both the notes list and the notes themselves).
+«-f» (<localleader>-f within the note).
 
 EXERCISE: Return the note you just created to the root dir.
 
@@ -177,7 +180,7 @@ to put a ! after the command, like this
 If you try it now, it won't do anything special, because we haven't archived
 anything yet. Let's do it!
 
-To put things on the archive, you can use <localleader>+a (in both the list and
+To put things on the archive, you can use «+a» (in both the list and
 the notes).
 
 EXERCISE: Archive a couple of notes, and list the notes with :Pad! ls.
