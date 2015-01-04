@@ -93,6 +93,11 @@ def open_pad(path=None, first_line="", query=''):  # {{{1
         if vim.eval('g:pad#jumpto_query') == '1':
             vim.command("call search('\c"+query+"')")
 
+def new_pad(text=None):
+    path = join(get_save_dir(), PadInfo([text]).id + vim.eval("g:pad#default_file_extension"))
+    path = path.replace(" ", "\ ")
+    with open(path, 'w') as new_note:
+        new_note.write(text)
 
 def listdir_recursive_nohidden(path, archive):  # {{{1
     matches = []
@@ -289,7 +294,7 @@ def search_pads(): # {{{1
     display(query, "")
     vim.command("redraw!")
 
-def global_incremental_search():  # {{{1
+def global_incremental_search(should_open=True):  # {{{1
     """ Provides incremental search in normal mode without opening the list.
     """
     query = ""
@@ -302,7 +307,11 @@ def global_incremental_search():  # {{{1
         if raw_char in ("13", "27"):
             if raw_char == "13":
                 if should_create_on_enter:
-                    open_pad(first_line=query)
+                    if should_open == True:
+                        open_pad(first_line=query)
+                    else:
+                        print "new_pad"
+                        new_pad(text=query)
                     vim.command("echohl None")
                 else:
                     display(query, True)

@@ -80,8 +80,9 @@ function! pad#SearchPads()
     python vim_pad.handler.search_pads()
 endfunction
 
-function! pad#GlobalIncrementalSearch()
-    python vim_pad.handler.global_incremental_search()
+function! pad#GlobalIncrementalSearch(open)
+    python import vim
+    python vim_pad.handler.global_incremental_search(bool(int(vim.eval('a:open'))))
 endfunction
 
 " Pad local {{{2

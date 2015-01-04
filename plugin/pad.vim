@@ -102,7 +102,8 @@ inoremap <silent> <unique> <Plug>(pad-list) <esc>:Pad ls<CR>
 noremap <silent> <unique>  <Plug>(pad-new) <esc>:Pad new<CR>
 inoremap <silent> <unique> <Plug>(pad-new) <esc>:Pad new<CR>
 noremap <silent> <unique> <Plug>(pad-search) :call pad#SearchPads()<cr>
-noremap <silent> <unique> <Plug>(pad-incremental-search) :call pad#GlobalIncrementalSearch()<cr>
+noremap <silent> <unique> <Plug>(pad-incremental-search) :call pad#GlobalIncrementalSearch(1)<cr>
+noremap <silent> <unique> <PLug>(pad-incremental-new-note) :call pad#GlobalIncrementalSearch(0)<cr>
 
 " You can set custom bindings by re-mapping the previous ones.
 " For example, you can add the following to your vimrc:
@@ -125,6 +126,7 @@ endfunction
 if g:pad#use_default_mappings > 0
     call s:CreateMapping("<leader>s", "pad-search", "normal")
     call s:CreateMapping("<leader>ss", "pad-incremental-search", "normal")
+    call s:CreateMapping("<leader>s!", "pad-incremental-new-note", "normal")
     if has("gui_running")
         call s:CreateMapping("<C-esc>", "pad-list", "normal")
         call s:CreateMapping("<S-esc>", "pad-new", "normal")

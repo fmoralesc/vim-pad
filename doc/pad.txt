@@ -219,14 +219,16 @@ FUNCTIONS                                              *vim-pad-functions*
 - *pad#Archive*             archives a note
 - *pad#Unarchive*           moves an archived note back to |g:pad#dir|
 
-- *pad#EditPad()*           edit the selected note
-- *pad#DeletePad()*         delete the selected note
-- *pad#MovePad()*           move the selected note to a subfolder of |g:pad#dir|
-- *pad#MovePadToSaveDir()*  move the selected note to |g:pad#dir|
-- *pad#ArchivePad()*        archive the selected note
-- *pad#UnarchivePad()*      move the selected note back to |g:pad#dir|
-- *pad#IncrementalSearch()* search incrementally
-- *pad#Sort()*              sort the displayed entries
+- *pad#EditPad()*               edit the selected note
+- *pad#DeletePad()*             delete the selected note
+- *pad#MovePad()*               move the selected note to a subfolder of |g:pad#dir|
+- *pad#MovePadToSaveDir()*      move the selected note to |g:pad#dir|
+- *pad#ArchivePad()*            archive the selected note
+- *pad#UnarchivePad()*          move the selected note back to |g:pad#dir|
+- *pad#IncrementalSearch()*     search incrementally. takes an argument, if it is 1, it will create a 
+                                new note with the query if enter is pressed, it 0, it will save the 
+                                query as a note, but it will not open it.
+- *pad#Sort()*                  sort the displayed entries
 
 - *pad#GetPadTitle()*       retrieve the selected note title
 - *pad#GetHumanDate()*      retrieve the selected note data
