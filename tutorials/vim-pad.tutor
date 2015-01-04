@@ -10,6 +10,8 @@ next command and press «>>»
 ~~~ viml
     :let g:pad#dir = fnamemodify(tempname(), ":h")
 ~~~
+IMPORTANT: [g:pad#dir](g:pad#dir) MUST be a full path, vim-pad won't work properly otherwise!
+
 Table of contents: («zO» to open a section, «zc» to close it) 
 ## Creating a note
 
