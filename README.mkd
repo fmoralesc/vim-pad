@@ -36,9 +36,13 @@ the affected versions.
 ## Configuration and Usage
 
 **IMPORTANT**: you must set the g:pad#dir variable to a valid path. It is
-recommended to use an empty folder for this.
+recommended to use an empty folder for this. 
 
 For the full documentation, please consult
 
-	:help vim-pad
+    :help vim-pad
 
+If you have [vim-tutor-mode](https://github.com/fmoralesc/vim-tutor-mode), you
+can read a tutorial on using vim-pad with
+
+    :Tutor vim-pad
