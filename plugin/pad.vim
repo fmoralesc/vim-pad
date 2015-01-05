@@ -66,6 +66,9 @@ endif
 if !exists('g:pad#use_default_mappings')
     let g:pad#use_default_mappings = 1
 endif
+if !exists('g:pad#silent_on_mappings_fail')
+    let g:pad#silent_on_mappings_fail = 0
+endif
 if !exists('g:pad#modeline_position')
     let g:pad#modeline_position = 'bottom'
 endif
@@ -119,7 +122,9 @@ function! s:CreateMapping(key, action, modename)
     try
         execute "silent " . mode . " <unique> " . a:key . " <Plug>(" . a:action . ")"
     catch /E227/
-        echom "[vim-pad] " . a:key . " in " . a:modename . " mode is already mapped."
+        if g:pad#silent_on_mappings_fail < 1
+            echom "[vim-pad] " . a:key . " in " . a:modename . " mode is already mapped."
+        else
     endtry
 endfunction
 
