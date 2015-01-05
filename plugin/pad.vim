@@ -124,8 +124,8 @@ function! s:CreateMapping(key, action, modename)
 endfunction
 
 if g:pad#use_default_mappings > 0
-    call s:CreateMapping("<leader>s", "pad-search", "normal")
-    call s:CreateMapping("<leader>ss", "pad-incremental-search", "normal")
+    call s:CreateMapping("<leader>ss", "pad-search", "normal")
+    call s:CreateMapping("<leader>s<leader>", "pad-incremental-search", "normal")
     call s:CreateMapping("<leader>s!", "pad-incremental-new-note", "normal")
     if has("gui_running")
         call s:CreateMapping("<C-esc>", "pad-list", "normal")

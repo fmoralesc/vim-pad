@@ -68,13 +68,13 @@ vim-pad as an everyday tool. However, there is still plenty to learn.
 ### Other ways to search
 
 You can search non interactively, but without opening the notes list, with
-[<leader>](<Leader>)s . Pressing <Enter> after finishing the query will show the
+[<leader>](<Leader>)ss . Pressing <Enter> after finishing the query will show the
 list of matching notes.
 
 ## More on creating notes 
 
-There is yet another way to search for notes: If you press <leader>ss in any
-window, an interactive search will start. This s pretty similar to <leader>s,
+There is yet another way to search for notes: If you press <leader>s<leader> in any
+window, an interactive search will start. This s pretty similar to <leader>ss,
 but it will also allow the user to create a new note if the query is not found.
 If so, pressing <Enter> will open a new note with the query pre-appended. This
 is a pretty convenient way of creating a new note very quick and keep adding to
