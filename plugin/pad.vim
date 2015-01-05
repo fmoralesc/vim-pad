@@ -124,7 +124,7 @@ function! s:CreateMapping(key, action, modename)
     catch /E227/
         if g:pad#silent_on_mappings_fail < 1
             echom "[vim-pad] " . a:key . " in " . a:modename . " mode is already mapped."
-        else
+        endif
     endtry
 endfunction
 
