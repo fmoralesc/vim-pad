@@ -138,12 +138,27 @@ IMPORTANT 2: Please check the mappings before using the plugin. The default
 mappings are quite ergonomic, but you might want to change them. If the
 default mappings have conflicts, vim-pad will let you know.
 
-You can configure the default mappings by setting *g:pad#use_default_mappings*
-to a value between 0 and 2.  0 disables the default mappings (you'll have to
-add your own mappings for `<Plug>ListPads`, `<Plug>OpenPad` and
-`<Plug>SearchPads` to your vimrc). 1 enables mappings for normal mode. 2
-enables mappings for both normal and insert mode. The default value for
-g:pad#use_default_mappings is 1.
+MAPPINGS                                                   *vim-pad-mappings*
+
+By default, vim-pad sets some global mappings in normal mode. You can disable
+those by setting *g:pad#set_mappings* to 0. If you also want to map vim-pad's
+functions in insert mode, set this variable to a value of 2.
+
+Finer grained configuration of the mappings can be done by setting
+
+    *g:pad#maps#list*           default = ["<leader><esc>", <C-Esc>"]
+    *g:pad#maps#new*                    = ["<leader>n", <S-Esc>"]
+    *g:pad#maps#search*                 = "<leader>ss"
+    *g:pad#maps#incsearch*              = "<leader>s<leader>"
+    *g:pad#maps#newsilent*              = "<leader>s!"
+
+To set different maps in the terminal and in the GUI, use a list (like
+|g:pad#maps#list|, where the first item will be used for the terminal and the
+second for the GUI. If any of these variables is a string, the same value will
+be used for both.
+
+vim-pad will notice if the mappings have conflicts and warn you. If you want
+to disable these messages, set *g:pad#silent_on_mappings_fail* to 1.
 
 NOTES FORMAT                                           *vim-pad-notes-format*
 

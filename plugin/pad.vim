@@ -13,6 +13,7 @@ let g:loaded_pad = 1 "}}}
 
 " Default Settings: {{{1
 "
+" Dirs: {{{2
 if !exists('g:pad#dir')
     if exists('g:pad_dir')
         let g:pad#dir = g:pad_dir
@@ -30,9 +31,23 @@ endif
 if !exists('g:pad#local_dir')
     let g:pad#local_dir = 'notes'
 endif
+" Files: {{{2
 if !exists('g:pad#default_format')
     let g:pad#default_format = "markdown"
 endif
+if !exists('g:pad#default_file_extension')
+    let g:pad#default_file_extension = ''
+endif
+if !exists('g:pad#rename_files')
+    let g:pad#rename_files = 1
+endif
+if !exists('g:pad#title_first_line')
+    let g:pad#title_first_line = 0
+endif
+if !exists('g:pad#modeline_position')
+    let g:pad#modeline_position = 'bottom'
+endif
+" Window: {{{2
 if !exists('g:pad#window_height')
     let g:pad#window_height = 5
 endif
@@ -45,6 +60,7 @@ endif
 if !exists('g:pad#open_in_split')
     let g:pad#open_in_split = 1
 endif
+" Search: {{{2
 if !exists('g:pad#search_backend')
     let g:pad#search_backend = "grep"
 endif
@@ -57,20 +73,12 @@ endif
 if !exists('g:pad#query_dirnames')
     let g:pad#query_dirnames = 1
 endif
+" Display: {{{2
 if !exists('g:pad#read_nchars_from_files')
     let g:pad#read_nchars_from_files = 200
 endif
 if !exists('g:pad#highlighting_variant')
     let g:pad#highlighting_variant = 0
-endif
-if !exists('g:pad#use_default_mappings')
-    let g:pad#use_default_mappings = 1
-endif
-if !exists('g:pad#silent_on_mappings_fail')
-    let g:pad#silent_on_mappings_fail = 0
-endif
-if !exists('g:pad#modeline_position')
-    let g:pad#modeline_position = 'bottom'
 endif
 if !exists('g:pad#highlight_query')
     let g:pad#highlight_query = 1
@@ -81,14 +89,27 @@ endif
 if !exists('g:pad#show_dir')
     let g:pad#show_dir = 1
 endif
-if !exists('g:pad#default_file_extension')
-    let g:pad#default_file_extension = ''
+" Mappings: {{{2
+if !exists('g:pad#set_mappings')
+    let g:pad#set_mappings = 1
 endif
-if !exists('g:pad#rename_files')
-    let g:pad#rename_files = 1
+if !exists('g:pad#silent_on_mappings_fail')
+    let g:pad#silent_on_mappings_fail = 0
 endif
-if !exists('g:pad#title_first_line')
-    let g:pad#title_first_line = 0
+if !exists('g:pad#maps#list')
+    let g:pad#maps#list = ["<leader><esc>", "<C-esc>"]
+endif
+if !exists('g:pad#maps#new')
+    let g:pad#maps#new = ["<leader>n", "<S-esc>"]
+endif
+if !exists('g:pad#maps#search')
+    let g:pad#maps#search = "<leader>ss"
+endif
+if !exists('g:pad#maps#incsearch')
+    let g:pad#maps#incsearch = "<leader>s<leader>"
+endif
+if !exists('g:pad#maps#newsilent')
+    let g:pad#maps#newsilent = "<leader>s!"
 endif
 
 " Commands: {{{1
@@ -99,7 +120,8 @@ command! -nargs=? -bang ListPads call pad#PadCmd('ls <args>', '<bang>')
 command! -nargs=? OpenPad call pad#PadCmd('new <args>', '')
 
 " Key Mappings: {{{1
-"
+
+" <Plug> maps: {{{2
 noremap <silent> <unique> <Plug>(pad-list) <esc>:Pad ls<CR>
 inoremap <silent> <unique> <Plug>(pad-list) <esc>:Pad ls<CR>
 noremap <silent> <unique>  <Plug>(pad-new) <esc>:Pad new<CR>
@@ -111,42 +133,44 @@ noremap <silent> <unique> <PLug>(pad-incremental-new-note) :call pad#GlobalIncre
 " You can set custom bindings by re-mapping the previous ones.
 " For example, you can add the following to your vimrc:
 " 
-"     nmap ,pl <Plug>ListPads
+"     nmap ,pl <Plug>(pad-list)
 "
 " If you want disable the default_mappings, set
 " g:pad#use_default_mappings to 0
 
-function! s:CreateMapping(key, action, modename)
-    let mode = a:modename == "normal" ? "nmap" : "imap"
+function! s:CreateMapping(key, action, ...) "{{{2
+    if type(a:key) == type([]) && len(a:key) == 2
+        let l:key = a:key[has("gui_running")]
+    else
+        let l:key = a:key
+    endif
 
-    try
-        execute "silent " . mode . " <unique> " . a:key . " <Plug>(" . a:action . ")"
-    catch /E227/
-        if g:pad#silent_on_mappings_fail < 1
-            echom "[vim-pad] " . a:key . " in " . a:modename . " mode is already mapped."
-        endif
-    endtry
+    " this allows calling this function to create insert-mode only mappings
+    "   call s:CreateMapping(",pl", "pad-list", 2)
+    " (this is currently unused)
+    if a:0 > 0
+        let l:modes_range = a:1
+    else
+        let l:modes_range = range(1, g:pad#set_mappings)
+    endif
+
+    for l:mode_idx in l:modes_range 
+        let l:mode = l:mode_idx == 1 ? "nmap" : "imap"
+        try
+            execute "silent " . l:mode . " <unique> " . l:key . " <Plug>(" . a:action . ")"
+        catch /E227/
+            if g:pad#silent_on_mappings_fail < 1
+                echom "[vim-pad] " . l:key . " in " . l:mode_idx == 1? "normal" : "insert" . " mode is already mapped."
+            endif
+        endtry
+    endfor
 endfunction
 
-if g:pad#use_default_mappings > 0
-    call s:CreateMapping("<leader>ss", "pad-search", "normal")
-    call s:CreateMapping("<leader>s<leader>", "pad-incremental-search", "normal")
-    call s:CreateMapping("<leader>s!", "pad-incremental-new-note", "normal")
-    if has("gui_running")
-        call s:CreateMapping("<C-esc>", "pad-list", "normal")
-        call s:CreateMapping("<S-esc>", "pad-new", "normal")
-    else " the previous mappings don't work in the terminal
-        call s:CreateMapping("<leader><esc>", "pad-list", "normal")
-        call s:CreateMapping("<leader>n", "pad-new", "normal")
-    endif
-
-    if g:pad#use_default_mappings > 1
-        if has("gui_running")
-            call s:CreateMapping("<C-esc>", "pad-list", "insert")
-            call s:CreateMapping("<S-esc>", "pad-new", "insert")
-        else
-            call s:CreateMapping("<leader><esc>", "pad-list", "insert")
-            call s:CreateMapping("<leader>n", "pad-new", "insert")
-        endif
-    endif
+" Set maps, if wanted: {{{2
+if g:pad#set_mappings > 0
+    call s:CreateMapping(g:pad#maps#search, "pad-search")
+    call s:CreateMapping(g:pad#maps#incsearch, "pad-incremental-search")
+    call s:CreateMapping(g:pad#maps#newsilent, "pad-incremental-new-note")
+    call s:CreateMapping(g:pad#maps#list, "pad-list")
+    call s:CreateMapping(g:pad#maps#new, "pad-new")
 endif
