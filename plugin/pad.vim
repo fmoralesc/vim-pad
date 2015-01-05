@@ -146,7 +146,7 @@ function! s:CreateMapping(key, action, ...) "{{{2
     endif
 
     " this allows calling this function to create insert-mode only mappings
-    "   call s:CreateMapping(",pl", "pad-list", 2)
+    "   call s:CreateMapping(",pl", "pad-list", [2])
     " (this is currently unused)
     if a:0 > 0
         let l:modes_range = a:1
