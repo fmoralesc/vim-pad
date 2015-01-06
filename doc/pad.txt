@@ -79,12 +79,6 @@ If the :Pad command includes a bang (i.e. `:Pad! new`), a local note is created.
   "~/devel/awesome.vim", a note will be created on
   "~/devel/notes/awesome.vim.txt".
 
-                                                     *vim-pad-legacy-commands*
-
-There are two extra commands, which are now considered legacy and will be
-removed in the future, *:ListPads* (equivalent to :Pad ls), and *:OpenPad*
-(equivalent to `Pad new`).
-
 LIST COMMANDS                                         *vim-pad-list-commands*
 -------------
 

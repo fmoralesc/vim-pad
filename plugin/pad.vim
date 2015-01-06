@@ -3,7 +3,7 @@
 " File:			pad.vim
 " Description:	        Quick-notetaking for vim.
 " Author:		Felipe Morales
-" Version:		0.8
+" Version:		1.1
 
 " Must we load? {{{1
 if (exists("g:loaded_pad") && g:loaded_pad)	|| &cp 	|| has("python") == 0
@@ -116,8 +116,6 @@ endif
 "
 " Creates a new note
 command! -nargs=+ -bang -complete=custom,pad#PadCmdComplete Pad call pad#PadCmd('<args>', '<bang>')
-command! -nargs=? -bang ListPads call pad#PadCmd('ls <args>', '<bang>')
-command! -nargs=? OpenPad call pad#PadCmd('new <args>', '')
 
 " Key Mappings: {{{1
 
