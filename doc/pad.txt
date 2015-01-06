@@ -1,5 +1,12 @@
-*vim-pad*                     for vim 7.4               Last change: 21 jan 2012
+*vim-pad*                    
 
+                                                    _ 
+                        __ _ o  _  _     __  ___  __))
+                        \(/'(( ((`1( -- ((_)((_( ((_( 
+                                         ))           
+
+
+ 
 vim-pad is a quick notetaking plugin for vim.
 
 It offers a similar way of managing notes to the one made popular by tools like
@@ -128,10 +135,6 @@ might need to escape backward slashes, like so:
 
     let g:pad#dir = "C:\\Users\\Foo\\Documents\\Notes"
 
-IMPORTANT 2: Please check the mappings before using the plugin. The default
-mappings are quite ergonomic, but you might want to change them. If the
-default mappings have conflicts, vim-pad will let you know.
-
 MAPPINGS                                                   *vim-pad-mappings*
 
 By default, vim-pad sets some global mappings in normal mode. You can disable
@@ -146,17 +149,17 @@ Finer grained configuration of the mappings can be done by setting
     *g:pad#maps#incsearch*              = "<leader>s<leader>"
     *g:pad#maps#newsilent*              = "<leader>s!"
 
-To set different maps in the terminal and in the GUI, use a list (like
-|g:pad#maps#list|, where the first item will be used for the terminal and the
-second for the GUI. If any of these variables is a string, the same value will
-be used for both.
+To set different maps in the terminal and in the GUI, use a list (like in
+|g:pad#maps#list| above), where the first item will be used for the terminal
+and the second for the GUI. If any of these variables is a string, the same
+value will be used for both.
 
 vim-pad will notice if the mappings have conflicts and warn you. If you want
 to disable these messages, set *g:pad#silent_on_mappings_fail* to 1.
 
 NOTES FORMAT                                           *vim-pad-notes-format*
 
-The default format for new notes is `markdown`. To change this to another
+The default format for new notes is `markdown`. To change this to other
 format, `pandoc` for example, put
 
     let *g:pad#default_format* = "pandoc"
@@ -225,9 +228,9 @@ FUNCTIONS                                              *vim-pad-functions*
 ---------
 
 - *pad#PadCmd(args, bang)*       main entry      
-- *pad#OpenPad(title)*           creates a new note.
+- *pad#OpenPad(title)*             creates a new note.
 - *pad#ListPads(query, bang)*    displays the list of notes.
-- *pad#SearchPads(query)*   shows the search note prompt
+- *pad#SearchPads(query)*          shows the search note prompt
 
 - *pad#UpdatePad()*         updates the pad file (internal)
 - *pad#DeleteThis()*        deletes the currently open note
