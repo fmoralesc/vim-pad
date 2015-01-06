@@ -115,7 +115,7 @@ endif
 " Commands: {{{1
 "
 " Creates a new note
-command! -nargs=? -bang -complete=custom,pad#PadCmdComplete Pad call pad#PadCmd('<args>', '<bang>')
+command! -nargs=+ -bang -complete=custom,pad#PadCmdComplete Pad call pad#PadCmd('<args>', '<bang>')
 command! -nargs=? -bang ListPads call pad#PadCmd('ls <args>', '<bang>')
 command! -nargs=? OpenPad call pad#PadCmd('new <args>', '')
 
