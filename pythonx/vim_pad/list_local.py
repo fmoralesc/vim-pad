@@ -32,7 +32,7 @@ def delete_pad():  # {{{1
         path = get_selected_path()
         remove(path)
         make_sure_dir_is_empty(path)
-        vim.command("ListPads")
+        vim.command("Pad ls")
         vim.command("redraw!")
 
 
@@ -46,7 +46,7 @@ def move_to_folder(path=None):  # {{{1
         mkdir(join(get_save_dir(), path))
     move(selected_path, join(get_save_dir(), path, basename(selected_path)))
     make_sure_dir_is_empty(path)
-    vim.command("ListPads")
+    vim.command("Pad ls")
     if path is None:
         vim.command("redraw!")
 
@@ -127,7 +127,7 @@ def sort(key="1"):  # {{{1
 
     key = SORT_TYPES[key]
     if key == "date":
-        vim.command("ListPads")
+        vim.command("Pad ls")
         return
 
     tuples = []
