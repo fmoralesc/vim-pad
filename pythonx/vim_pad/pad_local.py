@@ -23,13 +23,17 @@ def update():
         _id = PadInfo(vim.current.buffer).id
         old_path = expanduser(vim.current.buffer.name)
 
+        # if the file already has an extension
+        ext = splitext(old_path)[1]
+        if ext != '' and ext != vim.eval("g:pad#default_file_extension"):
+            return
+
         fs = filter(isfile, glob(expanduser(join(dirname(vim.current.buffer.name), _id)) + "*"))
         if old_path not in fs:
             if fs == []:
                 new_path = expanduser(join(get_save_dir(), _id))
             else:
-                exts = map(lambda i: '0' if i == '' else i[1:],
-                                    map(lambda i: splitext(i)[1], fs))
+                exts = map(lambda i: '0' if i == '' else i[1:], map(lambda i: splitext(i)[1], fs))
                 new_path = ".".join([
                                     expanduser(join(get_save_dir(), _id)),
                                     str(int(max(exts)) + 1)])
