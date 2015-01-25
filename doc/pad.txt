@@ -9,17 +9,18 @@
 
 vim-pad is a quick notetaking plugin for vim.
 
-It offers a similar way of managing notes to the one made popular by tools like
-Notational Velocity, where file management is removed from the notetaking
-workflow, being replaced by searching and sorting facilities, and where the creation
-and searching of notes is integrated.
+It offers a similar way of managing notes to the one made popular by tools
+like Notational Velocity, where file management is removed from the notetaking
+workflow, being replaced by searching and sorting facilities, and where the
+creation and searching of notes is integrated.
 
-**IMPORTANT**: `vim-pad` requires `+python` and `+conceal` support from vim.
-Check if the flags are enabled in `:version`. Currently, it also requires
-either a `grep` with perl regexes support or `ack`, which might not be the case
-under OSX. Windows is not supported.
+NOTE vim-pad requires |+python|/|+python3| and |+conceal| support from vim.
+Check if the flags are enabled in |:version|. Currently, it also requires
+either a `grep` with perl regexes support, which might not be the case under
+OSX, or `ack`, `ag` or `pt`. Windows is not supported.
 
-If you have vim-tutor-mode[1] installed, you might want to read vim-pad's tutorial:
+If you have vim-tutor-mode[1] installed, you might want to read vim-pad's
+tutorial:
 >
     :Tutor vim-pad
 <
@@ -30,8 +31,8 @@ If you have vim-tutor-mode[1] installed, you might want to read vim-pad's tutori
 - List Commands |vim-pad-list-commands|
 - In-Note Commands |vim-pad-note-commands|
 - Configuration |vim-pad-configuration|
-	- Notes Format |vim-pad-notes-format|
-	- Misc |vim-pad-misc-config|
+    - Notes Format |vim-pad-notes-format|
+    - Misc |vim-pad-misc-config|
 - Functions |vim-pad-functions|
 - Rationale |vim-pad-design-rationale|
 
@@ -43,8 +44,8 @@ GLOBAL COMMANDS                                      *vim-pad-global-commands*
 
                                                                      *:Pad-ls*
 
-- `:Pad ls` (`<Control><Escape>`, <leader><Escape> for the terminal, global:
-  <Plug>(pad-list)) which lists the notes. You can pass a string to it if
+- :Pad ls (`<Control><Escape>`, `<leader><Escape>` for the terminal, global:
+  `<Plug>(pad-list)`) which lists the notes. You can pass a string to it if
   you want to filter the notes.
 
 The list of notes should display a series of lines like:
@@ -59,7 +60,7 @@ The first line of the file is taken as a title, and highlighted accordingly.
 If the note only spans one line, the text before a dot or a comma is taken as
 the title instead. Line breaks are displayed as ↲.
 
-`<leader>ss` in normal mode (default, global: <Plug>(pad-search)) also calls
+`<leader>ss` in normal mode (default, global: `<Plug>(pad-search)`) also calls
 `Pad ls`, but asks for a query to filter the notes before presenting the list.
 Giving an empty query is equivalent to calling `Pad ls` without arguments.
 
@@ -70,13 +71,14 @@ pass a bang to the command:
 
                                                                     *:Pad-new*
 
-- `:Pad new` (`<Shift><Escape>`, <leader>n in the terminal, global:
-  <Plug>(pad-new)) creates a new note.
+- :Pad new (`<Shift><Escape>`, `<leader>n` in the terminal, global:
+  `<Plug>(pad-new)`) creates a new note.
 
 If a string is given as its argument, it will insert the text as the first
 line in the file.
 
-If the :Pad command includes a bang (i.e. `:Pad! new`), a local note is created.
+If the :Pad command includes a bang (i.e. `:Pad! new`), a local note is
+created.
 
                                                                    *:Pad-this*
 
@@ -94,8 +96,8 @@ using `<Del>` (`dd` in the terminal ). `<Escape>` closes the buffer.
 
 You can start a search among your notes pressing `<Shift-F>`in the list. This
 will update the buffer in real time. If the query doesn't match any of the
-existing files, pressing `Enter` will create a new note with the query inserted
-in the first line.
+existing files, pressing `Enter` will create a new note with the query
+inserted in the first line.
 
 You can move the selected note to a subfolder by pressing `<localleader>+f`.
 vim.pad will prompt you for the folder name. To move a note to the root
@@ -103,16 +105,15 @@ directory (|g:pad#dir|), press `<localleader>-f`. Likewise, to move a note to
 the archive, press `<localleader>+a`, and `<localleader>-a` to move it back.
 
 You can sort the notes in the current view by title, tags or date by pressing
-<Shift-S> and selecting the mode.
+`<Shift-S>` and selecting the mode.
 
 IN-NOTE COMMANDS                                      *vim-pad-note-commands*
 ----------------
 
-From a note, you can press `<localleader><Del>` (`<localleader>dd` in the
-terminal) to delete it. `<localleader>+m` will ask for a filetype and insert a
-modeline in the file accordingly.
+From a note, you can press `<localleader>dd` to delete it. `<localleader>+m`
+will ask for a filetype and insert a modeline in the file accordingly.
 
-The folder and archive mappings listed above (`<localleader>+f`and such) also
+The folder and archive mappings listed above (`<localleader>+f` and such) also
 work inside notes.
 
 CONFIGURATION                                         *vim-pad-configuration*
@@ -122,7 +123,7 @@ NOTE FOR WINDOWS USERS: The plugin will not work correctly unless `encoding` is
 set to `utf-8` in your vimrc. Minimal compatibility for latin1 has been
 provided, though (the plugin will load, but render incorrectly).
 
-IMPORTANT 1: set the *g:pad#dir* variable in your .vimrc, to indicate where the
+NOTE IMPORTANT: set the *g:pad#dir* variable in your .vimrc, to indicate where the
 notes will be saved. The default is:
 
     let g:pad#dir = "~/notes/"
@@ -143,8 +144,8 @@ functions in insert mode, set this variable to a value of 2.
 
 Finer grained configuration of the default mappings can be done by setting
 
-    *g:pad#maps#list*           default = ["<leader><esc>", <C-Esc>"]
-    *g:pad#maps#new*                    = ["<leader>n", <S-Esc>"]
+    *g:pad#maps#list*           default = ["<leader><esc>", "<C-Esc>"]
+    *g:pad#maps#new*                    = ["<leader>n", "<S-Esc>"]
     *g:pad#maps#search*                 = "<leader>ss"
     *g:pad#maps#incsearch*              = "<leader>s<leader>"
     *g:pad#maps#newsilent*              = "<leader>s!"
@@ -181,7 +182,7 @@ format, `pandoc` for example, put
 in your `.vimrc`. You can also set the individual format of a note by adding
 the corresponding modeline. For example,
 
-	<!-- vim: set ft=votl: -->
+        <!-- vim: set ft=votl: -->
 
 at the beggining or the end of a file will tell vim to open the file as a
 VimOutliner file. The modeline won't be shown in the list view.
@@ -206,8 +207,8 @@ buffer. If you want to open the notes in the main window, set
 
 vim-pad's list is opened at the bottom by default. If you want to open it at
 the right side of the window, you must change the value of
-*g:pad#position["list"]* to "right" (the default is "bottom"). You can also make
-it cover the whole screen setting that to "full". Also, you can set the
+*g:pad#position["list"]* to "right" (the default is "bottom"). You can also
+make it cover the whole screen setting that to "full". Also, you can set the
 window width with *g:pad#window_width* (default: 40). When vim-pad is opened
 this way, the timestamp is hidden.  Likewise, you can tell vim-pad to open the
 notes at the right side of the window by setting the value of
@@ -231,7 +232,7 @@ When showing the list of notes, vim-pad reads by default 200 chars from the
 files, in order to show a summary of the file. You can adjust how many chars
 you want vim-pad to read by setting the *g:pad#read_nchars_from_files* variable.
 
-If you want the notes title to be their first line, you can set 
+If you want the notes title to be their first line, you can set
 *g:pad#title_first_line* to 1 (default is 0)
 
 vim-pad renames files to reflect their contents, using a file name similar to
@@ -242,35 +243,12 @@ to 0.
 FUNCTIONS                                              *vim-pad-functions*
 ---------
 
-- *pad#PadCmd(args, bang)*       main entry
-- *pad#OpenPad(title)*             creates a new note.
-- *pad#ListPads(query, bang)*    displays the list of notes.
-- *pad#SearchPads(query)*          shows the search note prompt
+- *pad#PadCmd()*               main entry
+- *pad#OpenPad()*              creates a new note.
+- *pad#ListPads()*             displays the list of notes.
+- *pad#SearchPads(query)*      shows the search note prompt
 
-- *pad#UpdatePad()*         updates the pad file (internal)
-- *pad#DeleteThis()*        deletes the currently open note
-- *pad#AddModeline()*       adds a modeline
-- *pad#MoveToFolder()*      moves a note to a subfolder of |g:pad#dir|
-- *pad#MoveToSaveDir*       moves a note to |g:pad#dir|
-- *pad#Archive*             archives a note
-- *pad#Unarchive*           moves an archived note back to |g:pad#dir|
-
-- *pad#EditPad()*               edit the selected note
-- *pad#DeletePad()*             delete the selected note
-- *pad#MovePad()*               move the selected note to a subfolder of |g:pad#dir|
-- *pad#MovePadToSaveDir()*      move the selected note to |g:pad#dir|
-- *pad#ArchivePad()*            archive the selected note
-- *pad#UnarchivePad()*          move the selected note back to |g:pad#dir|
-- *pad#IncrementalSearch()*     search incrementally. takes an argument, if it is 1, it will create a
-                              new note with the query if enter is pressed, if 0, it will save the
-                              query as a note, but it will not open it.
-- *pad#Sort()*                  sort the displayed entries
-
-- *pad#GetPadTitle()*       retrieve the selected note title
-- *pad#GetHumanDate()*      retrieve the selected note data
-- *pad#GetPadId()*          retrieve the selected note id
-
-RATIONALE                                               *vim-pad-design-rationale*
+RATIONALE                                              *vim-pad-design-rationale*
 ---------
 
 vim-pad has as its goals:
@@ -294,3 +272,5 @@ your notes can be free-form and adapt to your needs, and also, that you can use
 vim-pad as a complement for other note taking plugins (it works great along
 other plugins like [VimOutliner](https://github.com/vimoutliner/vimoutliner/)
 and [quicktask](https://github.com/aaronbieber/quicktask).)
+
+" vim: set ft=help:

@@ -54,10 +54,10 @@ def natural_timestamp(timestamp):
     f_timestamp = float(timestamp) / 1000000
     tmp_datetime = datetime.datetime.fromtimestamp(f_timestamp)
     diff = datetime.datetime.now() - tmp_datetime
-    days = diff.days
-    seconds = diff.seconds
-    minutes = seconds / 60
-    hours = minutes / 60
+    days = int(diff.days)
+    seconds = int(diff.seconds)
+    minutes = int(seconds / 60)
+    hours = int(minutes / 60)
 
     if days > 0:
         return tmp_datetime.strftime("%Y-%m-%d %H:%M:%S")

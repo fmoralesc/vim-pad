@@ -1,13 +1,13 @@
 " vim: set fdm=marker fdc=2:
 
-" File:			pad.vim
-" Description:	        Quick-notetaking for vim.
-" Author:		Felipe Morales
-" Version:		1.1
+" File:                 pad.vim
+" Description:          Quick-notetaking for vim.
+" Author:               Felipe Morales
+" Version:              1.1
 
 " Must we load? {{{1
-if (exists("g:loaded_pad") && g:loaded_pad)	|| &cp 	|| has("python") == 0
-	finish
+if (exists("g:loaded_pad") && g:loaded_pad) || &cp || (!has("python") && !has("python3"))
+    finish
 endif
 let g:loaded_pad = 1 "}}}
 
@@ -27,6 +27,9 @@ else
     if filewritable(expand(eval("g:pad#dir"))) != 2
         let g:pad#dir = ""
     endif
+endif
+if !exists('g:pad#sources')
+    let g:pad#sources = ['dir', 'local']
 endif
 if !exists('g:pad#local_dir')
     let g:pad#local_dir = 'notes'
