@@ -117,6 +117,10 @@ endif
 " Creates a new note
 command! -nargs=+ -bang -complete=custom,pad#PadCmdComplete Pad call pad#PadCmd('<args>', '<bang>')
 
+" Autocommands: {{{1
+" allow multiple vim instances to open the notes, deleting the swap file. 
+exe "au! SwapExists ".g:pad#dir."/* let v:swapchoice='d'"
+
 " Key Mappings: {{{1
 
 " <Plug> maps: {{{2
