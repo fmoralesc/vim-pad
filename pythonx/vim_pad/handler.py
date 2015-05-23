@@ -147,7 +147,8 @@ def listdir_external(path, archive, query): # {{{1
     if bool(int(vim.eval("g:pad#search_ignorecase"))):
         command.append("-i")
 
-    command.append("--max-count=1")
+    if search_backend != "ack":
+        command.append("--max-count=1")
 
     cmd_output = Popen(command, stdout=PIPE, stderr=PIPE).communicate()[0].split("\n")
 
