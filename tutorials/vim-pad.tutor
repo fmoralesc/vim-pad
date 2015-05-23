@@ -6,19 +6,19 @@ than [vim-pad's help file](vim-pad), so you can use it as a quick reference.
 
 To start using vim-pad, you need to point it to the place your notes will be
 saved. For this tutorial, we'll use a temp dir.  Place your cursor over the
-next command and press «>>» 
-~~~ viml
+next command and press «>>»
+~~~ cmd
     :let g:pad#dir = fnamemodify(tempname(), ":h")
 ~~~
 IMPORTANT: [g:pad#dir](g:pad#dir) MUST be a full path, vim-pad won't work properly otherwise!
 
-Table of contents: («zO» to open a section, «zc» to close it) 
+Table of contents: («zO» to open a section, «zc» to close it)
 ## Creating a note
 
-You should have an empty notes lists now; you need to take note of this! 
+You should have an empty notes lists now; you need to take note of this!
 
 To create a new note you can either execute
-~~~ viml
+~~~ cmd
     :Pad new
 ~~~
 or press <Shift-Escape>. Do so now.
@@ -32,13 +32,13 @@ EXERCISE: Now, create another note. This time, write something about the sky.
 ## Listing the notes
 
 You'll want to retrieve your notes now. you can do it by either executing
-~~~ viml
+~~~ cmd
     :Pad ls
 ~~~
 or pressing <Control-Escape>. Do it now. You'll see the list show how long ago
 you created the notes, and will show you a bit of the notes contents. Press
 <Enter> to open the note in the current line (you'll see this line is
-highlighted). 
+highlighted).
 
 Before moving on, close any note you could have open. Also, if you want, create
 a couple more notes.
@@ -46,13 +46,13 @@ a couple more notes.
 ## Searching
 
 If you are looking for something in particular within your notes, you'll want to
-use vim-pad search utilities. 
+use vim-pad search utilities.
 
 Earlier, you created a note about the sky. We'll search for it now.
 
 Open the notes list and press <S-f>. You'll see the prompt has changed to
 
-    >> 
+    >>
 
 You can now type a query. Since we are looking for the note aboout the sky,
 type "sky" (let's hope you used the word!). You'll see the list changes when you
@@ -63,7 +63,7 @@ query is highlighted.
 EXERCISE: Try searching for other terms.
 
 You now know the basics of vim-pad! This should be enough to make good use of
-vim-pad as an everyday tool. However, there is still plenty to learn. 
+vim-pad as an everyday tool. However, there is still plenty to learn.
 
 ### Other ways to search
 
@@ -71,7 +71,7 @@ You can search non interactively, but without opening the notes list, with
 [<leader>](<Leader>)ss . Pressing <Enter> after finishing the query will show the
 list of matching notes.
 
-## More on creating notes 
+## More on creating notes
 
 There is yet another way to search for notes: If you press <leader>s<leader> in any
 window, an interactive search will start. This s pretty similar to <leader>ss,
@@ -94,7 +94,7 @@ purpose format (also because vim comes with support for it by default). You can
 change this default to your hearts desire by setting the
 [g:pad#default_format](g:pad#default_format) variable. For example, you can make
 your notes be LaTeX by default:
-~~~ viml
+~~~ cmd
     :let g:pad#default_format = "tex"
 ~~~
 To change a particular note's format, you'll have to add a [modeline](modeline).
@@ -120,7 +120,7 @@ to sort alphabetically all the notes you have titled "recipe:...". To do this,
 press <S-s> while the list is open, select the sorting method and press <Enter>.
 
 NOTE: Sorting won't undo a query you have previously entered, so you can search
-for all notes mentioning "chicken" and then sort them alphabetically. 
+for all notes mentioning "chicken" and then sort them alphabetically.
 
 ## Deleting notes, using sub-folders and archiving
 
@@ -129,7 +129,7 @@ notes. Let's see what we can do about it...
 
 ### Deleting notes
 
-Nuke some! 
+Nuke some!
 
 From the notes list, select a note you want to delete and then press
 dd. You'll be prompted to confirm.
@@ -139,7 +139,7 @@ EXERCISE: Delete the worst of notes.
 If you are editing a note and discover you don't want it anymore (what were you
 thinking!), you can press <localleader><Del>.
 
-EXERCISE: Open a previously saved note and delete it this way. 
+EXERCISE: Open a previously saved note and delete it this way.
 
 ### Moving into sub-folders
 
@@ -147,11 +147,11 @@ Perhaps you'll want to organize the notes in groups. One option is to use tags,
 which we've seen before, but that requires writing the tags in the files, and
 you might not want that. Another option is to place your notes into topic
 folders. You can do it manually (and vim-pad will show you the folders when
-listing the notes), but there are better ways from within vim. 
+listing the notes), but there are better ways from within vim.
 
 From the list, select a note and press «+f» . You'll be prompted for a
 folder name to put the note in. If the folder doesn't exist, vim-pad will create
-it. 
+it.
 
 NOTE: Pressing the same combo within a note, with <localleader> prepended, does
 the same.
@@ -176,7 +176,7 @@ You want to keep this stuff, but keep it "away" too. For this, vim-pad features
 an archive system. Any note in the special "archive/" folder will be treated as
 archived, and won't be shown normaly by :Pad ls. To list the archive, you have
 to put a ! after the command, like this
-~~~ viml
+~~~ cmd
     :Pad! ls
 ~~~
 If you try it now, it won't do anything special, because we haven't archived
@@ -197,13 +197,13 @@ By default, this folder will be called "notes", but that can be changed by
 setting the [g:pad#local_dir](g:pad#local_dir) variable.
 
 To create a local note, use
-~~~ viml
+~~~ cmd
     :Pad! new
 ~~~
 (notice the bang !).
 
 To create a local note about the file you are currently working on, use
-~~~ viml
+~~~ cmd
     :Pad this
 ~~~
 EXERCISE: Create a local note about this tutorial. List the notes to see it
