@@ -118,23 +118,25 @@ endif
 command! -nargs=+ -bang -complete=custom,pad#PadCmdComplete Pad call pad#PadCmd('<args>', '<bang>')
 
 " Autocommands: {{{1
-" allow multiple vim instances to open the notes, deleting the swap file. 
+" allow multiple vim instances to open the notes, deleting the swap file.
 exe "au! SwapExists ".g:pad#dir."/* let v:swapchoice='d'"
 
 " Key Mappings: {{{1
 
 " <Plug> maps: {{{2
 noremap <silent> <unique> <Plug>(pad-list) <esc>:Pad ls<CR>
-inoremap <silent> <unique> <Plug>(pad-list) <esc>:Pad ls<CR>
-noremap <silent> <unique>  <Plug>(pad-new) <esc>:Pad new<CR>
-inoremap <silent> <unique> <Plug>(pad-new) <esc>:Pad new<CR>
+noremap <silent> <unique> <Plug>(pad-new) <esc>:Pad new<CR>
 noremap <silent> <unique> <Plug>(pad-search) :call pad#SearchPads()<cr>
 noremap <silent> <unique> <Plug>(pad-incremental-search) :call pad#GlobalIncrementalSearch(1)<cr>
-noremap <silent> <unique> <PLug>(pad-incremental-new-note) :call pad#GlobalIncrementalSearch(0)<cr>
+noremap <silent> <unique> <Plug>(pad-incremental-new-note) :call pad#GlobalIncrementalSearch(0)<cr>
+if g:pad#set_mappings > 1
+    inoremap <silent> <unique> <Plug>(pad-new) <esc>:Pad new<CR>
+    inoremap <silent> <unique> <Plug>(pad-list) <esc>:Pad ls<CR>
+endif
 
 " You can set custom bindings by re-mapping the previous ones.
 " For example, you can add the following to your vimrc:
-" 
+"
 "     nmap ,pl <Plug>(pad-list)
 "
 " If you want disable the default_mappings, set
@@ -156,7 +158,7 @@ function! s:CreateMapping(key, action, ...) "{{{2
         let l:modes_range = range(1, g:pad#set_mappings)
     endif
 
-    for l:mode_idx in l:modes_range 
+    for l:mode_idx in l:modes_range
         let l:mode = l:mode_idx == 1 ? "nmap" : "imap"
         try
             execute "silent " . l:mode . " <unique> " . l:key . " <Plug>(" . a:action . ")"

@@ -1,9 +1,9 @@
-*vim-pad*                    
+*vim-pad*    quick notetaking for vim
 
-                                                    _ 
+                                                    _
                         __ _ o  _  _     __  ___  __))
-                        \(/'(( ((`1( -- ((_)((_( ((_( 
-                                         ))           
+                        \(/'(( ((`1( -- ((_)((_( ((_(
+                                         ))
 
 
 
@@ -141,7 +141,7 @@ By default, vim-pad sets some global mappings in normal mode. You can disable
 those by setting *g:pad#set_mappings* to 0. If you also want to map vim-pad's
 functions in insert mode, set this variable to a value of 2.
 
-Finer grained configuration of the mappings can be done by setting
+Finer grained configuration of the default mappings can be done by setting
 
     *g:pad#maps#list*           default = ["<leader><esc>", <C-Esc>"]
     *g:pad#maps#new*                    = ["<leader>n", <S-Esc>"]
@@ -156,6 +156,20 @@ value will be used for both.
 
 vim-pad will notice if the mappings have conflicts and warn you. If you want
 to disable these messages, set *g:pad#silent_on_mappings_fail* to 1.
+
+If you disable the defaults, you'll have to remap the following mappings:
+
+    <Plug>(pad-list)                     " open the notes list
+    <Plug>(pad-new)                      " create a new note
+    <Plug>(pad-search)                   " search for a note
+    <Plug>(pad-incremental-search)       " search incrementally for a note
+    <Plug>(pad-incremental-new-note)     " create a new note with incremental search
+
+For example,
+
+    nmap <leader>pl <Plug>(pad-list)
+
+will map <leader>pl to opening the notes list.
 
 NOTES FORMAT                                           *vim-pad-notes-format*
 
@@ -228,7 +242,7 @@ to 0.
 FUNCTIONS                                              *vim-pad-functions*
 ---------
 
-- *pad#PadCmd(args, bang)*       main entry      
+- *pad#PadCmd(args, bang)*       main entry
 - *pad#OpenPad(title)*             creates a new note.
 - *pad#ListPads(query, bang)*    displays the list of notes.
 - *pad#SearchPads(query)*          shows the search note prompt
@@ -247,8 +261,8 @@ FUNCTIONS                                              *vim-pad-functions*
 - *pad#MovePadToSaveDir()*      move the selected note to |g:pad#dir|
 - *pad#ArchivePad()*            archive the selected note
 - *pad#UnarchivePad()*          move the selected note back to |g:pad#dir|
-- *pad#IncrementalSearch()*     search incrementally. takes an argument, if it is 1, it will create a 
-                              new note with the query if enter is pressed, it 0, it will save the 
+- *pad#IncrementalSearch()*     search incrementally. takes an argument, if it is 1, it will create a
+                              new note with the query if enter is pressed, if 0, it will save the
                               query as a note, but it will not open it.
 - *pad#Sort()*                  sort the displayed entries
 
