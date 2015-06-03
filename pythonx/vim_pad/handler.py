@@ -272,6 +272,8 @@ def display(query, archive): # {{{1
             vim.command("bw __pad__")
         if vim.eval('g:pad#position["list"]') == "right":
             vim.command("silent! rightbelow " + str(vim.eval('g:pad#window_width')) + "vnew __pad__")
+        elif vim.eval('g:pad#position["list"]') == "full":
+            vim.command("silent! new __pad__ | only")
         else:
             vim.command("silent! botright " + str(vim.eval("g:pad#window_height")) + "new __pad__")
         fill_list(pad_files, query != "")

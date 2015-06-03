@@ -6,7 +6,7 @@
                                          ))           
 
 
- 
+
 vim-pad is a quick notetaking plugin for vim.
 
 It offers a similar way of managing notes to the one made popular by tools like
@@ -192,7 +192,8 @@ buffer. If you want to open the notes in the main window, set
 
 vim-pad's list is opened at the bottom by default. If you want to open it at
 the right side of the window, you must change the value of
-*g:pad#position["list"]* to "right" (the default is "bottom"). You can set the
+*g:pad#position["list"]* to "right" (the default is "bottom"). You can also make
+it cover the whole screen setting that to "full". Also, you can set the
 window width with *g:pad#window_width* (default: 40). When vim-pad is opened
 this way, the timestamp is hidden.  Likewise, you can tell vim-pad to open the
 notes at the right side of the window by setting the value of
