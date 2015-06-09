@@ -16,10 +16,12 @@ exe s:python . ' pad_plugin = pad.plugin.PadPlugin()'
 
 function! pad#PadCmd(args, bang)
     let arg_data = split(a:args, ' ')
-    if arg_data[0] =~ '\(new\|ls\|this\)'
+    if arg_data[0] =~ '\(new\|ls\|search\|this\)'
         let l:args = join(arg_data[1:], ' ')
         if arg_data[0] == 'ls'
             execute s:python . " pad_plugin.ls('".l:args."', '".a:bang."')"
+        elseif arg_data[0] == 'search'
+            execute s:python . " pad_plugin.search('".l:args."', '".a:bang."')"
         elseif arg_data[0] == 'new'
             if a:bang != '!'
                 execute s:python . ' pad_plugin.new(text="'.l:args.'")'
@@ -42,7 +44,7 @@ function! pad#PadCmdComplete(A,L,P)
     let cmd_args = split(a:L, ' ', 1)[1:]
     echom string(cmd_args)
     if len(cmd_args) == 1
-        let options = "ls\nnew"
+        let options = "ls\nnew\nsearch"
         "only complete 'this' is g:pad#local_dir is set
         if g:pad#local_dir != ''
             let options .= "\nthis"

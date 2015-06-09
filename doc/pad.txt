@@ -60,15 +60,16 @@ The first line of the file is taken as a title, and highlighted accordingly.
 If the note only spans one line, the text before a dot or a comma is taken as
 the title instead. Line breaks are displayed as ↲.
 
-`<leader>ss` in normal mode (default, global: `<Plug>(pad-search)`) also calls
-`Pad ls`, but asks for a query to filter the notes before presenting the list.
-Giving an empty query is equivalent to calling `Pad ls` without arguments.
+                                                                 *:Pad-search*
+:Pad search (`<leader>ss` in normal mode, global: `<Plug>(pad-search)`) also
+calls `Pad ls`, but it prompts  for a query to filter the notes before
+presenting the list. Giving an empty query is equivalent to calling `Pad ls`
+without arguments.
 
 By default, `Pad ls` won't show notes from the archive. To list them, you must
 pass a bang to the command:
 
      :Pad! ls
-
                                                                     *:Pad-new*
 
 - :Pad new (`<Shift><Escape>`, `<leader>n` in the terminal, global:

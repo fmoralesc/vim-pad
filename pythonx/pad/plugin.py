@@ -105,8 +105,9 @@ class PadPlugin(object):
         """
         Prompt for a query and display a list of the matching notes.
         """
-        query = vim.eval('input(">>> ")')
-        self.display(query, use_archive)
+        if not query:
+            query = vim.eval('input(">>> ")')
+        self.display(query, use_archive == "!")
         V + "redraw!"
 
     @prevent_invalid_dir
