@@ -9,15 +9,15 @@ from .collator import NotesCollator
 from .list import NotesListBuffer
 from .pad import PadInfo
 
-class PadPlugin(object):
-    def __init__(self):
+class PadPlugin(object): #{{{1
+    def __init__(self): #{{{2
         sources = get_setting('sources')
         self.collator = NotesCollator(sources)
         self.list = NotesListBuffer()
         set_vim_globals()
 
     @prevent_invalid_dir
-    def open(self, path=None, first_line=None, query=None):
+    def open(self, path=None, first_line=None, query=None): #{{{2
         """
         Creates or opens a note.
         """
@@ -76,7 +76,7 @@ class PadPlugin(object):
             if get_setting('jumpto_query') == '1':
                 V + ("call search('\c" + query + "')")
 
-    def new(self, text=None, path=None):
+    def new(self, text=None, path=None): #{{{2
         """
         Create a new note.
         Makes sure the directory is created on writing the buffer.
@@ -87,21 +87,22 @@ class PadPlugin(object):
                     "call mkdir(fnamemodify('" + path + "', ':h'), 'p')")
 
     @prevent_invalid_dir
-    def display(self, query=None, use_archive=False):
+    def display(self, query=None, use_archive=False): #{{{2
         """
         Retrieves the file list and displays it.
         """
         filelist = self.collator.get_filelist(query, use_archive)
         self.list.show(filelist, query != "")
+        V + ("let b:using_archive = " + ('1' if use_archive else '0'))
 
-    def ls(self, query=None, use_archive=False):
+    def ls(self, query=None, use_archive=False):#{{{2
         """
         Mostly, an alias for display.
         """
         self.display(query, use_archive == "!")
 
     @prevent_invalid_dir
-    def search(self, query=None, use_archive=False):
+    def search(self, query=None, use_archive=False):#{{{2
         """
         Prompt for a query and display a list of the matching notes.
         """
@@ -111,7 +112,7 @@ class PadPlugin(object):
         V + "redraw!"
 
     @prevent_invalid_dir
-    def global_incremental_search(self, should_open=True):
+    def global_incremental_search(self, should_open=True):#{{{2
         """
         Incremental search.
         """
@@ -159,4 +160,4 @@ class PadPlugin(object):
             V + "redraw"
             v + ('echo ">> ' + info + query + '"')
 
-
+# vim: set fdm=marker :

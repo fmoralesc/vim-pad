@@ -17,12 +17,12 @@ cached_data = []
 cached_timestamps = []
 cached_filenames = []
 
-class NotesListBuffer(object):
+class NotesListBuffer(object):#{{{1
     @property
-    def selected_path(self):
+    def selected_path(self):#{{{2
         return join(get_save_dir(), vim.current.line.split(" @")[0])
 
-    def show(self, files, queried=False):
+    def show(self, files, queried=False):#{{{2
         if len(files) > 0:
             if vim.eval("bufexists('__pad__')") == "1":
                 V + "bw __pad__"
@@ -38,7 +38,7 @@ class NotesListBuffer(object):
         else:
             V + "echom 'vim-pad: no pads'"
 
-    def fill(self, filelist, queried=False, custom_order=False):
+    def fill(self, filelist, queried=False, custom_order=False):#{{{2
         global cached_filenames, cached_timestamps, cached_data
 
         # we won't want to touch the cache
@@ -101,41 +101,41 @@ class NotesListBuffer(object):
         vim.current.buffer.append(list(lines))
         V + "normal! dd"
 
-    def edit(self):
+    def edit(self):#{{{2
         query = vim.eval('b:pad_query')
         path = self.selected_path
         V + "bdelete"
         V + ("call pad#Open('" + path + "', '', '" + query + "')")
 
-    def delete(self):
+    def delete(self):#{{{2
         confirm = vim.eval('input("really delete? (y/n): ")')
         if confirm.lower() == "y":
             remove(self.selected_path)
             make_sure_dir_is_empty(self.selected_path)
-            V + "Pad ls"
+            V + ("Pad" + ('!' if vim.eval('b:using_archive') == '1' else '') + " ls")
             V + "redraw!"
 
-    def move_to_folder(self, path=None):
+    def move_to_folder(self, path=None):#{{{2
         if not path and path != "":
             path = vim.eval('input("move to: ")')
         if not exists(join(get_save_dir(), path)):
             mkdir(join(get_save_dir, path))
         move(self.selected_path, join(get_save_dir(), path, basename(self.selected_path)))
         make_sure_dir_is_empty(path)
-        V + "Pad ls"
+        V + ("Pad" + ('!' if vim.eval('b:using_archive') == '1' else '') + " ls")
         if path is None:
             V + "redraw!"
 
-    def move_to_savedir(self):
+    def move_to_savedir(self):#{{{2
         self.move_to_folder("")
 
-    def archive(self):
+    def archive(self):#{{{2
         self.move_to_folder("archive")
 
-    def unarchive(self):
+    def unarchive(self):#{{{2
         self.move_to_savedir()
 
-    def incremental_search(self):  # {{{1
+    def incremental_search(self):#{{{2
         """ Provides incremental search within the __pad__ buffer.
         """
         query = ""
@@ -181,7 +181,7 @@ class NotesListBuffer(object):
             V + "redraw"
             V + ('echo ">> ' + info + query + '"')
 
-    def sort(self):
+    def sort(self):#{{{2
         SORT_TYPES = {
                 "1": "title",
                 "2": "tags",
@@ -195,7 +195,7 @@ class NotesListBuffer(object):
 
         key = SORT_TYPES[key]
         if key == "date":
-            V + "Pad ls"
+            V + ("Pad" + ('!' if vim.eval('b:using_archive') == '1' else '') + " ls")
             return
 
         tuples = []
@@ -223,3 +223,4 @@ class NotesListBuffer(object):
         V + "setlocal nomodifiable"
         V + "redraw!"
 
+# vim: set fdm=marker :
