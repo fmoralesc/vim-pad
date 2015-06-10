@@ -4,18 +4,19 @@ A quick notetaking plugin for vim.
 
 It offers a similar way of managing notes to the one made popular by tools like
 Notational Velocity, where file management is removed from the notetaking
-workflow, being replaced by searching and sorting facilities, and where the creation
-and searching of notes is integrated.
+workflow, being replaced by searching and sorting facilities, and where the
+creation and searching of notes is integrated.
 
 Notes in vim-pad are free-form; in fact it tries to make it easy to use any
 format you want. It works great along other plugins like
 [VimOutliner](https://github.com/vimoutliner/vimoutliner/) and
 [quicktask](https://github.com/aaronbieber/quicktask).
 
-**IMPORTANT**: `vim-pad` requires `+python` and `+conceal` support from vim.
-Check if the flags are enabled in `:version`. Currently, it also requires
-either a `grep` with perl regexes support, which might not be the case under
-OSX, `ack`, `ag` or `pt`. Windows is not supported.
+**IMPORTANT**: `vim-pad` requires a reasonably recent version of Vim (7.4 is
+recommended) with `+python` (`+python3` also works in `devel`) and `+conceal`
+support. Check if the flags are enabled in `:version`. Currently, it also
+requires either a `grep` with perl regexes support, which might not be the case
+under OSX, `ack`, `ag` or `pt`. Windows is not supported.
 
 ![screen1](https://raw.githubusercontent.com/fmoralesc/vim-pad/devel/doc/ss-vim-pad.png)
 
