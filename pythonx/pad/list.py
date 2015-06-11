@@ -68,12 +68,12 @@ class NotesListBuffer(object):#{{{1
                                 tail = "[EMPTY]"
                         else:
                             if get_setting("show_dir", bool):
-                                tail = info.folder + \
+                                tail = U(info.folder) + \
                                     U(u'\u2e25 ') + \
                                     U(u'\u21b2').join((info.summary, info.body))
                             else:
                                 tail = U(u'\u21b2').join((info.summary, info.body))
-                        lines.append(pad + " @ " + tail)
+                        lines.append(str(pad) + " @ " + tail)
                 else:
                     pass
 
