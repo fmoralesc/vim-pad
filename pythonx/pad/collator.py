@@ -3,7 +3,7 @@ import vim
 import re
 from glob import glob
 from os import walk
-from os.path import join, isdir
+from os.path import join, isdir, basename
 from subprocess import Popen, PIPE
 
 from .vim_interface import get_setting, get_save_dir
@@ -89,13 +89,18 @@ class NotesSource(object):
             files = self.__list_external(use_archive, query)
 
             if query_filenames:
-                matches = filter(lambda i: not isdir(i) and i not in files, glob(join(self.path(), "*"+query+"*")))
+                matches = filter(lambda i: \
+                        not isdir(i) and \
+                        i not in files, glob(join(self.path(), "*"+query+"*")))
                 files.extend(matches)
 
             if query_dirnames:
-                matching_dirs = filter(isdir, glob(join(self.path(), "*"+ query+"*")))
+                # first, filter out things which are not directories, and then the archive if needed
+                matching_dirs = filter(lambda x: basename(x) != 'archive' if not use_archive else True,\
+                        filter(isdir, glob(join(self.path(), "*"+ query+"*"))))
                 for mdir in matching_dirs:
-                    files.extend(filter(lambda x: x not in files, self.__list_recursive_nohidden(use_archive, mdir)))
+                    files.extend(filter(lambda x: x not in files, \
+                            self.__list_recursive_nohidden(use_archive, mdir)))
         return files
 
 class LocalNotesSource(NotesSource):
