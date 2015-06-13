@@ -73,7 +73,11 @@ class NotesListBuffer(object):#{{{1
                                     U(u'\u21b2').join((info.summary, info.body))
                             else:
                                 tail = U(u'\u21b2').join((info.summary, info.body))
-                        lines.append(str(pad) + " @ " + tail)
+                        try:
+                            pad = str(pad)
+                        except:
+                            pad = pad.encode('utf-8')
+                        lines.append(pad + " @ " + tail)
                 else:
                     pass
 
