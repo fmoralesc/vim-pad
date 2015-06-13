@@ -74,7 +74,6 @@ class NotesSource(object):
         if get_setting('search_ignorecase', bool):
             command.append("-i")
 
-        splitter = '\n' if version_info.major == 2 else "\\n"
         cmd_output = Popen(command, stdout=PIPE, stderr=PIPE).communicate()[0].decode('utf-8').split('\n')
 
         return list(filter(lambda i: i != "", cmd_output))
@@ -101,6 +100,9 @@ class NotesSource(object):
                 for mdir in matching_dirs:
                     files.extend(filter(lambda x: x not in files, \
                             self.__list_recursive_nohidden(use_archive, mdir)))
+
+        if version_info.major == 2:
+            return map(lambda x: x.encode('utf-8') if isinstance(x, unicode) else x, files)
         return files
 
 class LocalNotesSource(NotesSource):
