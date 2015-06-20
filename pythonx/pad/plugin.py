@@ -127,7 +127,7 @@ class PadPlugin(object): #{{{1
                 if raw_char == "13":
                     if should_create_on_enter:
                         if should_open == True:
-                            open_pad(first_line=query)
+                            self.open(first_line=query)
                         else:
                             path = join(get_save_dir(), \
                                     PadInfo([query]).id + \
@@ -136,7 +136,7 @@ class PadPlugin(object): #{{{1
                                 new_note.write(query)
                         V + "echohl None"
                     else:
-                        display(query, True)
+                        self.display(query, True)
                 V + "redraw!"
                 break
             else:
@@ -158,6 +158,6 @@ class PadPlugin(object): #{{{1
                 V + "echohl WarningMsg"
                 should_create_on_enter = True
             V + "redraw"
-            v + ('echo ">> ' + info + query + '"')
+            V + ('echo ">> ' + info + query + '"')
 
 # vim: set fdm=marker :

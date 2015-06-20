@@ -241,6 +241,15 @@ the note title. The renames are done automatically when you leave/close a note.
 If you do not want vim-pad to rename the files you can set *g:pad#rename_files*
 to 0.
 
+Directories can be excluded from being searched by setting
+*g:pad#exclude_dirnames* to a comma separated string of directory names. e.g.:
+
+    let g:pad#exclude_dirnames = "img,assets"
+
+In the above example, directories with the names `img` or `assets` will be
+ignored anywhere in the directory heirarchy.  This is useful if you want to
+include media and non-text files in your notes directory.
+
 FUNCTIONS                                              *vim-pad-functions*
 ---------
 

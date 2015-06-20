@@ -24,7 +24,7 @@ class NotesSource(object):
         """
         pass
 
-    def __list_recursive_nohidden(self, use_archive=False, path=None):
+    def __list_recursive_nohidden(self, use_archive=False, exclude_dirnames=[], path=None):
         if path == None:
             path = self.path()
 
@@ -36,6 +36,10 @@ class NotesSource(object):
                 if use_archive == False:
                     if dirname == "archive":
                         dirnames.remove(dirname)
+                for excluded in exclude_dirnames:
+                    if dirname == excluded:
+                        dirnames.remove(dirname)
+
             matches += [join(root, f) for f in filenames if not f.startswith('.')]
         return matches
 
@@ -79,8 +83,9 @@ class NotesSource(object):
         return list(filter(lambda i: i != "", cmd_output))
 
     def query(self, query=None, use_archive=False):
+        exclude_dirnames = get_setting('exclude_dirnames').split(',')
         if not query or query == "":
-            files = self.__list_recursive_nohidden(use_archive)
+            files = self.__list_recursive_nohidden(use_archive, exclude_dirnames)
         else:
             query_filenames = get_setting('query_filenames', bool)
             query_dirnames = get_setting('query_dirnames', bool)
@@ -99,7 +104,8 @@ class NotesSource(object):
                         filter(isdir, glob(join(self.path(), "*"+ query+"*"))))
                 for mdir in matching_dirs:
                     files.extend(filter(lambda x: x not in files, \
-                            self.__list_recursive_nohidden(use_archive, mdir)))
+                            self.__list_recursive_nohidden(use_archive,
+                                                           exclude_dirnames, mdir)))
 
         if version_info.major == 2:
             return map(lambda x: x.encode('utf-8') if isinstance(x, unicode) else x, files)
