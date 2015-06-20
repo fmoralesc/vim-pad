@@ -76,6 +76,9 @@ endif
 if !exists('g:pad#query_dirnames')
     let g:pad#query_dirnames = 1
 endif
+if !exists('g:pad#exclude_dirnames')
+    let g:pad#exclude_dirnames = ''
+endif
 " Display: {{{2
 if !exists('g:pad#read_nchars_from_files')
     let g:pad#read_nchars_from_files = 200
