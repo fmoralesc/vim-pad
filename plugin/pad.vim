@@ -41,6 +41,9 @@ endif
 if !exists('g:pad#default_file_extension')
     let g:pad#default_file_extension = ''
 endif
+if !exists('g:pad#ignored_extensions')
+    let g:pad#ignored_extensions = ["pdf", "odt", "docx", "doc"]
+endif
 if !exists('g:pad#rename_files')
     let g:pad#rename_files = 1
 endif

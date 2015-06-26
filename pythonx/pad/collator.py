@@ -3,7 +3,7 @@ import vim
 import re
 from glob import glob
 from os import walk
-from os.path import join, isdir, basename
+from os.path import join, isdir, basename, splitext
 from subprocess import Popen, PIPE
 
 from .vim_interface import get_setting, get_save_dir
@@ -146,4 +146,6 @@ class NotesCollator(object):
         files = []
         for source in self.sources:
             files.extend(source.query(query, use_archive))
+        ie = ['.' + e for e in get_setting('ignored_extensions')]
+        files = filter(lambda x: splitext(x)[1] not in ie, files)
         return files
