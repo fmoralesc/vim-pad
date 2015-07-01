@@ -22,7 +22,7 @@ OSX, or `ack`, `ag` or `pt`. Windows is not supported.
 If you have vim-tutor-mode[1] installed, you might want to read vim-pad's
 tutorial:
 >
-    :Tutor vim-pad
+    :Tutor pad
 <
 
 [1]: https://github.com/fmoralesc/vim-tutor-mode
