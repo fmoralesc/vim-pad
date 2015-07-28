@@ -127,6 +127,7 @@ class PadInfo(object):
                 data = data[1:]
 
             self.summary = data[0].strip()
+            org_tags_data = None
             if len(self.summary) > 0:
                 # vim-orgmode adds tags after whitespace
                 org_tags_data = re.search("\s+(?P<tags>:.*$)", self.summary)
