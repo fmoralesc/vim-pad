@@ -124,7 +124,13 @@ class NotesListBuffer(object):#{{{1
             path = vim.eval('input("move to: ")')
         if not exists(join(get_save_dir(), path)):
             mkdir(join(get_save_dir(), path))
-        move(self.selected_path, join(get_save_dir(), path, basename(self.selected_path)))
+        try:
+            move(self.selected_path, join(get_save_dir(), path, basename(self.selected_path)))
+        except IOError as e:
+            if e.errno == 20:
+                V + "redraw!"
+                V + ("echom 'vim-pad: cannot use that path'")
+                return
         make_sure_dir_is_empty(path)
         V + ("Pad" + ('!' if vim.eval('b:using_archive') == '1' else '') + " ls")
         if path is None:

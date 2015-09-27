@@ -66,7 +66,13 @@ def move_to_folder(path=None):
     new_path = join(get_save_dir(), path, basename(vim.current.buffer.name))
     if not exists(join(get_save_dir(), path)):
         mkdir(join(get_save_dir(), path))
-    move(vim.current.buffer.name, new_path)
+    try:
+        move(vim.current.buffer.name, new_path)
+    except IOError as e:
+        if e.errno == 20:
+            V + "redraw"
+            V + "echom 'vim-pad: cannot use that path'"
+            return
     V + "bdelete"
 
 def move_to_savedir():
