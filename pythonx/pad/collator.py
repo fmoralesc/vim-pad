@@ -147,5 +147,5 @@ class NotesCollator(object):
         for source in self.sources:
             files.extend(source.query(query, use_archive))
         ie = ['.' + e for e in get_setting('ignored_extensions')]
-        files = list(filter(lambda x: splitext(x)[1] not in ie, files))
+        files = list(filter(lambda x: splitext(x)[1] not in ie, set(files)))
         return files
