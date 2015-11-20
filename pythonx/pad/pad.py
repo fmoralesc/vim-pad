@@ -122,8 +122,10 @@ class PadInfo(object):
                 self.folder = dirname(relpath(source.name, vim.eval('getcwd()')))
             if vim.eval("g:pad#title_first_line") == '1':
                 source = source.readline().split("\n")
-            else:
+            elif nchars > 0:
                 source = source.read(nchars).split('\n')
+            else:
+                source = [basename(source.name)]
 
         data = [line.strip() for line in source if line != ""]
 
