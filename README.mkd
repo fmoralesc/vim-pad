@@ -219,5 +219,5 @@ can read a tutorial on using vim-pad (it is basically equivalent to this
 README, but with exercises) with
 
 ~~~ vim
-    :Tutor vim-pad
+    :Tutor pad
 ~~~
