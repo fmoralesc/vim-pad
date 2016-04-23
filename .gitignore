@@ -1,3 +1,4 @@
 tags
 *.pyc
 /pythonx/vim_pad/.ropeproject/*
+/pythonx/pad/.ropeproject/*
