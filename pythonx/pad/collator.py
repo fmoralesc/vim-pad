@@ -4,7 +4,7 @@ import re
 from glob import glob
 from os import walk
 from os.path import join, isdir, basename, splitext
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, check_output
 
 from .vim_interface import get_setting, get_save_dir
 
@@ -17,6 +17,7 @@ class CollatorCache(object):
 class NotesSource(object):
     def __init__(self, source_dir):
         self.path_init = source_dir
+        self.use_gnu_grep = False
 
     def path(self):
         """
@@ -46,8 +47,12 @@ class NotesSource(object):
     def __list_external(self, use_archive=False, query=None):
         search_backend = get_setting('search_backend')
         if search_backend == "grep":
-            # we use Perl mode for grep (-P), because it is really fast
-            command = ["grep", "-P", "-n", "-r", "-l", query, self.path() + "/"]
+            # we use Perl mode for grep (-P) if available, because it is really fast
+            if self.use_gnu_grep or re.search('GNU grep', str(check_output(['grep', '--version']))):
+                command = ["grep", "-P", "-n", "-r", "-l", query, self.path() + "/"]
+                self.use_gnu_grep = True
+            else:
+                command = ["grep", "-n", "-r", "-l", query, self.path() + "/"]
             if not use_archive:
                 command.append("--exclude-dir=archive")
             command.append('--exclude=.*')
