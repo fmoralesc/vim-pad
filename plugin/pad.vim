@@ -173,7 +173,7 @@ function! s:CreateMapping(key, action, ...) "{{{2
             execute "silent " . l:mode . " <unique> " . l:key . " <Plug>(" . a:action . ")"
         catch /E227/
             if g:pad#silent_on_mappings_fail < 1
-                echom "[vim-pad] " . l:key . " in " . l:mode_idx == 1? "normal" : "insert" . " mode is already mapped."
+                echom "[vim-pad] " . l:key . " in " . (l:mode_idx == 1 ? "normal" : "insert") . " mode is already mapped."
             endif
         endtry
     endfor
