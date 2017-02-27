@@ -10,7 +10,7 @@ if has("python") || has("python3")
         let b:python = "python3"
     endif
     exe b:python . " import pad.pad"
-    au! BufLeave <buffer> exe b:python . " pad.pad.update()"
+    au! BufLeave,BufUnload <buffer> exe b:python . " pad.pad.update()"
     noremap <silent> <buffer> <localleader>+m :exe b:python . " pad.pad.add_modeline()"<cr>
     noremap <silent> <buffer> <localleader>+f :exe b:python . " pad.pad.move_to_folder()"<cr>
     noremap <silent> <buffer> <localleader>-f :exe b:python . " pad.pad.move_to_savedir()"<cr>
