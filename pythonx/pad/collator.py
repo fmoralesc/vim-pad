@@ -72,6 +72,11 @@ class NotesSource(object):
                 command = ["ag", query, self.path(), "--noheading", "-l"]
                 if not use_archive:
                     command.append("--ignore-dir=archive")
+        elif search_backend == "rg" or search_backend == "ripgrep":
+            if vim.eval("executable('rg')") == "1":
+                command = ["rg", query, self.path(), "--no-heading", "-l"]
+                if not use_archive:
+                    command.append("--ignore-file=archive/*")
         elif search_backend == "pt":
             if vim.eval("executable('pt')") == "1":
                 command = ["pt", "-l", "--nogroup"]
