@@ -26,8 +26,6 @@ under OSX, `ack`, `ag` or `pt`. Windows is not supported.
 
 ## Branches
 
-* `master` contains the released version of the plugin.
-
 * `devel` contains the development version of the plugin.
 
 Pull requests are to be done over `devel`. When submitting a bug, please tag
