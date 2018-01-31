@@ -26,8 +26,8 @@ def update():
         if ext != '' and ext != get_setting("default_file_extension"):
             return
 
-        fs = filter(isfile, \
-                glob(expanduser(join(dirname(vim.current.buffer.name), _id)) + "*"))
+        fs = list(filter(isfile, \
+                glob(expanduser(join(dirname(vim.current.buffer.name), _id)) + "*")))
         if old_path not in fs:
             if fs == []:
                 new_path = expanduser(join(get_save_dir(), _id))
