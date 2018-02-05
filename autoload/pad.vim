@@ -28,7 +28,7 @@ function! pad#PadCmd(args, bang)
             else
                 let pth = expand('%:p:h'). '/' . g:pad#local_dir . "/"
                 execute s:python . ' pad_plugin.new(text="'.l:args.
-                            \'", path="' . pth . '+ pad.timestamps.timestamp())'
+                            \'", path="' . pth . '" + pad.timestamps.timestamp())'
             endif
         "only allow 'this' if g:pad#local_dir is set
         elseif arg_data[0] == 'this' && g:pad#local_dir != ''
