@@ -12,7 +12,6 @@ next command and press «>>»
 ~~~
 IMPORTANT: [g:pad#dir](g:pad#dir) MUST be a full path, vim-pad won't work properly otherwise!
 
-Table of contents: («zO» to open a section, «zc» to close it)
 ## Creating a note
 
 You should have an empty notes lists now; you need to take note of this!
